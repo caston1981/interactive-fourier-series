@@ -556,7 +556,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const datasets = [{
             label: 'Complex Coefficients',
             data: getComplexCoeffs(initialN),
-            backgroundColor: (context) => context.raw.color,
+            pointBackgroundColor: (context) => context.raw.color,
+            pointBorderColor: (context) => context.raw.color,
         }];
 
         complexCoeffsChart = new Chart(ctx, {
