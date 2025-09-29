@@ -9,23 +9,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: The application uses a sidebar navigation structure to manage the dense mathematical content. This thematic organization (Foundations, Convergence, etc.) prevents cognitive overload by presenting information in focused, digestible sections. The main content area is dynamically updated via JavaScript, creating a seamless single-page app experience. This is superior to a long scrollable page, as it allows users to jump directly to topics of interest. Key interactions, such as sliders for adjusting the number of series terms and selectors for different functions, are designed to foster active learning and build intuition by providing immediate visual feedback on theoretical concepts. -->
-    <!-- Visualization & Content Choices: 
-        1. Report Info: Convergence & Gibbs Phenomenon -> Goal: Demonstrate pointwise convergence and persistent overshoot at discontinuities. -> Viz/Method: Dynamic line chart (Chart.js on Canvas). -> Interaction: A slider controls the number of terms (N) in the series, and the chart updates in real-time. -> Justification: This provides a direct, intuitive visualization of an abstract and often misunderstood concept.
-        2. Report Info: Coefficient Decay & Function Smoothness -> Goal: Show the relationship between a function's smoothness and how quickly its Fourier coefficients approach zero. -> Viz/Method: A function plot paired with a bar chart of its coefficient magnitudes (Chart.js on Canvas). -> Interaction: Buttons to select different function types (smooth, continuous, discontinuous). -> Justification: Visually connects a property in the time domain (smoothness) to a property in the frequency domain (coefficient decay), clarifying a core principle of Fourier analysis.
-        3. Report Info: Special Cases (Square, Triangle waves) -> Goal: Provide concrete examples of Fourier series. -> Viz/Method: Re-use of the interactive N-term line chart. -> Interaction: Dropdown menu to select the function to analyze. -> Justification: Reinforces general principles with specific, well-known examples, allowing users to apply their understanding.
-        All visualizations are interactive and designed to build intuition for the underlying mathematical proofs and theorems. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-     <link rel="stylesheet" href="css/styles.css">
+    
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
-    <nav class="w-full md:w-64 bg-[#F0EBE3] p-4 md:p-6 flex-shrink-0">
+    <nav class="w-full md:w-64 bg- p-4 md:p-6 flex-shrink-0">
         <h2 class="text-2xl font-bold mb-6 text-center md:text-left">Fourier Theory</h2>
         <ul id="navigation" class="space-y-2">
-            <li><a href="#" data-target="foundations" class="nav-link block p-3 rounded-lg font-medium active">Foundations</a></li>
+            <li><a href="#" data-target="historical" class="nav-link block p-3 rounded-lg font-medium">Historical Foundations</a></li>
+            <li><a href="#" data-target="foundations" class="nav-link block p-3 rounded-lg font-medium active">Foundational Theory</a></li>
             <li><a href="#" data-target="convergence" class="nav-link block p-3 rounded-lg font-medium">Convergence & Gibbs</a></li>
             <li><a href="#" data-target="coefficients" class="nav-link block p-3 rounded-lg font-medium">Coefficient Properties</a></li>
+            <li><a href="#" data-target="complex_coeffs" class="nav-link block p-3 rounded-lg font-medium">Complex Spectral Geometry</a></li>
+            <li><a href="#" data-target="thd" class="nav-link block p-3 rounded-lg font-medium">Signal Quality (THD)</a></li>
             <li><a href="#" data-target="examples" class="nav-link block p-3 rounded-lg font-medium">Classic Waveforms</a></li>
             <li><a href="#" data-target="connections" class="nav-link block p-3 rounded-lg font-medium">Broader Connections</a></li>
         </ul>
@@ -38,44 +34,65 @@
         </header>
 
         <div id="content-container">
-            <section id="foundations" class="content-section">
-                <h3 class="text-3xl font-semibold mb-4">Foundational Theory</h3>
+            <section id="historical" class="content-section hidden">
+                <h3 class="text-3xl font-semibold mb-4">Historical Foundations: The Crisis of Rigor</h3>
                 <div class="space-y-6 text-gray-700 leading-relaxed">
-                    <p>At its core, Fourier Series theory asserts that a wide class of periodic functions can be represented or approximated by an infinite sum of sine and cosine functions. This is possible due to the properties of these trigonometric functions within a specific mathematical structure: a Hilbert space of square-integrable functions, L².</p>
-                    <p>The key principle is <strong>orthogonality</strong>. Two functions are orthogonal over an interval if the integral of their product over that interval is zero. The set of functions {1, cos(nx), sin(nx)} for n=1, 2, 3... forms a complete orthogonal basis for periodic functions on an interval like [-π, π]. This means any reasonably well-behaved periodic function can be uniquely expressed as a linear combination of these basis functions, just as any vector in 3D space can be expressed as a combination of the orthogonal basis vectors <strong>i</strong>, <strong>j</strong>, and <strong>k</strong>.</p>
-                    <p>The Fourier coefficients, aₙ and bₙ, are the "coordinates" of the function with respect to this basis. They are calculated by projecting the function onto each basis vector using an inner product (which for functions is defined as an integral). The formulas are:</p>
-                    <div class="bg-white p-4 rounded-lg border text-center text-sm md:text-base">
-                        <p>a₀ = (1/π) ∫₋ₙ f(x) dx</p>
-                        <p>aₙ = (1/π) ∫₋ₙ f(x) cos(nx) dx</p>
-                        <p>bₙ = (1/π) ∫₋ₙ f(x) sin(nx) dx</p>
-                    </div>
-                    <p>The Fourier Series of f(x) is then given by: </p>
-                    <div class="bg-white p-4 rounded-lg border text-center text-sm md:text-base">
-                        <p>f(x) ~ a₀/2 + Σₙ₌₁ (aₙ cos(nx) + bₙ sin(nx))</p>
-                    </div>
+                    <p>Fourier's original assertion that a trigonometric series could represent any arbitrary function—including piecewise or discontinuous ones—sparked a foundational crisis in 19th-century mathematics. Mathematicians like Euler and Lagrange held a restricted view of a "function" as a single analytical expression.[2]</p>
+                    <p>The attempt to rigorously prove the convergence of Fourier series forced the development of modern mathematical analysis.[2] Bernhard Riemann's 1854 work, driven by this problem, led to the rigorous **Riemann integral**. However, full mathematical rigor, particularly guaranteeing the convergence properties in the mean-square sense, required the introduction of **Measure Theory** and the **Lebesgue integral** in the early 20th century, which established the function space $\mathcal{L}^2$ as a complete structure.[3, 4]</p>
+                </div>
+            </section>
+            
+            <section id="foundations" class="content-section">
+                <h3 class="text-3xl font-semibold mb-4">Foundational Theory and $\mathcal{L}^2$ Hilbert Space</h3>
+                <div class="space-y-6 text-gray-700 leading-relaxed">
+                    <p>The rigorous basis for Fourier analysis is the **Hilbert space** $\mathcal{L}^2(\mathbb{T})$, the space of square-integrable periodic functions. This space is equipped with the inner product $\langle f, g \rangle = \frac{1}{2\pi} \int f(x) \overline{g(x)} dx$.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>**Orthogonality:** The set of exponential functions $\{e^{inx}\}_{n \in \mathbb{Z}}$ forms an **orthonormal basis** for $\mathcal{L}^2(\mathbb{T})$ because $\langle e^{in x}, e^{im x} \rangle = \delta_{n,m}$ (the Kronecker delta).</li>
+                        <li>**Coefficients as Projections:** The Fourier coefficient $c_n(f) = \langle f, e_{n} \rangle$ is the orthogonal projection of the function $f$ onto the basis function $e_{n}$.[5]</li>
+                        <li>**Completeness and Energy Conservation:** The trigonometric system is **complete** in $\mathcal{L}^2(\mathbb{T})$. This is mathematically encapsulated by the **Riesz–Fischer Theorem** (also known as the Plancherel identity on the torus), which guarantees perfect energy conservation [1]:
+                            <div class="bg-white p-4 rounded-lg border text-center text-sm md:text-base">
+                                $\frac{1}{2\pi} \int |f(x)|^2 dx = \sum_{n \in \mathbb{Z}} |c_n|^2$
+                            </div>
+                            This demonstrates the **unitary isomorphism** between the continuous function space $\mathcal{L}^2(\mathbb{T})$ and the discrete sequence space $\ell^2(\mathbb{Z})$.
+                        </li>
+                    </ul>
+                    
                 </div>
             </section>
 
             <section id="convergence" class="content-section hidden">
-                <h3 class="text-3xl font-semibold mb-4">Convergence & The Gibbs Phenomenon</h3>
-                 <p class="mb-6 text-gray-700 leading-relaxed">A crucial question in Fourier analysis is: under what conditions does the infinite series actually converge to the original function? The Dirichlet conditions provide a sufficient, though not necessary, set of criteria: if a function is periodic, has a finite number of discontinuities, and a finite number of maxima and minima within one period, its Fourier series converges to the function at all points of continuity. At a discontinuity, it converges to the midpoint of the jump.</p>
-                 <p class="mb-6 text-gray-700 leading-relaxed">However, the convergence near a discontinuity exhibits a peculiar behavior known as the <strong>Gibbs Phenomenon</strong>. The truncated series "overshoots" the function's true value, and the magnitude of this overshoot does not decrease as more terms are added to the series. It approaches a constant value of about 9% of the jump size. The width of the overshoot region gets smaller, but the height remains. Use the slider below to observe this effect on a square wave.</p>
+                <h3 class="text-3xl font-semibold mb-4">Convergence: Dirichlet Summation vs. Cesàro Means</h3>
+                 <p class="mb-6 text-gray-700 leading-relaxed">Convergence depends on the summation method. The standard partial sum, $S_N$ (Dirichlet Summation), uses the unstable Dirichlet kernel. The **Dirichlet–Jordan Test** proves pointwise convergence for functions of bounded variation (BV).[6]</p>
+                 <p class="mb-6 text-gray-700 leading-relaxed">However, $S_N$ fails to converge uniformly for discontinuous functions, leading to the **Gibbs Phenomenon**—a persistent overshoot near the jump discontinuity. This overshoot magnitude never decays, remaining approximately $9\%$ of the jump size.[7]</p>
+                 <p class="mb-6 text-gray-700 leading-relaxed">The **Cesàro mean**, $\sigma_N$ (Fejér Summation), is the arithmetic average of the partial sums. **Fejér's Theorem** states that for any continuous function $f \in C(\mathbb{T})$, the Cesàro means $\sigma_N$ converge **uniformly** to $f$.[8] This stability arises because the Fejér kernel is non-negative, satisfying the properties of a "good kernel" and avoiding the oscillations of the Dirichlet kernel.[9, 10]</p>
                 <div class="control-panel mb-4">
-                    <label for="termsSlider" class="block mb-2 font-medium">Number of Terms (N): <span id="termsValue">5</span></label>
-                    <input type="range" id="termsSlider" min="1" max="100" value="5" class="w-full">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+                         <div class="flex items-center space-x-4">
+                            <span class="font-medium text-lg">Summation Method:</span>
+                            <div class="flex space-x-2 p-1 bg-gray-100 rounded-lg">
+                                <button id="dirichletBtn" class="px-3 py-1 text-sm rounded-md bg-blue-500 text-white font-medium">Dirichlet ($S_N$)</button>
+                                <button id="cesaroBtn" class="px-3 py-1 text-sm rounded-md text-gray-700 font-medium">Cesàro ($\sigma_N$)</button>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-auto">
+                            <label for="termsSlider" class="block font-medium">Number of Terms (N): <span id="termsValue">5</span></label>
+                            <input type="range" id="termsSlider" min="1" max="100" value="5" class="w-full">
+                        </div>
+                    </div>
                 </div>
                 <div class="chart-container">
                     <canvas id="gibbsChart"></canvas>
                 </div>
+                <p id="convergenceNote" class="mt-4 text-sm italic text-gray-600 text-center"></p>
             </section>
 
             <section id="coefficients" class="content-section hidden">
                  <h3 class="text-3xl font-semibold mb-4">Coefficient Properties & Function Smoothness</h3>
-                 <p class="mb-6 text-gray-700 leading-relaxed">The rate at which the Fourier coefficients |aₙ| and |bₙ| decay to zero as n → ∞ is directly related to the smoothness of the function f(x). This is a fundamental principle connecting the time/space domain (the function's shape) to the frequency domain (the coefficients). A smoother function contains less high-frequency content, meaning its coefficients decay more rapidly.</p>
+                 <p class="mb-6 text-gray-700 leading-relaxed">The rate at which the Fourier coefficients decay to zero is the mathematical fingerprint of the function's smoothness (or regularity class). This relationship is fundamental to defining **Sobolev Spaces** using the frequency domain.[11]</p>
                 <ul class="list-disc list-inside mb-6 space-y-2 text-gray-700">
-                     <li>If f(x) has a discontinuity (like a square wave), its coefficients decay slowly, proportional to 1/n.</li>
-                     <li>If f(x) is continuous but its derivative is discontinuous (like a triangle wave), its coefficients decay faster, proportional to 1/n².</li>
-                     <li>If f(x) and its first k-1 derivatives are continuous, its coefficients decay even faster, proportional to 1/nᵏ⁺¹.</li>
+                    <li>**Riemann–Lebesgue Lemma:** The most basic principle states that if $f$ is Lebesgue integrable ($\mathcal{L}^1$), its coefficients must tend to zero as $|n| \to \infty$, i.e., $\lim_{|n| \to \infty} c_n(f) = 0$.[12, 13]</li>
+                    <li>**Algebraic Decay:** If $f$ is continuously differentiable $k$ times ($f \in C^k$), its coefficients decay algebraically: $|c_n| = \mathcal{O}(|n|^{-(k+1)})$. Discontinuities lead to the slowest decay ($\mathcal{O}(|n|^{-1})$).</li>
+                    <li>**Rapid/Exponential Decay:** Functions that are infinitely differentiable ($C^\infty$) have coefficients that decay faster than any polynomial. Functions that are **analytic** (extendable to the complex plane) exhibit exponential decay.</li>
                 </ul>
                 <p class="mb-6 text-gray-700 leading-relaxed">Select a function type below to see a visual representation of its form and the corresponding decay rate of its Fourier coefficient magnitudes.</p>
                 <div class="flex justify-center space-x-4 mb-4">
@@ -92,10 +109,39 @@
                     </div>
                 </div>
             </section>
+            
+            <section id="complex_coeffs" class="content-section hidden">
+                <h3 class="text-3xl font-semibold mb-4">Complex Spectral Geometry ($\mathbf{c_n}$)</h3>
+                <p class="mb-6 text-gray-700 leading-relaxed">The exponential Fourier Series $f(x) \sim \sum c_n e^{inx}$ provides the most elegant representation. The coefficients $c_n$ are complex numbers that encode both the magnitude and phase of each harmonic.[14]</p>
+                <ul class="list-disc list-inside mb-6 space-y-2 text-gray-700">
+                     <li>**Conjugate Symmetry:** For a real-valued function $f(x)$, the spectrum must satisfy the rigorous condition that $c_{-n} = \overline{c_n}$ (the coefficient for negative frequency is the complex conjugate of the positive frequency coefficient).[15]</li>
+                     <li>**Amplitude-Phase Form:** $c_n$ can be expressed in polar coordinates, where its magnitude $|c_n|$ is related to the energy of the $n$-th harmonic and its argument (angle) is the phase shift $\phi_n$.[14]</li>
+                </ul>
+                <div class="control-panel mb-4">
+                     <label for="coeffCount" class="block mb-2 font-medium">Number of Harmonic Pairs (N): <span id="coeffCountValue">5</span></label>
+                    <input type="range" id="coeffCount" min="1" max="15" value="5" class="w-full">
+                </div>
+                <div class="chart-container">
+                    <canvas id="complexCoeffsChart"></canvas>
+                </div>
+                <p class="mt-4 text-sm italic text-gray-600 text-center">Coefficients $c_n$ and $c_{-n}$ for the Square Wave (an odd function, so all $c_n$ are purely imaginary, lying on the vertical axis).</p>
+            </section>
+            
+             <section id="thd" class="content-section hidden">
+                <h3 class="text-3xl font-semibold mb-4">Signal Quality Mathematics: Total Harmonic Distortion (THD)</h3>
+                <div class="space-y-6 text-gray-700 leading-relaxed">
+                    <p>Total Harmonic Distortion (THD) is a mathematical measure of the spectral purity of a periodic function. It rigorously quantifies the power contained in all higher-order harmonics relative to the power of the fundamental frequency.</p>
+                    <p>Using the **Parseval identity**, which equates the signal's energy (in the time domain, $\mathcal{L}^2$ norm) to the sum of the energies of its harmonics (in the frequency domain, $\ell^2$ norm), THD is defined as the ratio of the energy of the distortion to the energy of the fundamental component (assuming $n=\pm 1$ is the fundamental, and $c_0$ is removed):</p>
+                    <div class="bg-white p-4 rounded-lg border text-center text-sm md:text-base">
+                        $$\text{THD} = \sqrt{\frac{\sum_{|n| \ge 2} |c_n|^2}{|c_1|^2}} = \sqrt{\frac{\text{Power}_{\text{Harmonics}}}{\text{Power}_{\text{Fundamental}}}}$$
+                    </div>
+                    <p>This definition links THD directly to the **Mean Squared Error (MSE)** incurred when approximating the function using only its fundamental frequency component, providing an exact measure of approximation quality in the $\mathcal{L}^2$ sense.</p>
+                </div>
+            </section>
 
             <section id="examples" class="content-section hidden">
                 <h3 class="text-3xl font-semibold mb-4">Classic Waveform Examples</h3>
-                <p class="mb-6 text-gray-700 leading-relaxed">Applying Fourier analysis to fundamental periodic functions provides concrete examples of the theory. Each function has a unique series representation determined by its symmetries and shape. Odd functions have only sine terms (all aₙ = 0), while even functions have only cosine terms (all bₙ = 0). Explore the series for some classic waveforms below. Adjust the slider to see how the series approximation builds the function.</p>
+                <p class="mb-6 text-gray-700 leading-relaxed">Applying Fourier analysis to fundamental periodic functions provides concrete examples of the theory. Each function has a unique series representation determined by its symmetries and shape. Odd functions have only sine terms (all $a_n = 0$), while even functions have only cosine terms (all $b_n = 0$). Explore the series for some classic waveforms below. Adjust the slider to see how the series approximation builds the function.</p>
                 <div class="control-panel mb-4 flex flex-col md:flex-row items-center gap-4">
                     <div class="w-full md:w-1/2">
                         <label for="waveformSelect" class="block mb-2 font-medium">Select Waveform:</label>
@@ -119,12 +165,11 @@
             <section id="connections" class="content-section hidden">
                 <h3 class="text-3xl font-semibold mb-4">Broader Mathematical Connections</h3>
                  <div class="space-y-6 text-gray-700 leading-relaxed">
-                    <p>Fourier Series are not an isolated topic; they are deeply connected to many other areas of mathematics, forming a cornerstone of harmonic analysis.</p>
                     <ul class="list-disc list-inside space-y-3">
-                        <li><strong>Fourier Transform:</strong> The Fourier Series applies to periodic functions. By letting the period of a function approach infinity, the discrete spectrum of the Fourier Series (harmonics) becomes a continuous spectrum. This limiting process rigorously defines the Fourier Transform, which is used for non-periodic functions.</li>
-                        <li><strong>Complex Analysis:</strong> Using Euler's formula (e^(ix) = cos(x) + i sin(x)), the Fourier series can be written in a more compact and elegant exponential form: f(x) ~ Σₙ₌₋∞ cₙ e^(inx). This formulation is often simpler for theoretical work and directly links Fourier analysis to the properties of functions in the complex plane.</li>
-                        <li><strong>Partial Differential Equations (PDEs):</strong> Fourier Series are a classic tool for solving linear PDEs like the Heat Equation and the Wave Equation. The method of separation of variables often leads to solutions that are expressed as Fourier series, where the coefficients are determined by the initial or boundary conditions of the physical system.</li>
-                        <li><strong>Functional Analysis:</strong> The theory is a prime example of concepts in functional analysis. The space L² is a Hilbert space, and the trigonometric functions form an orthonormal basis. The Fourier coefficients are coordinates in this infinite-dimensional vector space, and Parseval's theorem is a generalization of the Pythagorean theorem to this space.</li>
+                        <li>**Fourier Transform (FT) & Distribution Theory:** The FT is the mathematical generalization of the Fourier Series achieved by letting the period $L \to \infty$. This limiting process is rigorously defined using the theory of **tempered distributions** ($\mathcal{S}'$), allowing even generalized functions (like the Dirac delta) to have a defined spectrum.[5, 16, 17]</li>
+                        <li>**Abstract Harmonic Analysis (AHA):** Classical Fourier Series is the decomposition of the function space on the compact Abelian group $\mathbb{R}/\mathbb{Z}$ (the torus). This is formalized by **Pontryagin Duality**, which relates this group to its dual group, $\mathbb{Z}$ (the discrete frequency indices).[18, 19]</li>
+                        <li>**Spectral Theory & PDEs:** The Fourier basis $\{e^{inx}\}$ are the eigenfunctions of the differentiation operator. This means Fourier analysis **diagonalizes** the operator, which is the analytical basis for solving linear Partial Differential Equations (PDEs) like the Heat Equation using the method of **Separation of Variables**.[20, 21]</li>
+                        <li>**Multidimensional Fourier Series:** For functions of multiple variables ($f(\mathbf{x})$), the convergence properties become complex. The convergence of the partial sum $S_N$ depends critically on the **method of summation** used (e.g., cubic vs. spherical truncation) [22], a topic of active mathematical research.[23]</li>
                     </ul>
                 </div>
             </section>
@@ -135,7 +180,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const navigationLinks = document.querySelectorAll('#navigation a');
     const contentSections = document.querySelectorAll('.content-section');
-    let gibbsChart, coeffFuncChart, coeffDecayChart, exampleChart;
+    let gibbsChart, coeffFuncChart, coeffDecayChart, exampleChart, complexCoeffsChart;
+    let currentSummationMethod = 'dirichlet';
 
     const chartOptions = {
         responsive: true,
@@ -147,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 min: -Math.PI,
                 max: Math.PI,
                 ticks: {
-                    callback: function(value, index, values) {
+                    callback: function(value) {
                         if (value === -Math.PI) return '-π';
                         if (value === -Math.PI/2) return '-π/2';
                         if (value === 0) return '0';
@@ -183,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     function generatePoints(func, numPoints = 200) {
-        const data = [];
+        const data =;
         const step = (2 * Math.PI) / numPoints;
         for (let i = 0; i <= numPoints; i++) {
             const x = -Math.PI + i * step;
@@ -193,46 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function squareWave(x) {
-        return Math.sign(Math.sin(x));
-    }
-
-    function fourierSquare(x, N) {
-        let sum = 0;
-        for (let n = 1; n <= N; n++) {
-            if (n % 2 !== 0) {
-                sum += (4 / Math.PI) * (Math.sin(n * x) / n);
-            }
-        }
-        return sum;
-    }
-    
-    function triangleWave(x) {
-        return (2/Math.PI) * Math.asin(Math.sin(x));
-    }
-
-    function fourierTriangle(x, N) {
-        let sum = 0;
-        for (let n = 1; n <= N; n++) {
-             if (n % 2 !== 0) {
-                sum += (8 / (Math.PI**2)) * (((-1)**((n-1)/2)) / (n**2)) * Math.sin(n * x);
-            }
-        }
-        return sum;
-    }
-    
-    function sawtoothWave(x){
-        return (x/Math.PI);
-    }
-
-    function fourierSawtooth(x, N){
-        let sum = 0;
-        for (let n = 1; n <= N; n++) {
-            sum += (2/Math.PI) * ((-1)**(n+1)) * (Math.sin(n*x)/n);
-        }
-        return sum;
-    }
-    
-    function parabolicWave(x){
+        // Defines the square wave over, shifted and scaled to have max 1, min -1
         return (x*x) / (Math.PI*Math.PI) * 2 - 1;
     }
 
@@ -240,16 +247,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = document.getElementById('gibbsChart').getContext('2d');
         const slider = document.getElementById('termsSlider');
         const valueDisplay = document.getElementById('termsValue');
+        const dirichletBtn = document.getElementById('dirichletBtn');
+        const cesaroBtn = document.getElementById('cesaroBtn');
+        const note = document.getElementById('convergenceNote');
+        
+        const approximationFuncs = {
+            'dirichlet': fourierSquare,
+            'cesaro': fourierCesaroSquare
+        };
 
-        const datasets = [{
-            label: 'Original Square Wave',
-            data: generatePoints(squareWave),
-            borderColor: 'rgba(239, 68, 68, 0.8)',
-            borderWidth: 3,
-            borderDash: [5, 5]
+        const datasets =
         }, {
             label: 'Fourier Approximation (N terms)',
-            data: generatePoints(x => fourierSquare(x, parseInt(slider.value))),
+            data: generatePoints(x => approximationFuncs(x, parseInt(slider.value))),
             borderColor: 'rgba(59, 130, 246, 0.8)',
             borderWidth: 2,
             fill: false
@@ -261,12 +271,31 @@ document.addEventListener('DOMContentLoaded', () => {
             options: chartOptions
         });
 
-        slider.addEventListener('input', () => {
+        function updateChart() {
             const N = parseInt(slider.value);
             valueDisplay.textContent = N;
-            gibbsChart.data.datasets[1].data = generatePoints(x => fourierSquare(x, N));
+            
+            gibbsChart.data.datasets.[1]data = generatePoints(x => approximationFuncs(x, N));
+            
+            if (currentSummationMethod === 'dirichlet') {
+                gibbsChart.data.datasets.[1]label = 'Dirichlet Summation S\u2092';
+                note.textContent = 'Dirichlet summation ($S_N$) exhibits the Gibbs overshoot at discontinuities due to the oscillatory Dirichlet kernel.';
+                dirichletBtn.classList.add('bg-blue-500', 'text-white');
+                cesaroBtn.classList.remove('bg-blue-500', 'text-white');
+            } else {
+                gibbsChart.data.datasets.[1]label = 'Cesàro Mean \u03C3\u2092';
+                note.textContent = 'Cesàro summation ($\u03C3_N$) (Fejér\'s Theorem) eliminates the Gibbs overshoot but converges more smoothly and slowly, demonstrating the stability of the Fejér kernel.';
+                cesaroBtn.classList.add('bg-blue-500', 'text-white');
+                dirichletBtn.classList.remove('bg-blue-500', 'text-white');
+            }
             gibbsChart.update();
-        });
+        }
+
+        slider.addEventListener('input', updateChart);
+        dirichletBtn.addEventListener('click', () => { currentSummationMethod = 'dirichlet'; updateChart(); });
+        cesaroBtn.addEventListener('click', () => { currentSummationMethod = 'cesaro'; updateChart(); });
+        
+        updateChart(); 
     }
 
     function setupCoefficientsChart() {
@@ -280,29 +309,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const funcs = {
             'discontinuous': { 
                 func: squareWave, 
-                coeffs: Array.from({length: numCoeffs}, (_, i) => (i+1)%2 === 0 ? 0 : Math.abs(4/(Math.PI*(i+1)))) 
+                // |b_n| = 4/(pi*n) for odd n, 0 otherwise (O(1/n) decay)
+                coeffs: Array.from({length: numCoeffs}, (_, i) => (i+1)%2 === 0? 0 : Math.abs(4/(Math.PI*(i+1)))) 
             },
             'continuous': { 
                 func: triangleWave, 
-                coeffs: Array.from({length: numCoeffs}, (_, i) => (i+1)%2 === 0 ? 0 : Math.abs(8/((Math.PI**2)*((i+1)**2))))
+                // |b_n| = 8/(pi^2 * n^2) for odd n, 0 otherwise (O(1/n^2) decay)
+                coeffs: Array.from({length: numCoeffs}, (_, i) => (i+1)%2 === 0? 0 : Math.abs(8/((Math.PI**2)*((i+1)**2))))
             },
             'smooth': { 
                 func: parabolicWave, 
-                coeffs: Array.from({length: numCoeffs}, (_, i) => i === 0 ? 0 : Math.abs((4*((-1)**(i+1)))/((i+1)**2 * Math.PI**2)))
+                // Parabolic is even, a_n related to 1/n^2. Uses |c_n| ~ |a_n|/2
+                coeffs: Array.from({length: numCoeffs}, (_, i) => i === 0? 0 : Math.abs((4*((-1)**(i+1)))/((i+1)**2 * Math.PI**2)))
             }
         };
 
         coeffFuncChart = new Chart(funcCtx, {
             type: 'line',
             data: {
-                datasets: [{
-                    label: 'Function Shape',
-                    data: generatePoints(funcs[currentFunc].func),
+                datasets:.func),
                     borderColor: 'rgba(34, 197, 94, 1)',
                     borderWidth: 2,
                 }]
             },
-            options: { ...chartOptions, plugins: { legend: { display: false } } }
+            options: {...chartOptions, plugins: { legend: { display: false } }, scales: { y: { min: -1.2, max: 1.2 } } }
         });
         
         coeffDecayChart = new Chart(decayCtx, {
@@ -310,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: Array.from({length: numCoeffs}, (_, i) => `n=${i+1}`),
                 datasets: [{
-                    label: 'Coefficient Magnitude |cₙ|',
+                    label: 'Coefficient Magnitude |c\u2099|',
                     data: funcs[currentFunc].coeffs,
                     backgroundColor: 'rgba(168, 85, 247, 0.7)',
                 }]
@@ -328,8 +358,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateCoeffCharts(funcType) {
             currentFunc = funcType;
-            coeffFuncChart.data.datasets[0].data = generatePoints(funcs[currentFunc].func);
-            coeffDecayChart.data.datasets[0].data = funcs[currentFunc].coeffs;
+            coeffFuncChart.data.datasets.data = generatePoints(funcs[currentFunc].func);
+            coeffDecayChart.data.datasets.data = funcs[currentFunc].coeffs;
             coeffFuncChart.update();
             coeffDecayChart.update();
             
@@ -347,8 +377,95 @@ document.addEventListener('DOMContentLoaded', () => {
         buttons.forEach(button => {
             button.addEventListener('click', () => updateCoeffCharts(button.dataset.func));
         });
+        updateCoeffCharts('discontinuous');
     }
 
+    function setupComplexCoefficientsChart() {
+        const ctx = document.getElementById('complexCoeffsChart').getContext('2d');
+        const slider = document.getElementById('coeffCount');
+        const valueDisplay = document.getElementById('coeffCountValue');
+        
+        const complexChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: { display: true, text: 'Real Part' },
+                    min: -1,
+                    max: 1,
+                    grid: { borderColor: '#ccc' }
+                },
+                y: {
+                    type: 'linear',
+                    position: 'left',
+                    title: { display: true, text: 'Imaginary Part' },
+                    min: -1,
+                    max: 1,
+                    grid: { borderColor: '#ccc' }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const n = context.raw.n;
+                            const real = context.raw.x.toFixed(4);
+                            const imag = context.raw.y.toFixed(4);
+                            return `c${n} = ${real} + ${imag}i`;
+                        }
+                    }
+                }
+            },
+            elements: {
+                point: { radius: 6, hoverRadius: 8, hitRadius: 10 }
+            }
+        };
+
+        function getComplexCoeffs(N) {
+            const points =;
+            // Square Wave coefficients: c_n = 2/(i * pi * n) for odd n. Real part is 0.
+            for (let n = 1; n <= N; n++) {
+                if (n % 2!== 0) {
+                    // c_n (n > 0): Real=0, Imag = -2/(pi*n)
+                    const imag_n = -2 / (Math.PI * n);
+                    points.push({ x: 0, y: imag_n, n: n, color: 'rgba(59, 130, 246, 1)' });
+
+                    // c_-n (n < 0): Real=0, Imag = 2/(pi*n). This is the conjugate.
+                    const imag_neg_n = 2 / (Math.PI * n);
+                    points.push({ x: 0, y: imag_neg_n, n: -n, color: 'rgba(239, 68, 68, 1)' });
+                }
+            }
+            return points;
+        }
+
+        const initialN = parseInt(slider.value);
+        const datasets = [{
+            label: 'Complex Coefficients',
+            data: getComplexCoeffs(initialN),
+            backgroundColor: (context) => context.raw.color,
+        }];
+
+        complexCoeffsChart = new Chart(ctx, {
+            type: 'scatter',
+            data: { datasets: datasets },
+            options: complexChartOptions
+        });
+
+        function updateComplexChart() {
+            const N = parseInt(slider.value);
+            valueDisplay.textContent = N;
+            
+            complexCoeffsChart.data.datasets.data = getComplexCoeffs(N);
+            complexCoeffsChart.update();
+        }
+
+        slider.addEventListener('input', updateComplexChart);
+        updateComplexChart(); 
+    }
+    
     function setupExampleChart() {
         const ctx = document.getElementById('exampleChart').getContext('2d');
         const slider = document.getElementById('exampleTermsSlider');
@@ -360,23 +477,21 @@ document.addEventListener('DOMContentLoaded', () => {
             'square': {
                 original: squareWave,
                 fourier: fourierSquare,
-                formula: 'f(x) ~ (4/π) Σₙ₌₁,₃,.. (sin(nx)/n)'
+                formula: 'f(x) \u2248 (4/\u03C0) \u03A3\u2099\u208D\u2081,\u2083,.. (sin(nx)/n) (Odd/Sine Series)'
             },
             'triangle': {
                 original: triangleWave,
                 fourier: fourierTriangle,
-                formula: 'f(x) ~ (8/π²) Σₙ₌₁,₃,.. ((-1)^((n-1)/2) sin(nx)/n²)'
+                formula: 'f(x) \u2248 (8/\u03C0\u00B2) \u03A3\u2099\u208D\u2081,\u2083,.. ((-1)^((n-1)/2) sin(nx)/n\u00B2) (Odd/Sine Series)'
             },
             'sawtooth': {
                 original: sawtoothWave,
                 fourier: fourierSawtooth,
-                formula: 'f(x) ~ (2/π) Σₙ₌₁ ((-1)^(n+1) sin(nx)/n)'
+                formula: 'f(x) \u2248 (2/\u03C0) \u03A3\u2099\u208D\u2081 ((-1)^(n+1) sin(nx)/n) (Odd/Sine Series)'
             }
         };
 
-        const datasets = [{
-            label: 'Original Waveform',
-            data: generatePoints(waveforms[selector.value].original),
+        const datasets =.original),
             borderColor: 'rgba(239, 68, 68, 0.8)',
             borderWidth: 3,
             borderDash: [5, 5]
@@ -400,9 +515,9 @@ document.addEventListener('DOMContentLoaded', () => {
             valueDisplay.textContent = N;
             formulaDisplay.textContent = waveforms[wave].formula;
             
-            exampleChart.data.datasets[0].data = generatePoints(waveforms[wave].original);
-            exampleChart.data.datasets[0].label = `Original ${wave.charAt(0).toUpperCase() + wave.slice(1)} Wave`;
-            exampleChart.data.datasets[1].data = generatePoints(x => waveforms[wave].fourier(x, N));
+            exampleChart.data.datasets.data = generatePoints(waveforms[wave].original);
+            exampleChart.data.datasets.label = `Original ${wave.charAt(0).toUpperCase() + wave.slice(1)} Wave`;
+            exampleChart.data.datasets.[1]data = generatePoints(x => waveforms[wave].fourier(x, N));
             exampleChart.update();
         }
 
@@ -416,7 +531,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const chartInitializers = {
         'convergence': setupGibbsChart,
         'coefficients': setupCoefficientsChart,
-        'examples': setupExampleChart
+        'complex_coeffs': setupComplexCoefficientsChart,
+        'examples': setupExampleChart,
+        // No initializers needed for historical, foundations, thd, connections
     };
     const initializedCharts = {};
 
@@ -439,17 +556,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            if (chartInitializers[targetId] && !initializedCharts[targetId]) {
+            if (chartInitializers[targetId] &&!initializedCharts[targetId]) {
                 chartInitializers[targetId]();
                 initializedCharts[targetId] = true;
             }
         });
     });
     
-    initializedCharts['foundations'] = true;
-    if (chartInitializers[activeTab] && !initializedCharts[activeTab]) {
-        chartInitializers[activeTab]();
-        initializedCharts[activeTab] = true;
+    // Initial setup for the first active tab
+    if (chartInitializers) {
+        chartInitializers();
+        initializedCharts = true;
     }
 });
 </script>
