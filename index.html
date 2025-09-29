@@ -6,6 +6,8 @@
     <title>Interactive Fourier Series Foundations</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -13,7 +15,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="flex flex-col md:flex-row min-h-screen">
-    <nav class="w-full md:w-64 bg- p-4 md:p-6 flex-shrink-0">
+    <nav class="w-full md:w-64 bg-[#F0EBE3] p-4 md:p-6 flex-shrink-0">
         <h2 class="text-2xl font-bold mb-6 text-center md:text-left">Fourier Theory</h2>
         <ul id="navigation" class="space-y-2">
             <li><a href="#" data-target="historical" class="nav-link block p-3 rounded-lg font-medium">Historical Foundations</a></li>
@@ -229,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     function generatePoints(func, numPoints = 200) {
-        const data =;
+        const data = [];
         const step = (2 * Math.PI) / numPoints;
         for (let i = 0; i <= numPoints; i++) {
             const x = -Math.PI + i * step;
@@ -239,7 +241,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function squareWave(x) {
-        // Defines the square wave over, shifted and scaled to have max 1, min -1
+        return Math.sign(Math.sin(x));
+    }
+
+    function fourierSquare(x, N) {
+        let sum = 0;
+        for (let n = 1; n <= N; n++) {
+            if (n % 2 !== 0) {
+                sum += (4 / Math.PI) * (Math.sin(n * x) / n);
+            }
+        }
+        return sum;
+    }
+
+    function fourierCesaroSquare(x, N) {
+        let sum = 0;
+        for (let n = 1; n <= N; n++) {
+            if (n % 2 !== 0) {
+                sum += (4 / Math.PI) * (Math.sin(n * x) / n) * (1 - n/(N+1));
+            }
+        }
+        return sum;
+    }
+
+    function triangleWave(x) {
+        return (2/Math.PI) * Math.asin(Math.sin(x));
+    }
+
+    function fourierTriangle(x, N) {
+        let sum = 0;
+        for (let n = 1; n <= N; n++) {
+             if (n % 2 !== 0) {
+                sum += (8 / (Math.PI**2)) * (((-1)**((n-1)/2)) / (n**2)) * Math.sin(n * x);
+            }
+        }
+        return sum;
+    }
+
+    function sawtoothWave(x){
+        return (x/Math.PI);
+    }
+
+    function fourierSawtooth(x, N){
+        let sum = 0;
+        for (let n = 1; n <= N; n++) {
+            sum += (2/Math.PI) * ((-1)**(n+1)) * (Math.sin(n*x)/n);
+        }
+        return sum;
+    }
+
+    function parabolicWave(x){
         return (x*x) / (Math.PI*Math.PI) * 2 - 1;
     }
 
@@ -256,10 +307,15 @@ document.addEventListener('DOMContentLoaded', () => {
             'cesaro': fourierCesaroSquare
         };
 
-        const datasets =
+        const datasets = [{
+            label: 'Original Square Wave',
+            data: generatePoints(squareWave),
+            borderColor: 'rgba(239, 68, 68, 0.8)',
+            borderWidth: 3,
+            borderDash: [5, 5]
         }, {
             label: 'Fourier Approximation (N terms)',
-            data: generatePoints(x => approximationFuncs(x, parseInt(slider.value))),
+            data: generatePoints(x => approximationFuncs[currentSummationMethod](x, parseInt(slider.value))),
             borderColor: 'rgba(59, 130, 246, 0.8)',
             borderWidth: 2,
             fill: false
@@ -275,15 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const N = parseInt(slider.value);
             valueDisplay.textContent = N;
             
-            gibbsChart.data.datasets.[1]data = generatePoints(x => approximationFuncs(x, N));
+            gibbsChart.data.datasets[1].data = generatePoints(x => approximationFuncs[currentSummationMethod](x, N));
             
             if (currentSummationMethod === 'dirichlet') {
-                gibbsChart.data.datasets.[1]label = 'Dirichlet Summation S\u2092';
+                gibbsChart.data.datasets[1].label = 'Dirichlet Summation S\u2092';
                 note.textContent = 'Dirichlet summation ($S_N$) exhibits the Gibbs overshoot at discontinuities due to the oscillatory Dirichlet kernel.';
                 dirichletBtn.classList.add('bg-blue-500', 'text-white');
                 cesaroBtn.classList.remove('bg-blue-500', 'text-white');
             } else {
-                gibbsChart.data.datasets.[1]label = 'Cesàro Mean \u03C3\u2092';
+                gibbsChart.data.datasets[1].label = 'Cesàro Mean \u03C3\u2092';
                 note.textContent = 'Cesàro summation ($\u03C3_N$) (Fejér\'s Theorem) eliminates the Gibbs overshoot but converges more smoothly and slowly, demonstrating the stability of the Fejér kernel.';
                 cesaroBtn.classList.add('bg-blue-500', 'text-white');
                 dirichletBtn.classList.remove('bg-blue-500', 'text-white');
@@ -327,7 +383,8 @@ document.addEventListener('DOMContentLoaded', () => {
         coeffFuncChart = new Chart(funcCtx, {
             type: 'line',
             data: {
-                datasets:.func),
+                datasets: [{
+                    data: generatePoints(funcs[currentFunc].func),
                     borderColor: 'rgba(34, 197, 94, 1)',
                     borderWidth: 2,
                 }]
@@ -358,8 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateCoeffCharts(funcType) {
             currentFunc = funcType;
-            coeffFuncChart.data.datasets.data = generatePoints(funcs[currentFunc].func);
-            coeffDecayChart.data.datasets.data = funcs[currentFunc].coeffs;
+            coeffFuncChart.data.datasets[0].data = generatePoints(funcs[currentFunc].func);
+            coeffDecayChart.data.datasets[0].data = funcs[currentFunc].coeffs;
             coeffFuncChart.update();
             coeffDecayChart.update();
             
@@ -425,10 +482,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         function getComplexCoeffs(N) {
-            const points =;
+            const points = [];
             // Square Wave coefficients: c_n = 2/(i * pi * n) for odd n. Real part is 0.
             for (let n = 1; n <= N; n++) {
-                if (n % 2!== 0) {
+                if (n % 2 !== 0) {
                     // c_n (n > 0): Real=0, Imag = -2/(pi*n)
                     const imag_n = -2 / (Math.PI * n);
                     points.push({ x: 0, y: imag_n, n: n, color: 'rgba(59, 130, 246, 1)' });
@@ -458,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const N = parseInt(slider.value);
             valueDisplay.textContent = N;
             
-            complexCoeffsChart.data.datasets.data = getComplexCoeffs(N);
+            complexCoeffsChart.data.datasets[0].data = getComplexCoeffs(N);
             complexCoeffsChart.update();
         }
 
@@ -491,7 +548,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const datasets =.original),
+        const datasets = [{
+            label: 'Original Waveform',
+            data: generatePoints(waveforms[selector.value].original),
             borderColor: 'rgba(239, 68, 68, 0.8)',
             borderWidth: 3,
             borderDash: [5, 5]
@@ -517,7 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             exampleChart.data.datasets.data = generatePoints(waveforms[wave].original);
             exampleChart.data.datasets.label = `Original ${wave.charAt(0).toUpperCase() + wave.slice(1)} Wave`;
-            exampleChart.data.datasets.[1]data = generatePoints(x => waveforms[wave].fourier(x, N));
+            exampleChart.data.datasets[1].data = generatePoints(x => waveforms[wave].fourier(x, N));
             exampleChart.update();
         }
 
