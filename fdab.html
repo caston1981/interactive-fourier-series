@@ -5,7 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frequency Domain Analysis in Biology - Interactive Demos</title>
 
-    <!-- MathJax Configuration -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Time Domain Signal</h3>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <canvas id="waveletTimeChart" class="w-full max-w-full" style="height: 180px;"></canvas>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Time-Frequency Spectrogram</h3>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <canvas id="waveletSpectrogram" class="w-full max-w-full" style="height: 180px;"></canvas>
+                        </div>
+                    </div>
+                </div>nfiguration -->
     <script>
         window.MathJax = {
             tex: {
@@ -214,21 +228,26 @@
                                     <option value="jet">Jet</option>
                                 </select>
                             </div>
-                            <button id="analyzeWavelet" class="bg-spectral-purple text-white px-4 py-2 rounded-md hover:bg-spectral-purple/80 transition-colors">
+                            <button id="analyzeWavelet" class="bg-spectral-purple text-white px-4 py-2 rounded-md hover:bg-spectral-purple/80 transition-colors w-full">
                                 Analyze Signal
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    <div class="xl:col-span-1">
-                        <h3 class="text-xl font-semibold mb-4">Time Domain</h3>
-                        <canvas id="waveletTimeChart" width="300" height="250"></canvas>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Time Domain Signal</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <canvas id="waveletTimeChart" class="w-full max-w-full" style="height: 200px;"></canvas>
+                        </div>
                     </div>
-                    <div class="xl:col-span-2">
+
+                    <div>
                         <h3 class="text-xl font-semibold mb-4">Time-Frequency Spectrogram</h3>
-                        <canvas id="waveletSpectrogram" width="500" height="250"></canvas>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <canvas id="waveletSpectrogram" class="w-full max-w-full" style="height: 250px;"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -394,7 +413,14 @@
             waveletTimeChart = new Chart(waveletTimeCtx, {
                 type: 'line',
                 data: { datasets: [{ label: 'Signal', data: [], borderColor: 'rgb(255, 159, 64)' }] },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Time (s)' } },
+                        y: { title: { display: true, text: 'Amplitude' } }
+                    }
+                }
             });
 
             // HOSA Charts
