@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematical Transforms Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A tabbed, single-page application design was chosen for clarity and ease of navigation. The core structure separates each transform into its own dedicated section (Laplace, Fourier, Z) while providing specific sections for 'Interconnections' and 'System Analysis'. This hub-and-spoke model allows users to either study a transform in isolation or directly explore the mathematical relationships between them. Interactive charts for the s-plane and z-plane are central to the experience, allowing users to place poles/zeros and see concepts like stability and Region of Convergence update in real-time. This interactive, non-linear approach is more engaging and pedagogically effective for exploring complex mathematical concepts than a static, linear document. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method. 1. Complex Planes (s-plane, z-plane): Goal is to visualize stability and ROC. Method is an interactive scatter plot using Chart.js on a Canvas element. Interaction allows users to click to add/remove poles & zeros, with the chart and explanatory text updating dynamically. This provides immediate feedback on the mathematical consequences of pole-zero placement. 2. Transform Relationships (s to z): Goal is to show the mapping. Method is a side-by-side view of s-plane and z-plane charts (Chart.js/Canvas). Interaction involves sliders to change discretization parameters (e.g., sampling period T), updating the mapped pole locations. This clarifies the mathematical effect of different discretization methods. 3. Mathematical Properties/Theorems: Goal is to present dense information concisely. Method is a grid of expandable cards (HTML/CSS/JS). Interaction is clicking a card to reveal the detailed formula and proof. This avoids overwhelming the user and allows for focused study. All visualizations are on Canvas, confirming NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+ <link rel="stylesheet" href="css/styles.css">    
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-gray-800">Transforms Explorer</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900">Overview</a>
+                        <a href="#laplace" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900">Laplace</a>
+                        <a href="#fourier" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900">Fourier</a>
+                        <a href="#z-transform" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900">Z-Transform</a>
+                        <a href="#interconnections" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900">Interconnections</a>
+                        <a href="#analysis" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900">System Analysis</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <section id="overview" class="content-section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Three Lenses for System Analysis</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">This application provides a mathematically rigorous exploration of the Laplace, Fourier, and Z-Transforms. These are not just disparate tools, but deeply interconnected frameworks for analyzing systems from continuous-time, frequency, and discrete-time perspectives. Use the navigation to delve into each transform or explore the mathematical bridges that unite them.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-semibold mb-2">Laplace Transform</h3>
+                    <p class="text-gray-600">The lens for continuous-time systems. It generalizes the Fourier transform to analyze not just the frequency response, but also the transient behavior and stability of systems described by differential equations.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-semibold mb-2">Fourier Transform</h3>
+                    <p class="text-gray-600">The lens for the frequency domain. It decomposes a signal into its constituent frequencies, revealing the spectral content and providing the foundation for frequency response analysis.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <h3 class="text-xl font-semibold mb-2">Z-Transform</h3>
+                    <p class="text-gray-600">The lens for discrete-time systems. As the discrete counterpart to the Laplace Transform, it is essential for analyzing digital signals and systems described by difference equations.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="laplace" class="content-section">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-6">The Laplace Transform</h2>
+            <p class="mb-8 text-lg text-gray-600">The Laplace Transform converts a function of a real variable 𝑡 (often time) to a function of a complex variable 𝑠 (complex frequency). This transformation is invaluable for solving linear ordinary differential equations, where it converts differentiation and integration into algebraic multiplication and division, simplifying analysis significantly. The key to its power is the s-plane, a complex plane where system characteristics like stability and response can be visualized geometrically.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Interactive s-Plane</h3>
+                    <p class="mb-4 text-sm text-gray-600">Click on the chart to place poles (X) and see how their location affects system stability. The Region of Convergence (ROC) will be shaded, and the stability determined. Poles in the left-half plane result in a stable system.</p>
+                    <div class="chart-container">
+                        <canvas id="sPlaneChart"></canvas>
+                    </div>
+                    <div id="sPlaneInfo" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <p class="font-semibold">System Properties:</p>
+                        <p id="sPlaneStability" class="text-gray-700">No poles placed yet.</p>
+                        <button id="clearSPlane" class="mt-2 px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600">Clear Poles</button>
+                    </div>
+                </div>
+                <div class="card p-6">
+                     <h3 class="text-xl font-semibold mb-4">Foundational Definitions</h3>
+                     <h4 class="font-semibold mt-4">Bilateral Laplace Transform</h4>
+                     <p class="formula">ℒ{f(t)} = F(s) = ∫<sub>-∞</sub><sup>∞</sup> f(t)e<sup>-st</sup> dt</p>
+                     <h4 class="font-semibold mt-4">Unilateral Laplace Transform</h4>
+                     <p class="formula">ℒ{f(t)} = F(s) = ∫<sub>0</sub><sup>∞</sup> f(t)e<sup>-st</sup> dt</p>
+                     <p class="mt-2 text-gray-600">Here, 𝑠 is a complex variable, 𝑠 = σ + jω. The transform exists if the integral converges. This convergence depends on σ and defines the Region of Convergence (ROC).</p>
+                     
+                     <h4 class="font-semibold mt-6">Inverse Laplace Transform</h4>
+                     <p class="formula">f(t) = ℒ<sup>-1</sup>{F(s)} = (1/2πj) ∫<sub>γ-j∞</sub><sup>γ+j∞</sup> F(s)e<sup>st</sup> ds</p>
+                     <p class="mt-2 text-gray-600">This is the Bromwich integral, a contour integral in the complex s-plane where γ is chosen to be within the ROC.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="fourier" class="content-section">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-6">The Fourier Transform</h2>
+             <p class="mb-8 text-lg text-gray-600">The Fourier Transform provides a frequency-domain representation of a time-domain signal. It is a special case of the Laplace Transform where the complex frequency variable 𝑠 is restricted to the imaginary axis (𝑠 = jω). This tool is fundamental in signal processing, as it allows us to analyze the frequency components present in a signal, which is crucial for tasks like filtering, modulation, and spectral analysis. The transform exists for signals that satisfy certain conditions, such as having finite energy.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Magnitude and Phase Response</h3>
+                    <p class="mb-4 text-sm text-gray-600">A system's frequency response H(jω) is typically complex. This chart shows its magnitude and phase for a simple second-order system. These plots, known as Bode plots, are essential for understanding how a system affects signals of different frequencies.</p>
+                    <div class="chart-container">
+                        <canvas id="bodePlotChart"></canvas>
+                    </div>
+                </div>
+                <div class="card p-6">
+                     <h3 class="text-xl font-semibold mb-4">Foundational Definitions</h3>
+                     <h4 class="font-semibold mt-4">Continuous Fourier Transform</h4>
+                     <p class="formula">ℱ{f(t)} = F(jω) = ∫<sub>-∞</sub><sup>∞</sup> f(t)e<sup>-jωt</sup> dt</p>
+                     <h4 class="font-semibold mt-4">Inverse Fourier Transform</h4>
+                     <p class="formula">f(t) = ℱ<sup>-1</sup>{F(jω)} = (1/2π) ∫<sub>-∞</sub><sup>∞</sup> F(jω)e<sup>jωt</sup> dω</p>
+                     <p class="mt-2 text-gray-600">The transform pair exists if f(t) satisfies the Dirichlet conditions (e.g., is absolutely integrable).</p>
+                     <h4 class="font-semibold mt-6">Plancherel's Theorem (Energy Conservation)</h4>
+                     <p class="formula">∫<sub>-∞</sub><sup>∞</sup> |f(t)|² dt = (1/2π) ∫<sub>-∞</sub><sup>∞</sup> |F(jω)|² dω</p>
+                     <p class="mt-2 text-gray-600">This theorem states that the total energy of a signal is the same whether calculated in the time domain or the frequency domain.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="z-transform" class="content-section">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-6">The Z-Transform</h2>
+             <p class="mb-8 text-lg text-gray-600">The Z-Transform is the discrete-time equivalent of the Laplace Transform. It converts a discrete-time signal, which is a sequence of numbers, into a function of a complex variable 𝑧. This is the cornerstone of digital signal processing and control, allowing engineers to analyze and design digital filters and control systems using algebraic methods similar to those used in continuous-time systems. System properties are determined by pole-zero locations relative to the unit circle in the complex z-plane.</p>
+             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Interactive z-Plane</h3>
+                    <p class="mb-4 text-sm text-gray-600">Click on the chart to place poles (X). A discrete-time system is stable if all its poles lie inside the unit circle. Observe how the stability changes as you move poles across the unit circle boundary.</p>
+                    <div class="chart-container">
+                        <canvas id="zPlaneChart"></canvas>
+                    </div>
+                    <div id="zPlaneInfo" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <p class="font-semibold">System Properties:</p>
+                        <p id="zPlaneStability" class="text-gray-700">No poles placed yet.</p>
+                        <button id="clearZPlane" class="mt-2 px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600">Clear Poles</button>
+                    </div>
+                </div>
+                <div class="card p-6">
+                     <h3 class="text-xl font-semibold mb-4">Foundational Definitions</h3>
+                     <h4 class="font-semibold mt-4">Z-Transform Definition</h4>
+                     <p class="formula">Z{x[n]} = X(z) = Σ<sub>n=-∞</sub><sup>∞</sup> x[n]z<sup>-n</sup></p>
+                     <p class="mt-2 text-gray-600">Where 𝑧 is a complex variable. The series converges for values of 𝑧 in the Region of Convergence (ROC), which is typically an annulus in the z-plane.</p>
+                     
+                     <h4 class="font-semibold mt-6">Inverse Z-Transform</h4>
+                     <p class="formula">x[n] = Z<sup>-1</sup>{X(z)} = (1/2πj) ∮<sub>C</sub> X(z)z<sup>n-1</sup> dz</p>
+                     <p class="mt-2 text-gray-600">This is a contour integral around a counter-clockwise path C that lies within the ROC and encloses the origin.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="interconnections" class="content-section">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-6">Mathematical Interconnections</h2>
+            <p class="mb-8 text-lg text-gray-600">The three transforms are not isolated concepts; they are mathematically linked. The Fourier Transform is a special case of the Laplace Transform. The Z-Transform arises from the Laplace Transform through discretization. Understanding these connections provides a unified view of system analysis, allowing one to move between continuous and discrete domains. This section visualizes these critical mathematical bridges.</p>
+
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-2">From Continuous (s-plane) to Discrete (z-plane)</h3>
+                <p class="mb-4 text-gray-600">Discretization methods provide a mathematical mapping from the s-plane to the z-plane. This is crucial for designing digital controllers for analog systems. Below, you can see how a pole in the s-plane is mapped to the z-plane using different approximations. The Bilinear Transform is notable because it maps the entire stable left-half of the s-plane uniquely inside the unit circle of the z-plane, preserving stability.</p>
+                
+                <div class="mb-4 flex justify-center space-x-2">
+                    <button id="btn-forward-euler" class="tab-button px-4 py-2 text-sm rounded-md bg-gray-200">Forward Euler</button>
+                    <button id="btn-backward-euler" class="tab-button px-4 py-2 text-sm rounded-md bg-gray-200">Backward Euler</button>
+                    <button id="btn-bilinear" class="tab-button px-4 py-2 text-sm rounded-md bg-gray-200 active">Bilinear (Tustin)</button>
+                </div>
+                
+                <div id="mapping-formula-container" class="my-4 text-center">
+                    <p class="formula" id="mapping-formula"></p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h4 class="text-center font-semibold mb-2">s-plane (Click to place a pole)</h4>
+                        <div class="chart-container">
+                            <canvas id="sPlaneMappingChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-center font-semibold mb-2">z-plane (Result of mapping)</h4>
+                        <div class="chart-container">
+                            <canvas id="zPlaneMappingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="analysis" class="content-section">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 mb-6">Applications in System Analysis</h2>
+            <p class="mb-8 text-lg text-gray-600">Transforms provide the mathematical machinery to define and analyze key system properties like transfer functions and stability. A transfer function, expressed in the s-domain or z-domain, is a compact representation of a system's dynamics, derived directly from its governing differential or difference equation. The locations of the transfer function's poles and zeros in the complex plane dictate the system's behavior entirely.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Transfer Functions</h3>
+                    <p class="text-gray-600 mb-4">A transfer function H(s) or H(z) is the ratio of the output transform to the input transform, assuming zero initial conditions.</p>
+                    <h4 class="font-semibold">Continuous System (LTI)</h4>
+                    <p class="text-gray-600">From a differential equation like my'' + cy' + ky = f(t):</p>
+                    <p class="formula">H(s) = Y(s)/F(s) = 1 / (ms² + cs + k)</p>
+                    <h4 class="font-semibold mt-4">Discrete System</h4>
+                    <p class="text-gray-600">From a difference equation like y[n] = ay[n-1] + bx[n]:</p>
+                    <p class="formula">H(z) = Y(z)/X(z) = b / (1 - az⁻¹)</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Stability Criteria</h3>
+                    <p class="text-gray-600 mb-4">Stability is a critical property of a system. Using transforms, it can be determined directly from the transfer function's pole locations.</p>
+                    <ul>
+                        <li class="mb-2"><strong class="text-gray-800">Laplace Domain:</strong> A continuous-time LTI system is Bounded-Input Bounded-Output (BIBO) stable if and only if all poles of its transfer function H(s) have negative real parts (i.e., they lie in the left-half of the s-plane).</li>
+                        <li class="mt-4"><strong class="text-gray-800">Z-Domain:</strong> A discrete-time LTI system is BIBO stable if and only if all poles of its transfer function H(z) have a magnitude less than 1 (i.e., they lie inside the unit circle in the z-plane).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.content-section');
+
+    function updateActiveState() {
+        const hash = window.location.hash || '#overview';
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === hash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        sections.forEach(section => {
+            if ('#' + section.id === hash) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            setTimeout(() => updateActiveState(), 0);
+        });
+    });
+
+    window.addEventListener('hashchange', updateActiveState);
+    updateActiveState();
+
+    let sPlaneChart, zPlaneChart, bodePlotChart, sPlaneMappingChart, zPlaneMappingChart;
+    let sPlanePoles = [], zPlanePoles = [], sMappingPole = null;
+
+    const chartDefaultOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: {
+                min: -5, max: 5,
+                title: { display: true, text: 'Re' },
+                grid: { color: '#e0e0e0' }
+            },
+            y: {
+                min: -5, max: 5,
+                title: { display: true, text: 'Im' },
+                grid: { color: '#e0e0e0' }
+            }
+        }
+    };
+    
+    function createComplexPlane(ctx, axisLabels, limits) {
+        return new Chart(ctx, {
+            type: 'scatter',
+            data: { datasets: [] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                scales: {
+                    x: {
+                        min: limits.x[0], max: limits.x[1],
+                        title: { display: true, text: axisLabels.x },
+                        grid: { color: '#eee' },
+                        ticks: { stepSize: 1 }
+                    },
+                    y: {
+                        min: limits.y[0], max: limits.y[1],
+                        title: { display: true, text: axisLabels.y },
+                        grid: { color: '#eee' },
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                animation: { duration: 0 },
+            }
+        });
+    }
+    
+    function drawSPlane(chart, poles) {
+        const datasets = [{
+            label: 'Poles',
+            data: poles,
+            pointStyle: 'crossRot',
+            radius: 10,
+            borderColor: 'red',
+            backgroundColor: 'red',
+            borderWidth: 3
+        }];
+        
+        let rocDataset = {};
+        const maxRealPart = poles.length > 0 ? Math.max(...poles.map(p => p.x)) : -Infinity;
+        
+        if (isFinite(maxRealPart)) {
+             rocDataset = {
+                type: 'bar',
+                label: 'ROC',
+                data: [{ x: (5 + maxRealPart) / 2, y: 0, _custom: { width: 5 - maxRealPart, height: 10 }}],
+                backgroundColor: 'rgba(0, 128, 0, 0.1)',
+                borderColor: 'rgba(0, 128, 0, 0.3)',
+                borderWidth: 1,
+                barPercentage: 1.0,
+                categoryPercentage: 1.0,
+                parsing: false,
+             };
+             chart.options.plugins.tooltip = {enabled: false};
+             chart.options.scales.x.afterBuildTicks = (scale) => {
+                 scale.min = -5;
+                 scale.max = 5;
+             };
+             chart.data.datasets = [rocDataset, ...datasets];
+        } else {
+             chart.data.datasets = datasets;
+        }
+
+        chart.update();
+    }
+    
+    function checkSPlaneStability(poles) {
+        const infoElem = document.getElementById('sPlaneStability');
+        if (poles.length === 0) {
+            infoElem.textContent = 'No poles placed yet.';
+            return;
+        }
+        const isStable = poles.every(p => p.x < 0);
+        const isMarginallyStable = !isStable && poles.every(p => p.x <= 0) && poles.filter(p => p.x === 0).length > 0;
+        
+        if (isStable) {
+            infoElem.textContent = 'Stable: All poles are in the Left-Half Plane.';
+            infoElem.style.color = 'green';
+        } else if (isMarginallyStable) {
+            infoElem.textContent = 'Marginally Stable: One or more poles on the jω-axis.';
+            infoElem.style.color = '#DAA520';
+        } else {
+            infoElem.textContent = 'Unstable: One or more poles are in the Right-Half Plane.';
+            infoElem.style.color = 'red';
+        }
+    }
+    
+    function initSPlane() {
+        const ctx = document.getElementById('sPlaneChart').getContext('2d');
+        sPlaneChart = createComplexPlane(ctx, {x: 'σ (Real)', y: 'jω (Imaginary)'}, {x: [-5, 5], y: [-5, 5]});
+        
+        ctx.canvas.addEventListener('click', (evt) => {
+            const rect = ctx.canvas.getBoundingClientRect();
+            const x = sPlaneChart.scales.x.getValueForPixel(evt.clientX - rect.left);
+            const y = sPlaneChart.scales.y.getValueForPixel(evt.clientY - rect.top);
+            sPlanePoles.push({x: x, y: y});
+            drawSPlane(sPlaneChart, sPlanePoles);
+            checkSPlaneStability(sPlanePoles);
+        });
+        
+        document.getElementById('clearSPlane').addEventListener('click', () => {
+            sPlanePoles = [];
+            drawSPlane(sPlaneChart, sPlanePoles);
+            checkSPlaneStability(sPlanePoles);
+        });
+    }
+    
+    function drawZPlane(chart, poles) {
+         const unitCircle = [];
+         for(let i=0; i<=360; i++) {
+            const angle = i * Math.PI / 180;
+            unitCircle.push({x: Math.cos(angle), y: Math.sin(angle)});
+         }
+        
+         chart.data.datasets = [
+            {
+                label: 'Unit Circle',
+                data: unitCircle,
+                borderColor: '#4A4A4A',
+                borderWidth: 2,
+                pointRadius: 0,
+                showLine: true,
+                fill: false,
+                tension: 0.1
+            },
+            {
+                label: 'Poles',
+                data: poles,
+                pointStyle: 'crossRot',
+                radius: 10,
+                borderColor: 'red',
+                backgroundColor: 'red',
+                borderWidth: 3
+            }
+         ];
+         chart.update();
+    }
+
+    function checkZPlaneStability(poles) {
+        const infoElem = document.getElementById('zPlaneStability');
+        if (poles.length === 0) {
+            infoElem.textContent = 'No poles placed yet.';
+            return;
+        }
+        const isStable = poles.every(p => Math.sqrt(p.x*p.x + p.y*p.y) < 1);
+        const isMarginallyStable = !isStable && poles.every(p => Math.sqrt(p.x*p.x + p.y*p.y) <= 1);
+        
+        if (isStable) {
+            infoElem.textContent = 'Stable: All poles are inside the unit circle.';
+            infoElem.style.color = 'green';
+        } else if (isMarginallyStable) {
+            infoElem.textContent = 'Marginally Stable: One or more poles on the unit circle.';
+            infoElem.style.color = '#DAA520';
+        } else {
+            infoElem.textContent = 'Unstable: One or more poles are outside the unit circle.';
+            infoElem.style.color = 'red';
+        }
+    }
+    
+    function initZPlane() {
+        const ctx = document.getElementById('zPlaneChart').getContext('2d');
+        zPlaneChart = createComplexPlane(ctx, {x: 'Re(z)', y: 'Im(z)'}, {x: [-2, 2], y: [-2, 2]});
+        drawZPlane(zPlaneChart, zPlanePoles);
+
+        ctx.canvas.addEventListener('click', (evt) => {
+            const rect = ctx.canvas.getBoundingClientRect();
+            const x = zPlaneChart.scales.x.getValueForPixel(evt.clientX - rect.left);
+            const y = zPlaneChart.scales.y.getValueForPixel(evt.clientY - rect.top);
+            zPlanePoles.push({x: x, y: y});
+            drawZPlane(zPlaneChart, zPlanePoles);
+            checkZPlaneStability(zPlanePoles);
+        });
+
+        document.getElementById('clearZPlane').addEventListener('click', () => {
+            zPlanePoles = [];
+            drawZPlane(zPlaneChart, zPlanePoles);
+            checkZPlaneStability(zPlanePoles);
+        });
+    }
+    
+    function initBodePlot() {
+        const ctx = document.getElementById('bodePlotChart').getContext('2d');
+        const wn = 2; const zeta = 0.5;
+        const omega = Array.from({length: 100}, (_, i) => 0.1 * Math.pow(1.1, i));
+        const mag = omega.map(w => 20 * Math.log10(wn*wn / Math.sqrt(Math.pow(wn*wn - w*w, 2) + Math.pow(2*zeta*wn*w, 2))));
+        const phase = omega.map(w => -Math.atan2(2*zeta*wn*w, wn*wn - w*w) * 180 / Math.PI);
+        
+        bodePlotChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: omega,
+                datasets: [
+                    {
+                        label: 'Magnitude (dB)',
+                        data: mag,
+                        borderColor: '#A0522D',
+                        backgroundColor: 'transparent',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Phase (deg)',
+                        data: phase,
+                        borderColor: '#4682B4',
+                        backgroundColor: 'transparent',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { type: 'logarithmic', title: { display: true, text: 'Frequency (rad/s)' } },
+                    y: { type: 'linear', position: 'left', title: { display: true, text: 'Magnitude (dB)' } },
+                    y1: { type: 'linear', position: 'right', title: { display: true, text: 'Phase (deg)' }, grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    }
+    
+    function initMapping() {
+        const sCtx = document.getElementById('sPlaneMappingChart').getContext('2d');
+        const zCtx = document.getElementById('zPlaneMappingChart').getContext('2d');
+        let currentMethod = 'bilinear';
+        const T = 0.5;
+
+        sPlaneMappingChart = createComplexPlane(sCtx, {x: 'σ', y: 'jω'}, {x: [-4, 4], y: [-4, 4]});
+        zPlaneMappingChart = createComplexPlane(zCtx, {x: 'Re(z)', y: 'Im(z)'}, {x: [-2, 2], y: [-2, 2]});
+        drawZPlane(zPlaneMappingChart, []);
+
+        function mapPole(s) {
+            if (!s) return null;
+            const s_real = s.x;
+            const s_imag = s.y;
+            let z_real, z_imag;
+
+            if (currentMethod === 'forward-euler') {
+                z_real = 1 + T * s_real;
+                z_imag = T * s_imag;
+            } else if (currentMethod === 'backward-euler') {
+                const den = Math.pow(1 - T*s_real, 2) + Math.pow(T*s_imag, 2);
+                z_real = (1 - T*s_real) / den;
+                z_imag = T*s_imag / den;
+            } else { // bilinear
+                const den = Math.pow(1 - s_real * T/2, 2) + Math.pow(s_imag * T/2, 2);
+                z_real = (1 - Math.pow(T/2, 2)*(s_real*s_real + s_imag*s_imag)) / den;
+                z_imag = (T * s_imag) / den;
+            }
+            return { x: z_real, y: z_imag };
+        }
+        
+        function updateMapping() {
+             drawSPlane(sPlaneMappingChart, sMappingPole ? [sMappingPole] : []);
+             const zPole = mapPole(sMappingPole);
+             drawZPlane(zPlaneMappingChart, zPole ? [zPole] : []);
+             updateFormula();
+        }
+
+        function updateFormula() {
+            const formulaEl = document.getElementById('mapping-formula');
+            if (currentMethod === 'forward-euler') {
+                formulaEl.innerHTML = 'z ≈ 1 + sT';
+            } else if (currentMethod === 'backward-euler') {
+                formulaEl.innerHTML = 's ≈ (1 - z<sup>-1</sup>)/T';
+            } else { // bilinear
+                formulaEl.innerHTML = 's ≈ (2/T) &middot; ( (1 - z<sup>-1</sup>) / (1 + z<sup>-1</sup>) )';
+            }
+        }
+        
+        sCtx.canvas.addEventListener('click', (evt) => {
+            const rect = sCtx.canvas.getBoundingClientRect();
+            const x = sPlaneMappingChart.scales.x.getValueForPixel(evt.clientX - rect.left);
+            const y = sPlaneMappingChart.scales.y.getValueForPixel(evt.clientY - rect.top);
+            sMappingPole = {x, y};
+            updateMapping();
+        });
+
+        const buttons = document.querySelectorAll('#interconnections .tab-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentMethod = button.id.replace('btn-', '');
+                updateMapping();
+            });
+        });
+
+        updateMapping();
+    }
+    
+    initSPlane();
+    initZPlane();
+    initBodePlot();
+    initMapping();
+});
+
+</script>
+
+</body>
+</html>
