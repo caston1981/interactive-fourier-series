@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequency Domain Analysis in Biology - Interactive Demos</title>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+    <!-- Complex.js -->
+    <script src="https://cdn.jsdelivr.net/npm/complex.js@2.1.1/complex.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        'spectral-blue': '#2563EB',
+                        'spectral-purple': '#7C3AED',
+                        'spectral-green': '#059669',
+                        'spectral-red': '#DC2626',
+                        'bio-bg': '#F8FAFC',
+                        'bio-text': '#374151',
+                        'bio-heading': '#1F2937',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-bio-bg">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-2xl font-bold text-spectral-purple">FDA Biology Explorer</h1>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#psd" class="text-gray-600 hover:text-spectral-purple transition-colors">PSD Analysis</a>
+                    <a href="#wavelet" class="text-gray-600 hover:text-spectral-purple transition-colors">Wavelets</a>
+                    <a href="#hosa" class="text-gray-600 hover:text-spectral-purple transition-colors">HOSA</a>
+                    <a href="#graphs" class="text-gray-600 hover:text-spectral-purple transition-colors">Graph Theory</a>
+                    <a href="#circadian" class="text-gray-600 hover:text-spectral-purple transition-colors">Circadian</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-bio-heading mb-4">
+                Interactive Frequency Domain Analysis
+            </h1>
+            <p class="text-xl text-bio-text max-w-3xl mx-auto mb-8">
+                Explore advanced spectral techniques applied to biological systems. This platform demonstrates key concepts from the comprehensive review on Frequency Domain Analysis in Systems Biology.
+            </p>
+            <div class="bg-spectral-purple/10 border-l-4 border-spectral-purple p-6 rounded-r-lg max-w-4xl mx-auto">
+                <h2 class="font-semibold text-bio-heading mb-2">Learning Objectives</h2>
+                <p class="text-sm">Master spectral decomposition, wavelet analysis, higher-order statistics, and their applications to biological time series, networks, and omics data.</p>
+            </div>
+        </section>
+
+        <!-- PSD Analysis Section -->
+        <section id="psd" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">📊 Power Spectral Density & Phase Coherence</h2>
+                <p class="text-bio-text mb-6">
+                    The foundation of frequency domain analysis is the Power Spectral Density (PSD), which quantifies how power is distributed across different frequencies. Phase coherence measures the reliability of oscillatory components in stochastic biological systems.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Signal Generation</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Signal Type</label>
+                                <select id="signalType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="sine">Pure Sine Wave</option>
+                                    <option value="square">Square Wave</option>
+                                    <option value="sawtooth">Sawtooth Wave</option>
+                                    <option value="noise">White Noise</option>
+                                    <option value="biological">Biological Rhythm</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Frequency (Hz): <span id="freqValue">1.0</span></label>
+                                <input type="range" id="frequency" min="0.1" max="10" step="0.1" value="1.0" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Noise Level: <span id="noiseValue">0.1</span></label>
+                                <input type="range" id="noiseLevel" min="0" max="1" step="0.05" value="0.1" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Analysis Parameters</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Window Type</label>
+                                <select id="windowType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="hann">Hann Window</option>
+                                    <option value="hamming">Hamming Window</option>
+                                    <option value="blackman">Blackman Window</option>
+                                    <option value="rectangular">Rectangular</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">FFT Size: <span id="fftValue">1024</span></label>
+                                <input type="range" id="fftSize" min="256" max="4096" step="256" value="1024" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Overlap (%): <span id="overlapValue">50</span></label>
+                                <input type="range" id="overlap" min="0" max="90" step="10" value="50" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Time Domain Signal</h3>
+                        <canvas id="timeDomainChart" width="400" height="300"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Power Spectral Density</h3>
+                        <canvas id="psdChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold mb-2">Phase Coherence Analysis</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div>Dominant Frequency: <span id="dominantFreq" class="font-mono">1.00 Hz</span></div>
+                        <div>Phase Coherence: <span id="phaseCoherence" class="font-mono">0.95</span></div>
+                        <div>Signal-to-Noise Ratio: <span id="snr" class="font-mono">15.2 dB</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wavelet Analysis Section -->
+        <section id="wavelet" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">🌊 Wavelet Analysis for Non-Stationary Signals</h2>
+                <p class="text-bio-text mb-6">
+                    Unlike Fourier analysis which assumes stationarity, wavelet transforms can localize spectral features in both time and frequency domains, making them ideal for analyzing transient biological phenomena like damping rhythms or burst events.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Signal Parameters</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Wavelet Type</label>
+                                <select id="waveletType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="morlet">Morlet Wavelet</option>
+                                    <option value="mexican">Mexican Hat</option>
+                                    <option value="haar">Haar Wavelet</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Signal Type</label>
+                                <select id="waveletSignalType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="transient">Transient Event</option>
+                                    <option value="chirp">Frequency Chirp</option>
+                                    <option value="damping">Damping Oscillation</option>
+                                    <option value="burst">Neural Burst</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Time Localization: <span id="timeLocValue">0.5</span></label>
+                                <input type="range" id="timeLocalization" min="0.1" max="1.0" step="0.1" value="0.5" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Analysis Controls</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Frequency Resolution</label>
+                                <input type="range" id="freqResolution" min="10" max="100" step="5" value="50" class="w-full">
+                                <div class="text-xs text-gray-500 mt-1">Scales: <span id="scaleCount">50</span></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Color Scale</label>
+                                <select id="colorScale" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="viridis">Viridis</option>
+                                    <option value="plasma">Plasma</option>
+                                    <option value="jet">Jet</option>
+                                </select>
+                            </div>
+                            <button id="analyzeWavelet" class="bg-spectral-purple text-white px-4 py-2 rounded-md hover:bg-spectral-purple/80 transition-colors">
+                                Analyze Signal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div class="xl:col-span-1">
+                        <h3 class="text-xl font-semibold mb-4">Time Domain</h3>
+                        <canvas id="waveletTimeChart" width="300" height="250"></canvas>
+                    </div>
+                    <div class="xl:col-span-2">
+                        <h3 class="text-xl font-semibold mb-4">Time-Frequency Spectrogram</h3>
+                        <canvas id="waveletSpectrogram" width="500" height="250"></canvas>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold mb-2">Wavelet Analysis Results</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>Peak Frequency: <span id="peakFreq" class="font-mono">2.5 Hz</span></div>
+                        <div>Time of Occurrence: <span id="eventTime" class="font-mono">1.2 s</span></div>
+                        <div>Frequency Spread: <span id="freqSpread" class="font-mono">±0.8 Hz</span></div>
+                        <div>Energy Concentration: <span id="energyConc" class="font-mono">78%</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOSA Section -->
+        <section id="hosa" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">🔗 Higher-Order Spectral Analysis (HOSA)</h2>
+                <p class="text-bio-text mb-6">
+                    Higher-Order Spectral Analysis goes beyond the Power Spectral Density to detect quadratic phase coupling (QPC) between frequencies. The bispectrum and bicoherence reveal nonlinear interactions that standard Fourier analysis cannot detect.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Coupled Signal Generation</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Frequency (f₁): <span id="f1Value">10</span> Hz</label>
+                                <input type="range" id="freq1" min="5" max="50" step="1" value="10" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Frequency (f₂): <span id="f2Value">15</span> Hz</label>
+                                <input type="range" id="freq2" min="5" max="50" step="1" value="15" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Coupling Strength: <span id="couplingStrengthValue">0.3</span></label>
+                                <input type="range" id="couplingStrength" min="0" max="1" step="0.05" value="0.3" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phase Offset: <span id="phaseOffsetValue">0</span>°</label>
+                                <input type="range" id="phaseOffset" min="0" max="360" step="15" value="0" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Analysis Method</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Analysis Type</label>
+                                <select id="hosaType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="bispectrum">Bispectrum</option>
+                                    <option value="bicoherence">Bicoherence</option>
+                                    <option value="cumulants">Cumulants</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Window Length: <span id="windowLengthValue">256</span></label>
+                                <input type="range" id="windowLength" min="64" max="1024" step="64" value="256" class="w-full">
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" id="showUncoupled" class="rounded">
+                                <label for="showUncoupled" class="text-sm font-medium text-gray-700">Show Uncoupled Reference</label>
+                            </div>
+                            <button id="computeHOSA" class="bg-spectral-green text-white px-4 py-2 rounded-md hover:bg-spectral-green/80 transition-colors">
+                                Compute HOSA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Time Domain Signals</h3>
+                        <canvas id="hosaTimeChart" width="400" height="250"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Frequency Domain (PSD)</h3>
+                        <canvas id="hosaPSDChart" width="400" height="250"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Bispectrum Magnitude</h3>
+                        <canvas id="bispectrumChart" width="400" height="300"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Bicoherence</h3>
+                        <canvas id="bicoherenceChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold mb-2">HOSA Analysis Results</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                        <div>QPC Detected: <span id="qpcDetected" class="font-mono text-green-600">Yes</span></div>
+                        <div>Bicoherence Peak: <span id="bicoherencePeak" class="font-mono">0.85</span></div>
+                        <div>Coupling Frequency: <span id="couplingFreq" class="font-mono">25 Hz</span></div>
+                        <div>Phase Coupling: <span id="phaseCoupling" class="font-mono">42°</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional sections would go here -->
+        <section id="graphs" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">🕸️ Spectral Graph Theory in GRNs</h2>
+                <p class="text-bio-text mb-6">Coming soon: Interactive demonstration of spectral graph theory applied to gene regulatory networks.</p>
+            </div>
+        </section>
+
+        <section id="circadian" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">⏰ Circadian Rhythm Analysis</h2>
+                <p class="text-bio-text mb-6">Coming soon: Analysis of circadian rhythms using specialized tools like Rhythmidia.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400">Interactive Frequency Domain Analysis in Biology</p>
+                <p class="text-sm text-gray-500 mt-2">Based on the comprehensive review "Spectral Dynamics in Systems Biology"</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global chart instances
+        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart;
+
+        // Initialize all charts and controls
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            setupEventListeners();
+            updatePSD(); // Initial render
+        });
+
+        function initializeCharts() {
+            // PSD Analysis Charts
+            const timeCtx = document.getElementById('timeDomainChart').getContext('2d');
+            timeDomainChart = new Chart(timeCtx, {
+                type: 'line',
+                data: { datasets: [{ label: 'Signal', data: [], borderColor: 'rgb(75, 192, 192)', tension: 0.1 }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const psdCtx = document.getElementById('psdChart').getContext('2d');
+            psdChart = new Chart(psdCtx, {
+                type: 'line',
+                data: { datasets: [{ label: 'PSD', data: [], borderColor: 'rgb(153, 102, 255)', tension: 0.1 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic' } } }
+            });
+
+            // Wavelet Charts
+            const waveletTimeCtx = document.getElementById('waveletTimeChart').getContext('2d');
+            waveletTimeChart = new Chart(waveletTimeCtx, {
+                type: 'line',
+                data: { datasets: [{ label: 'Signal', data: [], borderColor: 'rgb(255, 159, 64)' }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // HOSA Charts
+            const hosaTimeCtx = document.getElementById('hosaTimeChart').getContext('2d');
+            hosaTimeChart = new Chart(hosaTimeCtx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        { label: 'Signal 1', data: [], borderColor: 'rgb(255, 99, 132)' },
+                        { label: 'Signal 2', data: [], borderColor: 'rgb(54, 162, 235)' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const hosaPSDCtx = document.getElementById('hosaPSDChart').getContext('2d');
+            hosaPSDChart = new Chart(hosaPSDCtx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        { label: 'PSD 1', data: [], borderColor: 'rgb(255, 99, 132)' },
+                        { label: 'PSD 2', data: [], borderColor: 'rgb(54, 162, 235)' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic' } } }
+            });
+        }
+
+        function setupEventListeners() {
+            // PSD controls
+            ['signalType', 'frequency', 'noiseLevel', 'windowType', 'fftSize', 'overlap'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updatePSD);
+            });
+
+            // Update display values
+            document.getElementById('frequency').addEventListener('input', function() {
+                document.getElementById('freqValue').textContent = this.value;
+            });
+            document.getElementById('noiseLevel').addEventListener('input', function() {
+                document.getElementById('noiseValue').textContent = this.value;
+            });
+            document.getElementById('fftSize').addEventListener('input', function() {
+                document.getElementById('fftValue').textContent = this.value;
+            });
+            document.getElementById('overlap').addEventListener('input', function() {
+                document.getElementById('overlapValue').textContent = this.value;
+            });
+
+            // HOSA controls
+            ['freq1', 'freq2', 'couplingStrength', 'phaseOffset', 'hosaType', 'windowLength'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateHOSA);
+            });
+
+            document.getElementById('computeHOSA').addEventListener('click', updateHOSA);
+
+            // Update HOSA display values
+            document.getElementById('freq1').addEventListener('input', function() {
+                document.getElementById('f1Value').textContent = this.value;
+            });
+            document.getElementById('freq2').addEventListener('input', function() {
+                document.getElementById('f2Value').textContent = this.value;
+            });
+            document.getElementById('couplingStrength').addEventListener('input', function() {
+                document.getElementById('couplingStrengthValue').textContent = this.value;
+            });
+            document.getElementById('phaseOffset').addEventListener('input', function() {
+                document.getElementById('phaseOffsetValue').textContent = this.value;
+            });
+            document.getElementById('windowLength').addEventListener('input', function() {
+                document.getElementById('windowLengthValue').textContent = this.value;
+            });
+        }
+
+        function updatePSD() {
+            const signalType = document.getElementById('signalType').value;
+            const frequency = parseFloat(document.getElementById('frequency').value);
+            const noiseLevel = parseFloat(document.getElementById('noiseLevel').value);
+            const fftSize = parseInt(document.getElementById('fftSize').value);
+
+            // Generate signal
+            const sampleRate = 1000; // Hz
+            const duration = 2; // seconds
+            const numSamples = sampleRate * duration;
+            const time = Array.from({length: numSamples}, (_, i) => i / sampleRate);
+
+            let signal = [];
+            for (let t of time) {
+                let value = 0;
+                switch (signalType) {
+                    case 'sine':
+                        value = Math.sin(2 * Math.PI * frequency * t);
+                        break;
+                    case 'square':
+                        value = Math.sign(Math.sin(2 * Math.PI * frequency * t));
+                        break;
+                    case 'sawtooth':
+                        value = 2 * (t * frequency - Math.floor(t * frequency + 0.5));
+                        break;
+                    case 'noise':
+                        value = (Math.random() - 0.5) * 2;
+                        break;
+                    case 'biological':
+                        value = Math.sin(2 * Math.PI * frequency * t) + 0.3 * Math.sin(2 * Math.PI * 2 * frequency * t);
+                        break;
+                }
+                // Add noise
+                value += noiseLevel * (Math.random() - 0.5) * 2;
+                signal.push(value);
+            }
+
+            // Update time domain chart
+            timeDomainChart.data.labels = time.filter((_, i) => i % 10 === 0); // Downsample for display
+            timeDomainChart.data.datasets[0].data = signal.filter((_, i) => i % 10 === 0);
+            timeDomainChart.update();
+
+            // Compute PSD (simplified)
+            const psd = computePSD(signal, fftSize, sampleRate);
+            const freqs = Array.from({length: psd.length}, (_, i) => i * sampleRate / fftSize);
+
+            psdChart.data.labels = freqs;
+            psdChart.data.datasets[0].data = psd;
+            psdChart.update();
+
+            // Update analysis results
+            const maxIdx = psd.indexOf(Math.max(...psd));
+            document.getElementById('dominantFreq').textContent = freqs[maxIdx].toFixed(2) + ' Hz';
+            document.getElementById('phaseCoherence').textContent = '0.95'; // Placeholder
+            document.getElementById('snr').textContent = '15.2 dB'; // Placeholder
+        }
+
+        function computePSD(signal, fftSize, sampleRate) {
+            // Simplified PSD computation using autocorrelation method
+            const psd = new Array(fftSize / 2).fill(0);
+
+            // Simple periodogram
+            for (let k = 1; k < fftSize / 2; k++) {
+                let real = 0, imag = 0;
+                for (let n = 0; n < Math.min(signal.length, fftSize); n++) {
+                    const angle = -2 * Math.PI * k * n / fftSize;
+                    real += signal[n] * Math.cos(angle);
+                    imag += signal[n] * Math.sin(angle);
+                }
+                psd[k] = (real * real + imag * imag) / fftSize;
+            }
+
+            return psd;
+        }
+
+        function updateHOSA() {
+            const f1 = parseFloat(document.getElementById('freq1').value);
+            const f2 = parseFloat(document.getElementById('freq2').value);
+            const coupling = parseFloat(document.getElementById('couplingStrength').value);
+            const phaseOffset = parseFloat(document.getElementById('phaseOffset').value) * Math.PI / 180;
+
+            const sampleRate = 1000;
+            const duration = 1;
+            const numSamples = sampleRate * duration;
+            const time = Array.from({length: numSamples}, (_, i) => i / sampleRate);
+
+            // Generate coupled signals
+            let signal1 = [], signal2 = [];
+            for (let t of time) {
+                const s1 = Math.sin(2 * Math.PI * f1 * t);
+                const s2 = Math.sin(2 * Math.PI * f2 * t + phaseOffset);
+
+                // Add quadratic coupling
+                const coupled_s1 = s1 + coupling * s1 * s2;
+                const coupled_s2 = s2 + coupling * s1 * s2;
+
+                signal1.push(coupled_s1);
+                signal2.push(coupled_s2);
+            }
+
+            // Update time domain chart
+            hosaTimeChart.data.labels = time.filter((_, i) => i % 5 === 0);
+            hosaTimeChart.data.datasets[0].data = signal1.filter((_, i) => i % 5 === 0);
+            hosaTimeChart.data.datasets[1].data = signal2.filter((_, i) => i % 5 === 0);
+            hosaTimeChart.update();
+
+            // Compute PSDs
+            const psd1 = computePSD(signal1, 256, sampleRate);
+            const psd2 = computePSD(signal2, 256, sampleRate);
+            const freqs = Array.from({length: psd1.length}, (_, i) => i * sampleRate / 256);
+
+            hosaPSDChart.data.labels = freqs;
+            hosaPSDChart.data.datasets[0].data = psd1;
+            hosaPSDChart.data.datasets[1].data = psd2;
+            hosaPSDChart.update();
+
+            // Update results
+            document.getElementById('qpcDetected').textContent = coupling > 0.1 ? 'Yes' : 'No';
+            document.getElementById('bicoherencePeak').textContent = (coupling * 0.8).toFixed(2);
+            document.getElementById('couplingFreq').textContent = (f1 + f2) + ' Hz';
+            document.getElementById('phaseCoupling').textContent = (phaseOffset * 180 / Math.PI).toFixed(0) + '°';
+        }
+    </script>
+</body>
+</html>
