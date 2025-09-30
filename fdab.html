@@ -68,6 +68,7 @@
             <li><a href="#hosa" class="nav-link block p-3 rounded-lg font-medium">Higher-Order Spectra</a></li>
             <li><a href="#graphs" class="nav-link block p-3 rounded-lg font-medium">Graph Theory</a></li>
             <li><a href="#circadian" class="nav-link block p-3 rounded-lg font-medium">Circadian Analysis</a></li>
+            <li><a href="#folding" class="nav-link block p-3 rounded-lg font-medium">Protein Folding</a></li>
         </ul>
     </nav>
 
@@ -457,6 +458,102 @@
             </div>
         </section>
 
+        <!-- Protein Folding Dynamics Section -->
+        <section id="folding" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">🧬 Protein Folding Dynamics</h2>
+                <p class="text-bio-text mb-6">
+                    Protein folding is a complex process where linear amino acid sequences self-organize into functional 3D structures. Spectral analysis reveals the dynamical landscape of folding pathways, energy barriers, and conformational transitions that govern protein function and misfolding diseases.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Folding Parameters</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Protein Model</label>
+                                <select id="proteinModel" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="helix">α-Helix Bundle</option>
+                                    <option value="sheet">β-Sheet Protein</option>
+                                    <option value="mixed">Mixed Structure</option>
+                                    <option value="disordered">Intrinsically Disordered</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Folding Scenario</label>
+                                <select id="foldingScenario" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="native">Native Folding</option>
+                                    <option value="misfold">Misfolding Pathway</option>
+                                    <option value="aggregation">Aggregation Prone</option>
+                                    <option value="chaperone">Chaperone Assisted</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Temperature: <span id="tempValue" class="font-mono">298 K</span></label>
+                                <input type="range" id="foldingTemp" min="273" max="373" value="298" step="5" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Simulation Time: <span id="timeValue" class="font-mono">100 ns</span></label>
+                                <input type="range" id="foldingTime" min="10" max="1000" value="100" step="10" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Energy Landscape Roughness: <span id="roughnessValue" class="font-mono">0.5</span></label>
+                                <input type="range" id="landscapeRoughness" min="0.1" max="2.0" value="0.5" step="0.1" class="w-full">
+                            </div>
+                        </div>
+                        <button id="simulateFolding" class="mt-4 w-full bg-spectral-purple text-white py-2 px-4 rounded-md hover:bg-spectral-purple/80 transition-colors">
+                            Simulate Folding
+                        </button>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Energy Landscape</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="energyLandscapeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Folding Trajectory</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="foldingTrajectoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Conformational Dynamics</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="conformationalChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Spectral Analysis</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="foldingSpectralChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold mb-2">Folding Dynamics Metrics</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                        <div>Folding Time: <span id="foldingTimeMetric" class="font-mono">0.0 ns</span></div>
+                        <div>Free Energy Barrier: <span id="freeEnergyBarrier" class="font-mono">0.0 kJ/mol</span></div>
+                        <div>Conformational Entropy: <span id="conformationalEntropy" class="font-mono">0.0 kJ/mol·K</span></div>
+                        <div>Stability Index: <span id="stabilityIndex" class="font-mono">0.0</span></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm mt-2">
+                        <div>Transition States: <span id="transitionStates" class="font-mono">0</span></div>
+                        <div>Native Contacts: <span id="nativeContacts" class="font-mono">0%</span></div>
+                        <div>RMS Fluctuation: <span id="rmsFluctuation" class="font-mono">0.0 Å</span></div>
+                        <div>Folding Cooperativity: <span id="foldingCooperativity" class="font-mono">0.0</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="circadian" class="mb-16">
             <div class="bg-white rounded-lg shadow-lg p-8">
                 <h2 class="text-3xl font-bold text-bio-heading mb-4">⏰ Circadian Rhythm Analysis</h2>
@@ -565,7 +662,7 @@
 
     <script>
         // Global chart instances
-        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart, networkChart, eigenvalueChart, adjacencyChart;
+        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart, networkChart, eigenvalueChart, adjacencyChart, energyLandscapeChart, foldingTrajectoryChart, conformationalChart, foldingSpectralChart;
 
         // Initialize all charts and controls
         document.addEventListener('DOMContentLoaded', function() {
@@ -905,6 +1002,118 @@
             });
         }
 
+        // Protein Folding Charts
+        const energyLandscapeCtx = document.getElementById('energyLandscapeChart').getContext('2d');
+        energyLandscapeChart = new Chart(energyLandscapeCtx, {
+            type: 'contour',
+            data: {
+                datasets: [{
+                    label: 'Free Energy Landscape',
+                    data: [],
+                    backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                    borderColor: 'rgba(139, 92, 246, 1)',
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Reaction Coordinate 1' } },
+                    y: { title: { display: true, text: 'Reaction Coordinate 2' } }
+                }
+            }
+        });
+
+        const foldingTrajectoryCtx = document.getElementById('foldingTrajectoryChart').getContext('2d');
+        foldingTrajectoryChart = new Chart(foldingTrajectoryCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'RMSD from Native',
+                    data: [],
+                    borderColor: 'rgba(245, 101, 101, 1)',
+                    backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Native Contacts',
+                    data: [],
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    fill: false,
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Time (ns)' } },
+                    y: { title: { display: true, text: 'RMSD (Å)' } },
+                    y1: {
+                        position: 'right',
+                        title: { display: true, text: 'Native Contacts (%)' },
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        const conformationalCtx = document.getElementById('conformationalChart').getContext('2d');
+        conformationalChart = new Chart(conformationalCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Conformations',
+                    data: [],
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'PC1' } },
+                    y: { title: { display: true, text: 'PC2' } }
+                }
+            }
+        });
+
+        const foldingSpectralCtx = document.getElementById('foldingSpectralChart').getContext('2d');
+        foldingSpectralChart = new Chart(foldingSpectralCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Power Spectrum',
+                    data: [],
+                    borderColor: 'rgba(168, 85, 247, 1)',
+                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Frequency (Hz)' }, type: 'logarithmic' },
+                    y: { title: { display: true, text: 'Power' }, type: 'logarithmic' }
+                }
+            }
+        });
+
         function setupEventListeners() {
             // PSD controls - use debounced update for performance
             const debouncedUpdatePSD = debounce(updatePSD, 150);
@@ -993,6 +1202,24 @@
             });
             document.getElementById('eigenRange').addEventListener('input', function() {
                 document.getElementById('eigenRangeValue').textContent = this.value;
+            });
+
+            // Protein Folding controls
+            ['foldingTemp', 'foldingTime', 'landscapeRoughness'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateFoldingDisplay);
+            });
+
+            document.getElementById('simulateFolding').addEventListener('click', simulateProteinFolding);
+
+            // Update folding display values
+            document.getElementById('foldingTemp').addEventListener('input', function() {
+                document.getElementById('tempValue').textContent = this.value + ' K';
+            });
+            document.getElementById('foldingTime').addEventListener('input', function() {
+                document.getElementById('timeValue').textContent = this.value + ' ns';
+            });
+            document.getElementById('landscapeRoughness').addEventListener('input', function() {
+                document.getElementById('roughnessValue').textContent = parseFloat(this.value).toFixed(1);
             });
         }
 
@@ -1688,6 +1915,283 @@
             document.getElementById('algebraicConn').textContent = algebraicConn.toFixed(3);
             document.getElementById('networkDiameter').textContent = networkDiameter;
             document.getElementById('robustnessScore').textContent = robustnessScore.toFixed(3);
+        }
+
+        function updateFoldingDisplay() {
+            // Update display values for folding controls
+            document.getElementById('tempValue').textContent = document.getElementById('foldingTemp').value + ' K';
+            document.getElementById('timeValue').textContent = document.getElementById('foldingTime').value + ' ns';
+            document.getElementById('roughnessValue').textContent = parseFloat(document.getElementById('landscapeRoughness').value).toFixed(1);
+        }
+
+        function simulateProteinFolding() {
+            const proteinModel = document.getElementById('proteinModel').value;
+            const foldingScenario = document.getElementById('foldingScenario').value;
+            const temperature = parseFloat(document.getElementById('foldingTemp').value);
+            const simulationTime = parseFloat(document.getElementById('foldingTime').value);
+            const roughness = parseFloat(document.getElementById('landscapeRoughness').value);
+
+            // Generate folding simulation data
+            const foldingData = generateFoldingSimulation(proteinModel, foldingScenario, temperature, simulationTime, roughness);
+
+            // Update visualizations
+            updateEnergyLandscape(foldingData.energyLandscape);
+            updateFoldingTrajectory(foldingData.trajectory);
+            updateConformationalDynamics(foldingData.conformations);
+            updateFoldingSpectralAnalysis(foldingData.trajectory);
+
+            // Update metrics
+            updateFoldingMetrics(foldingData);
+        }
+
+        function generateFoldingSimulation(model, scenario, temp, time, roughness) {
+            const timeSteps = Math.floor(time / 0.1); // 0.1 ns steps
+            const trajectory = [];
+            const conformations = [];
+            let currentEnergy = 100; // Initial unfolded state energy
+            let nativeContacts = 0;
+            let rmsd = 5.0; // Initial RMSD from native structure
+
+            // Energy landscape parameters based on model
+            const landscapeParams = getLandscapeParameters(model, scenario);
+
+            // Generate folding trajectory
+            for (let t = 0; t < timeSteps; t++) {
+                const timePoint = t * 0.1;
+
+                // Simulate energy changes based on folding scenario
+                const energyChange = simulateEnergyDynamics(currentEnergy, temp, roughness, landscapeParams, scenario);
+                currentEnergy += energyChange;
+
+                // Update structural properties
+                const structuralChange = simulateStructuralDynamics(rmsd, nativeContacts, energyChange, landscapeParams);
+                rmsd = Math.max(0, rmsd + structuralChange.rmsdChange);
+                nativeContacts = Math.min(100, Math.max(0, nativeContacts + structuralChange.contactChange));
+
+                trajectory.push({
+                    time: timePoint,
+                    energy: currentEnergy,
+                    rmsd: rmsd,
+                    nativeContacts: nativeContacts
+                });
+
+                // Sample conformations for PCA
+                if (t % 10 === 0) { // Sample every 1 ns
+                    conformations.push({
+                        pc1: Math.random() * 10 - 5 + (1 - nativeContacts/100) * 3,
+                        pc2: Math.random() * 10 - 5 + (1 - nativeContacts/100) * 3,
+                        energy: currentEnergy
+                    });
+                }
+            }
+
+            // Generate energy landscape
+            const energyLandscape = generateEnergyLandscape(landscapeParams, roughness);
+
+            return {
+                trajectory,
+                conformations,
+                energyLandscape,
+                finalEnergy: currentEnergy,
+                finalRMSD: rmsd,
+                finalContacts: nativeContacts
+            };
+        }
+
+        function getLandscapeParameters(model, scenario) {
+            const baseParams = {
+                helix: { barrier: 50, wells: 2, roughness: 0.3 },
+                sheet: { barrier: 75, wells: 3, roughness: 0.5 },
+                mixed: { barrier: 60, wells: 4, roughness: 0.4 },
+                disordered: { barrier: 25, wells: 1, roughness: 0.2 }
+            };
+
+            const scenarioMods = {
+                native: { barrierMult: 1.0, misfoldProb: 0.1 },
+                misfold: { barrierMult: 1.2, misfoldProb: 0.4 },
+                aggregation: { barrierMult: 1.5, misfoldProb: 0.6 },
+                chaperone: { barrierMult: 0.7, misfoldProb: 0.05 }
+            };
+
+            const params = baseParams[model];
+            const mods = scenarioMods[scenario];
+
+            return {
+                barrier: params.barrier * mods.barrierMult,
+                wells: params.wells,
+                roughness: params.roughness,
+                misfoldProb: mods.misfoldProb
+            };
+        }
+
+        function simulateEnergyDynamics(currentEnergy, temp, roughness, params, scenario) {
+            // Langevin dynamics simulation
+            const kT = 0.008314 * temp; // kT in kJ/mol
+            const friction = 0.1;
+            const dt = 0.1;
+
+            // Force from energy landscape gradient
+            const gradient = (Math.random() - 0.5) * roughness * 10;
+
+            // Random force (thermal noise)
+            const randomForce = (Math.random() - 0.5) * Math.sqrt(2 * kT * friction / dt);
+
+            // Misfolding bias
+            const misfoldBias = scenario === 'misfold' || scenario === 'aggregation' ?
+                (Math.random() < params.misfoldProb ? 5 : 0) : 0;
+
+            return -gradient * dt / friction + randomForce * dt / friction + misfoldBias;
+        }
+
+        function simulateStructuralDynamics(rmsd, contacts, energyChange, params) {
+            // Structural changes coupled to energy
+            const energyDriving = -energyChange * 0.1; // Energy decrease drives folding
+
+            // Contact formation probability
+            const contactProb = Math.max(0, Math.min(1, (100 - rmsd) / 100));
+
+            const contactChange = energyDriving > 0 && Math.random() < contactProb ?
+                Math.random() * 5 : (Math.random() - 0.7) * 2;
+
+            const rmsdChange = energyDriving * 0.2 + (Math.random() - 0.5) * 0.1;
+
+            return { rmsdChange, contactChange };
+        }
+
+        function generateEnergyLandscape(params, roughness) {
+            const landscape = [];
+            const gridSize = 20;
+
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    const x = (i / gridSize) * 10 - 5;
+                    const y = (j / gridSize) * 10 - 5;
+
+                    // Multi-well potential with barriers
+                    let energy = 0;
+                    for (let w = 0; w < params.wells; w++) {
+                        const wx = Math.cos(w * Math.PI * 2 / params.wells) * 3;
+                        const wy = Math.sin(w * Math.PI * 2 / params.wells) * 3;
+                        const wellDepth = -30 - Math.random() * 20;
+                        const dist = Math.sqrt((x - wx) ** 2 + (y - wy) ** 2);
+                        energy += wellDepth * Math.exp(-dist * dist / 2);
+                    }
+
+                    // Add barriers between wells
+                    energy += params.barrier * Math.exp(-((x ** 2 + y ** 2) ** 0.5) / 2);
+
+                    // Add roughness
+                    energy += roughness * (Math.random() - 0.5) * 20;
+
+                    landscape.push({ x, y, energy });
+                }
+            }
+
+            return landscape;
+        }
+
+        function updateEnergyLandscape(landscape) {
+            energyLandscapeChart.data.datasets[0].data = landscape.map(point => ({
+                x: point.x,
+                y: point.y,
+                z: point.energy
+            }));
+            energyLandscapeChart.update();
+        }
+
+        function updateFoldingTrajectory(trajectory) {
+            foldingTrajectoryChart.data.labels = trajectory.map(point => point.time.toFixed(1));
+            foldingTrajectoryChart.data.datasets[0].data = trajectory.map(point => point.rmsd);
+            foldingTrajectoryChart.data.datasets[1].data = trajectory.map(point => point.nativeContacts);
+            foldingTrajectoryChart.update();
+        }
+
+        function updateConformationalDynamics(conformations) {
+            conformationalChart.data.datasets[0].data = conformations.map(conf => ({
+                x: conf.pc1,
+                y: conf.pc2
+            }));
+            conformationalChart.update();
+        }
+
+        function updateFoldingSpectralAnalysis(trajectory) {
+            // Compute power spectrum of RMSD fluctuations
+            const rmsdData = trajectory.map(point => point.rmsd);
+            const spectrum = computePowerSpectrum(rmsdData, 100); // 100 Hz sampling
+
+            foldingSpectralChart.data.labels = spectrum.frequencies.map(f => f.toFixed(2));
+            foldingSpectralChart.data.datasets[0].data = spectrum.power;
+            foldingSpectralChart.update();
+        }
+
+        function computePowerSpectrum(data, sampleRate) {
+            const n = data.length;
+            const frequencies = [];
+            const power = [];
+
+            // Simple FFT approximation using autocorrelation
+            for (let k = 1; k < n / 2; k++) {
+                const freq = k * sampleRate / n;
+                let real = 0, imag = 0;
+
+                for (let i = 0; i < n; i++) {
+                    const angle = -2 * Math.PI * k * i / n;
+                    real += data[i] * Math.cos(angle);
+                    imag += data[i] * Math.sin(angle);
+                }
+
+                const magnitude = Math.sqrt(real * real + imag * imag) / n;
+                frequencies.push(freq);
+                power.push(magnitude * magnitude);
+            }
+
+            return { frequencies, power };
+        }
+
+        function updateFoldingMetrics(data) {
+            const trajectory = data.trajectory;
+            const finalPoint = trajectory[trajectory.length - 1];
+
+            // Folding time (time to reach 80% native contacts)
+            const foldingTimeIndex = trajectory.findIndex(point => point.nativeContacts >= 80);
+            const foldingTime = foldingTimeIndex >= 0 ? trajectory[foldingTimeIndex].time : trajectory[trajectory.length - 1].time;
+
+            // Free energy barrier (simplified from energy landscape)
+            const maxEnergy = Math.max(...trajectory.map(p => p.energy));
+            const minEnergy = Math.min(...trajectory.map(p => p.energy));
+            const freeEnergyBarrier = maxEnergy - minEnergy;
+
+            // Conformational entropy (approximated from trajectory spread)
+            const rmsdVariance = trajectory.reduce((sum, p) => sum + p.rmsd * p.rmsd, 0) / trajectory.length;
+            const conformationalEntropy = 0.008314 * Math.log(Math.sqrt(rmsdVariance)); // kT * ln(σ)
+
+            // Stability index (ratio of native to unfolded energy)
+            const stabilityIndex = -minEnergy / 100; // Normalized to initial energy
+
+            // Transition states (local maxima in energy)
+            let transitionStates = 0;
+            for (let i = 1; i < trajectory.length - 1; i++) {
+                if (trajectory[i].energy > trajectory[i-1].energy && trajectory[i].energy > trajectory[i+1].energy) {
+                    transitionStates++;
+                }
+            }
+
+            // RMS fluctuation
+            const rmsFluctuation = Math.sqrt(rmsdVariance);
+
+            // Folding cooperativity (sharpness of transition)
+            const cooperativity = trajectory.length > 0 ?
+                1 / (1 + Math.exp(-(finalPoint.nativeContacts - 50) / 10)) : 0;
+
+            // Update display
+            document.getElementById('foldingTimeMetric').textContent = foldingTime.toFixed(1) + ' ns';
+            document.getElementById('freeEnergyBarrier').textContent = freeEnergyBarrier.toFixed(1) + ' kJ/mol';
+            document.getElementById('conformationalEntropy').textContent = conformationalEntropy.toFixed(2) + ' kJ/mol·K';
+            document.getElementById('stabilityIndex').textContent = stabilityIndex.toFixed(2);
+            document.getElementById('transitionStates').textContent = transitionStates;
+            document.getElementById('nativeContacts').textContent = finalPoint.nativeContacts.toFixed(1) + '%';
+            document.getElementById('rmsFluctuation').textContent = rmsFluctuation.toFixed(2) + ' Å';
+            document.getElementById('foldingCooperativity').textContent = cooperativity.toFixed(2);
         }
 
         // Initialize circadian charts with default values
