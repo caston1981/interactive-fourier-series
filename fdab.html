@@ -312,22 +312,30 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Time Domain Signals</h3>
-                        <canvas id="hosaTimeChart" width="400" height="250"></canvas>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="hosaTimeChart"></canvas>
+                        </div>
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Frequency Domain (PSD)</h3>
-                        <canvas id="hosaPSDChart" width="400" height="250"></canvas>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="hosaPSDChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Bispectrum Magnitude</h3>
-                        <canvas id="bispectrumChart" width="400" height="300"></canvas>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="bispectrumChart"></canvas>
+                        </div>
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Bicoherence</h3>
-                        <canvas id="bicoherenceChart" width="400" height="300"></canvas>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="bicoherenceChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -436,6 +444,56 @@
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic' } } }
+            });
+
+            // Bispectrum Chart
+            const bispectrumCtx = document.getElementById('bispectrumChart').getContext('2d');
+            bispectrumChart = new Chart(bispectrumCtx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Bispectrum',
+                        data: [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Frequency f1 (Hz)' } },
+                        y: { title: { display: true, text: 'Frequency f2 (Hz)' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Bicoherence Chart
+            const bicoherenceCtx = document.getElementById('bicoherenceChart').getContext('2d');
+            bicoherenceChart = new Chart(bicoherenceCtx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Bicoherence',
+                        data: [],
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                        borderColor: 'rgba(153, 102, 255, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Frequency f1 (Hz)' } },
+                        y: { title: { display: true, text: 'Frequency f2 (Hz)' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
             });
         }
 
@@ -605,7 +663,39 @@
             document.getElementById('bicoherencePeak').textContent = (coupling * 0.8).toFixed(2);
             document.getElementById('couplingFreq').textContent = (f1 + f2) + ' Hz';
             document.getElementById('phaseCoupling').textContent = (phaseOffset * 180 / Math.PI).toFixed(0) + '°';
+
+            // Generate bispectrum data (simplified for demo)
+            const bispectrumData = [];
+            const bicoherenceData = [];
+            const numPoints = 20; // Reduced for performance
+
+            for (let i = 0; i < numPoints; i++) {
+                for (let j = 0; j < numPoints; j++) {
+                    const f1_val = (i / numPoints) * 50;
+                    const f2_val = (j / numPoints) * 50;
+
+                    // Simplified bispectrum calculation
+                    const bispectrum = coupling * Math.exp(-Math.abs(f1_val - f1) / 10) * Math.exp(-Math.abs(f2_val - f2) / 10);
+                    const bicoherence = Math.min(1, bispectrum / (coupling + 0.1));
+
+                    if (bispectrum > 0.05) {
+                        bispectrumData.push({ x: f1_val, y: f2_val, r: Math.max(1, bispectrum * 10) });
+                    }
+                    if (bicoherence > 0.2) {
+                        bicoherenceData.push({ x: f1_val, y: f2_val, r: Math.max(1, bicoherence * 10) });
+                    }
+                }
+            }
+
+            bispectrumChart.data.datasets[0].data = bispectrumData;
+            bispectrumChart.update();
+
+            bicoherenceChart.data.datasets[0].data = bicoherenceData;
+            bicoherenceChart.update();
         }
+
+        // Initialize HOSA charts with default values
+        updateHOSA();
     </script>
 
     <script>
