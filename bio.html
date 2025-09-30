@@ -45,9 +45,16 @@
 <body class="flex flex-col md:flex-row min-h-screen">
     <nav class="w-full md:w-64 bg-[#F0EBE3] p-4 md:p-6 flex-shrink-0">
         <h2 class="text-2xl font-bold mb-6 text-center md:text-left">BioXen Biology</h2>
-        <div id="nav-links" class="space-y-2">
-            <!-- Nav links will be injected here by JS -->
-        </div>
+        <ul id="navigation" class="space-y-2">
+            <li><a href="#section1" class="nav-link block p-3 rounded-lg font-medium">🧬 Why Biology Needs Frequency Domain</a></li>
+            <li><a href="#section2" class="nav-link block p-3 rounded-lg font-medium">📐 Oscillatory Modes in Biological Systems</a></li>
+            <li><a href="#section3" class="nav-link block p-3 rounded-lg font-medium">🔄 Transient Dynamics vs. Steady Oscillations</a></li>
+            <li><a href="#section4" class="nav-link block p-3 rounded-lg font-medium">⏱️ Timescale Hierarchy in Biological Networks</a></li>
+            <li><a href="#section5" class="nav-link block p-3 rounded-lg font-medium">🔮 Phase Relationships Between Biological Oscillators</a></li>
+            <li><a href="#section6" class="nav-link block p-3 rounded-lg font-medium">📊 Oscillator Purity and Biological Robustness</a></li>
+            <li><a href="#section7" class="nav-link block p-3 rounded-lg font-medium">🧪 Canonical Biological Oscillators</a></li>
+            <li><a href="#section8" class="nav-link block p-3 rounded-lg font-medium">🏗️ From Single Cells to Hypervisor Architecture</a></li>
+        </ul>
     </nav>
 
     <!-- Main Content Area -->
@@ -964,8 +971,8 @@
             const contentArea = document.getElementById('content-area');
 
             // 1. Update Navigation Styles
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            const activeLink = document.getElementById(`nav-${sectionId}`);
+            document.querySelectorAll('#navigation a').forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`#navigation a[href="#${sectionId}"]`);
             if (activeLink) activeLink.classList.add('active');
 
             // 2. Inject Content HTML
@@ -1013,6 +1020,34 @@
                 document.getElementById('slowAmpSlider').oninput = debounce(updateTimescaleChart, 50);
             }
         }
+
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navigationLinks = document.querySelectorAll('#navigation a');
+            
+            navigationLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get the section ID from the href
+                    const href = this.getAttribute('href');
+                    const sectionId = href.substring(1); // Remove the #
+                    
+                    // Load the section using the existing system
+                    loadSection(sectionId);
+                    
+                    // Update active state
+                    navigationLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Set initial active state
+            const firstLink = document.querySelector('#navigation a');
+            if (firstLink) {
+                firstLink.classList.add('active');
+            }
+        });
 
         // Initialize the application on window load
         window.onload = renderNavigation;
