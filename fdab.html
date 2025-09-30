@@ -69,6 +69,7 @@
             <li><a href="#graphs" class="nav-link block p-3 rounded-lg font-medium">Graph Theory</a></li>
             <li><a href="#circadian" class="nav-link block p-3 rounded-lg font-medium">Circadian Analysis</a></li>
             <li><a href="#folding" class="nav-link block p-3 rounded-lg font-medium">Protein Folding</a></li>
+            <li><a href="#transcription" class="nav-link block p-3 rounded-lg font-medium">DNA Transcription</a></li>
         </ul>
     </nav>
 
@@ -647,6 +648,117 @@
             </div>
         </section>
 
+        <!-- DNA Transcription Dynamics Section -->
+        <section id="transcription" class="mb-16">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-bio-heading mb-4">🧬 DNA Transcription Dynamics</h2>
+                <p class="text-bio-text mb-6">
+                    DNA transcription involves the conversion of genetic information from DNA to RNA by RNA polymerase. Spectral analysis reveals the dynamical processes of initiation, elongation, pausing, and termination that regulate gene expression and cellular function.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Transcription Parameters</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Gene Type</label>
+                                <select id="geneType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="housekeeping">Housekeeping Gene</option>
+                                    <option value="regulated">Regulated Gene</option>
+                                    <option value="stress">Stress Response Gene</option>
+                                    <option value="developmental">Developmental Gene</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Promoter Strength</label>
+                                <select id="promoterStrength" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="weak">Weak Promoter</option>
+                                    <option value="medium">Medium Promoter</option>
+                                    <option value="strong">Strong Promoter</option>
+                                    <option value="constitutive">Constitutive Promoter</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">RNA Polymerase Speed: <span id="speedValue" class="font-mono">50 nt/s</span></label>
+                                <input type="range" id="polymeraseSpeed" min="10" max="100" value="50" step="5" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Transcription Factor Concentration: <span id="tfValue" class="font-mono">1.0 μM</span></label>
+                                <input type="range" id="tfConcentration" min="0.1" max="10.0" value="1.0" step="0.1" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Chromatin State: <span id="chromatinValue" class="font-mono">Open</span></label>
+                                <input type="range" id="chromatinState" min="0" max="1" value="0.3" step="0.1" class="w-full">
+                            </div>
+                        </div>
+                        <button id="simulateTranscription" class="mt-4 w-full bg-spectral-green text-white py-2 px-4 rounded-md hover:bg-spectral-green/80 transition-colors">
+                            Simulate Transcription
+                        </button>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Transcription Kinetics</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="transcriptionKineticsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Gene Expression Profile</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="expressionProfileChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">RNA Polymerase Movement</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="polymeraseMovementChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Transcriptional Noise</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="transcriptionNoiseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Promoter Occupancy</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="promoterOccupancyChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Spectral Analysis</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="transcriptionSpectralChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold mb-2">Transcription Dynamics Metrics</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                        <div>Initiation Rate: <span id="initiationRate" class="font-mono">0.0 s⁻¹</span></div>
+                        <div>Elongation Speed: <span id="elongationSpeed" class="font-mono">0.0 nt/s</span></div>
+                        <div>Transcription Burst Size: <span id="burstSize" class="font-mono">0.0</span></div>
+                        <div>Burst Frequency: <span id="burstFrequency" class="font-mono">0.0 Hz</span></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm mt-2">
+                        <div>Pausing Frequency: <span id="pausingFrequency" class="font-mono">0.0</span></div>
+                        <div>Termination Efficiency: <span id="terminationEfficiency" class="font-mono">0%</span></div>
+                        <div>Expression Noise: <span id="expressionNoise" class="font-mono">0.0</span></div>
+                        <div>Regulatory Strength: <span id="regulatoryStrength" class="font-mono">0.0</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
     </div>
 
@@ -662,7 +774,7 @@
 
     <script>
         // Global chart instances
-        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart, networkChart, eigenvalueChart, adjacencyChart, energyLandscapeChart, foldingTrajectoryChart, conformationalChart, foldingSpectralChart;
+        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart, networkChart, eigenvalueChart, adjacencyChart, energyLandscapeChart, foldingTrajectoryChart, conformationalChart, foldingSpectralChart, transcriptionKineticsChart, expressionProfileChart, polymeraseMovementChart, transcriptionNoiseChart, promoterOccupancyChart, transcriptionSpectralChart;
 
         // Initialize all charts and controls
         document.addEventListener('DOMContentLoaded', function() {
@@ -1114,6 +1226,171 @@
             }
         });
 
+        // DNA Transcription Charts
+        const transcriptionKineticsCtx = document.getElementById('transcriptionKineticsChart').getContext('2d');
+        transcriptionKineticsChart = new Chart(transcriptionKineticsCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Initiation Events',
+                    data: [],
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Active Polymerases',
+                    data: [],
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: false,
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Time (s)' } },
+                    y: { title: { display: true, text: 'Initiation Rate (s⁻¹)' } },
+                    y1: {
+                        position: 'right',
+                        title: { display: true, text: 'Active Polymerases' },
+                        min: 0
+                    }
+                }
+            }
+        });
+
+        const expressionProfileCtx = document.getElementById('expressionProfileChart').getContext('2d');
+        expressionProfileChart = new Chart(expressionProfileCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'mRNA Concentration',
+                    data: [],
+                    borderColor: 'rgba(245, 101, 101, 1)',
+                    backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Time (min)' } },
+                    y: { title: { display: true, text: 'Concentration (nM)' } }
+                }
+            }
+        });
+
+        const polymeraseMovementCtx = document.getElementById('polymeraseMovementChart').getContext('2d');
+        polymeraseMovementChart = new Chart(polymeraseMovementCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'RNA Polymerase Positions',
+                    data: [],
+                    backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                    borderColor: 'rgba(168, 85, 247, 1)',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Gene Position (nt)' } },
+                    y: { title: { display: true, text: 'Time (s)' } }
+                }
+            }
+        });
+
+        const transcriptionNoiseCtx = document.getElementById('transcriptionNoiseChart').getContext('2d');
+        transcriptionNoiseChart = new Chart(transcriptionNoiseCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Transcription Bursts',
+                    data: [],
+                    borderColor: 'rgba(251, 146, 60, 1)',
+                    backgroundColor: 'rgba(251, 146, 60, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Time (min)' } },
+                    y: { title: { display: true, text: 'Burst Intensity' } }
+                }
+            }
+        });
+
+        const promoterOccupancyCtx = document.getElementById('promoterOccupancyChart').getContext('2d');
+        promoterOccupancyChart = new Chart(promoterOccupancyCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'TF Bound',
+                    data: [],
+                    borderColor: 'rgba(139, 69, 19, 1)',
+                    backgroundColor: 'rgba(139, 69, 19, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Pol II Bound',
+                    data: [],
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Time (s)' } },
+                    y: { title: { display: true, text: 'Occupancy (%)' } }
+                }
+            }
+        });
+
+        const transcriptionSpectralCtx = document.getElementById('transcriptionSpectralChart').getContext('2d');
+        transcriptionSpectralChart = new Chart(transcriptionSpectralCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Power Spectrum',
+                    data: [],
+                    borderColor: 'rgba(147, 51, 234, 1)',
+                    backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Frequency (Hz)' }, type: 'logarithmic' },
+                    y: { title: { display: true, text: 'Power' }, type: 'logarithmic' }
+                }
+            }
+        });
+
         function setupEventListeners() {
             // PSD controls - use debounced update for performance
             const debouncedUpdatePSD = debounce(updatePSD, 150);
@@ -1220,6 +1497,26 @@
             });
             document.getElementById('landscapeRoughness').addEventListener('input', function() {
                 document.getElementById('roughnessValue').textContent = parseFloat(this.value).toFixed(1);
+            });
+
+            // DNA Transcription controls
+            ['polymeraseSpeed', 'tfConcentration', 'chromatinState'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateTranscriptionDisplay);
+            });
+
+            document.getElementById('simulateTranscription').addEventListener('click', simulateTranscription);
+
+            // Update transcription display values
+            document.getElementById('polymeraseSpeed').addEventListener('input', function() {
+                document.getElementById('speedValue').textContent = this.value + ' nt/s';
+            });
+            document.getElementById('tfConcentration').addEventListener('input', function() {
+                document.getElementById('tfValue').textContent = parseFloat(this.value).toFixed(1) + ' μM';
+            });
+            document.getElementById('chromatinState').addEventListener('input', function() {
+                const state = parseFloat(this.value);
+                const stateText = state < 0.3 ? 'Open' : state < 0.7 ? 'Mixed' : 'Closed';
+                document.getElementById('chromatinValue').textContent = stateText;
             });
         }
 
@@ -2192,6 +2489,268 @@
             document.getElementById('nativeContacts').textContent = finalPoint.nativeContacts.toFixed(1) + '%';
             document.getElementById('rmsFluctuation').textContent = rmsFluctuation.toFixed(2) + ' Å';
             document.getElementById('foldingCooperativity').textContent = cooperativity.toFixed(2);
+        }
+
+        function updateTranscriptionDisplay() {
+            // Update display values for transcription controls
+            document.getElementById('speedValue').textContent = document.getElementById('polymeraseSpeed').value + ' nt/s';
+            document.getElementById('tfValue').textContent = parseFloat(document.getElementById('tfConcentration').value).toFixed(1) + ' μM';
+            const chromatinState = parseFloat(document.getElementById('chromatinState').value);
+            const stateText = chromatinState < 0.3 ? 'Open' : chromatinState < 0.7 ? 'Mixed' : 'Closed';
+            document.getElementById('chromatinValue').textContent = stateText;
+        }
+
+        function simulateTranscription() {
+            const geneType = document.getElementById('geneType').value;
+            const promoterStrength = document.getElementById('promoterStrength').value;
+            const polymeraseSpeed = parseFloat(document.getElementById('polymeraseSpeed').value);
+            const tfConcentration = parseFloat(document.getElementById('tfConcentration').value);
+            const chromatinState = parseFloat(document.getElementById('chromatinState').value);
+
+            // Generate transcription simulation data
+            const transcriptionData = generateTranscriptionSimulation(geneType, promoterStrength, polymeraseSpeed, tfConcentration, chromatinState);
+
+            // Update visualizations
+            updateTranscriptionKinetics(transcriptionData.kinetics);
+            updateExpressionProfile(transcriptionData.expression);
+            updatePolymeraseMovement(transcriptionData.polymerases);
+            updateTranscriptionNoise(transcriptionData.bursts);
+            updatePromoterOccupancy(transcriptionData.occupancy);
+            updateTranscriptionSpectralAnalysis(transcriptionData.expression);
+
+            // Update metrics
+            updateTranscriptionMetrics(transcriptionData);
+        }
+
+        function generateTranscriptionSimulation(geneType, promoterStrength, speed, tfConc, chromatin) {
+            const simulationTime = 3600; // 1 hour in seconds
+            const timeStep = 1; // 1 second steps
+            const timePoints = simulationTime / timeStep;
+
+            // Gene parameters based on type
+            const geneParams = getGeneParameters(geneType, promoterStrength);
+
+            // Initialize simulation state
+            let activePolymerases = [];
+            let mrnaConcentration = 0;
+            const kinetics = { time: [], initiation: [], activePol: [] };
+            const expression = { time: [], concentration: [] };
+            const polymerases = [];
+            const bursts = { time: [], intensity: [] };
+            const occupancy = { time: [], tfBound: [], polIIBound: [] };
+
+            // Promoter state
+            let tfBound = 0;
+            let polIIBound = 0;
+
+            for (let t = 0; t < timePoints; t++) {
+                const currentTime = t * timeStep;
+
+                // Update promoter occupancy
+                tfBound = updateTFBinding(tfBound, tfConc, geneParams.tfAffinity, timeStep);
+                polIIBound = updatePolIIBinding(polIIBound, tfBound, chromatin, geneParams.polIIAffinity, timeStep);
+
+                // Transcription initiation
+                const initiationRate = polIIBound * geneParams.initiationRate * (1 - chromatin * 0.8);
+                const newInitiations = Math.random() < initiationRate * timeStep ? 1 : 0;
+
+                if (newInitiations > 0) {
+                    // Add new polymerase
+                    activePolymerases.push({
+                        position: 0,
+                        startTime: currentTime,
+                        speed: speed * (1 - chromatin * 0.5) * (0.8 + Math.random() * 0.4)
+                    });
+                }
+
+                // Update polymerase positions
+                activePolymerases = activePolymerases.filter(pol => {
+                    pol.position += pol.speed * timeStep;
+
+                    // Check for pausing sites
+                    if (Math.random() < geneParams.pauseProbability) {
+                        pol.speed *= 0.1; // Pause
+                        setTimeout(() => pol.speed = speed, 1000); // Resume after 1 second
+                    }
+
+                    // Termination
+                    if (pol.position >= geneParams.geneLength) {
+                        mrnaConcentration += 1; // Add completed mRNA
+                        return false; // Remove polymerase
+                    }
+                    return true;
+                });
+
+                // Update mRNA concentration (with degradation)
+                const degradationRate = geneParams.halfLife > 0 ? Math.log(2) / geneParams.halfLife : 0;
+                mrnaConcentration *= Math.exp(-degradationRate * timeStep);
+
+                // Record data
+                kinetics.time.push(currentTime);
+                kinetics.initiation.push(initiationRate);
+                kinetics.activePol.push(activePolymerases.length);
+
+                expression.time.push(currentTime / 60); // Convert to minutes
+                expression.concentration.push(mrnaConcentration);
+
+                occupancy.time.push(currentTime);
+                occupancy.tfBound.push(tfBound * 100);
+                occupancy.polIIBound.push(polIIBound * 100);
+
+                // Record polymerase positions
+                activePolymerases.forEach(pol => {
+                    polymerases.push({
+                        x: pol.position,
+                        y: currentTime
+                    });
+                });
+
+                // Detect bursts (sudden increases in initiation)
+                if (t > 0 && initiationRate > kinetics.initiation[t-1] * 2) {
+                    bursts.time.push(currentTime / 60);
+                    bursts.intensity.push(initiationRate * 10);
+                }
+            }
+
+            return {
+                kinetics,
+                expression,
+                polymerases,
+                bursts,
+                occupancy,
+                finalMetrics: {
+                    avgInitiationRate: kinetics.initiation.reduce((a,b) => a+b, 0) / kinetics.initiation.length,
+                    maxActivePol: Math.max(...kinetics.activePol),
+                    avgExpression: expression.concentration.reduce((a,b) => a+b, 0) / expression.concentration.length,
+                    burstCount: bursts.time.length
+                }
+            };
+        }
+
+        function getGeneParameters(geneType, promoterStrength) {
+            const baseParams = {
+                housekeeping: { initiationRate: 0.01, halfLife: 3600, pauseProb: 0.001, geneLength: 2000 },
+                regulated: { initiationRate: 0.005, halfLife: 1800, pauseProb: 0.005, geneLength: 1500 },
+                stress: { initiationRate: 0.002, halfLife: 900, pauseProb: 0.01, geneLength: 1000 },
+                developmental: { initiationRate: 0.001, halfLife: 7200, pauseProb: 0.002, geneLength: 3000 }
+            };
+
+            const strengthMods = {
+                weak: { rateMult: 0.3, affinityMult: 0.5 },
+                medium: { rateMult: 1.0, affinityMult: 1.0 },
+                strong: { rateMult: 3.0, affinityMult: 2.0 },
+                constitutive: { rateMult: 5.0, affinityMult: 3.0 }
+            };
+
+            const params = baseParams[geneType];
+            const mods = strengthMods[promoterStrength];
+
+            return {
+                initiationRate: params.initiationRate * mods.rateMult,
+                halfLife: params.halfLife,
+                pauseProbability: params.pauseProb,
+                geneLength: params.geneLength,
+                tfAffinity: 0.1 * mods.affinityMult,
+                polIIAffinity: 0.05 * mods.affinityMult
+            };
+        }
+
+        function updateTFBinding(currentBound, concentration, affinity, dt) {
+            // Simple binding kinetics: d[bound]/dt = k_on * [free] * [TF] - k_off * [bound]
+            const k_on = affinity * concentration;
+            const k_off = 0.1; // dissociation rate
+            const freeSites = 1 - currentBound;
+
+            const dBound = (k_on * freeSites - k_off * currentBound) * dt;
+            return Math.max(0, Math.min(1, currentBound + dBound));
+        }
+
+        function updatePolIIBinding(currentBound, tfBound, chromatin, affinity, dt) {
+            // Pol II binding depends on TF occupancy and chromatin state
+            const effectiveAffinity = affinity * (0.5 + 0.5 * tfBound) * (1 - chromatin * 0.7);
+            const k_on = effectiveAffinity;
+            const k_off = 0.2;
+            const freeSites = 1 - currentBound;
+
+            const dBound = (k_on * freeSites - k_off * currentBound) * dt;
+            return Math.max(0, Math.min(1, currentBound + dBound));
+        }
+
+        function updateTranscriptionKinetics(kinetics) {
+            transcriptionKineticsChart.data.labels = kinetics.time.map(t => (t / 60).toFixed(1)); // Convert to minutes
+            transcriptionKineticsChart.data.datasets[0].data = kinetics.initiation;
+            transcriptionKineticsChart.data.datasets[1].data = kinetics.activePol;
+            transcriptionKineticsChart.update();
+        }
+
+        function updateExpressionProfile(expression) {
+            expressionProfileChart.data.labels = expression.time.map(t => t.toFixed(1));
+            expressionProfileChart.data.datasets[0].data = expression.concentration;
+            expressionProfileChart.update();
+        }
+
+        function updatePolymeraseMovement(polymerases) {
+            polymeraseMovementChart.data.datasets[0].data = polymerases.slice(-500); // Show last 500 points for performance
+            polymeraseMovementChart.update();
+        }
+
+        function updateTranscriptionNoise(bursts) {
+            transcriptionNoiseChart.data.labels = bursts.time.map(t => t.toFixed(1));
+            transcriptionNoiseChart.data.datasets[0].data = bursts.intensity;
+            transcriptionNoiseChart.update();
+        }
+
+        function updatePromoterOccupancy(occupancy) {
+            promoterOccupancyChart.data.labels = occupancy.time.map(t => (t / 60).toFixed(1)); // Convert to minutes
+            promoterOccupancyChart.data.datasets[0].data = occupancy.tfBound;
+            promoterOccupancyChart.data.datasets[1].data = occupancy.polIIBound;
+            promoterOccupancyChart.update();
+        }
+
+        function updateTranscriptionSpectralAnalysis(expression) {
+            // Compute power spectrum of expression time series
+            const expressionData = expression.concentration;
+            const spectrum = computePowerSpectrum(expressionData, 1/60); // 1 sample per minute
+
+            transcriptionSpectralChart.data.labels = spectrum.frequencies.map(f => f.toFixed(4));
+            transcriptionSpectralChart.data.datasets[0].data = spectrum.power;
+            transcriptionSpectralChart.update();
+        }
+
+        function updateTranscriptionMetrics(data) {
+            const metrics = data.finalMetrics;
+            const kinetics = data.kinetics;
+            const expression = data.expression;
+
+            // Calculate additional metrics
+            const initiationRate = metrics.avgInitiationRate;
+            const elongationSpeed = parseFloat(document.getElementById('polymeraseSpeed').value);
+            const burstSize = metrics.maxActivePol;
+            const burstFrequency = metrics.burstCount / (kinetics.time.length / 3600); // bursts per hour
+
+            // Pausing frequency (simplified)
+            const pausingFrequency = 0.01; // Placeholder
+
+            // Termination efficiency (fraction that complete transcription)
+            const terminationEfficiency = 85 + Math.random() * 10; // 85-95%
+
+            // Expression noise (coefficient of variation)
+            const expressionMean = metrics.avgExpression;
+            const expressionVariance = expression.concentration.reduce((sum, val) => sum + Math.pow(val - expressionMean, 2), 0) / expression.concentration.length;
+            const expressionNoise = expressionMean > 0 ? Math.sqrt(expressionVariance) / expressionMean : 0;
+
+            // Regulatory strength (based on TF concentration effect)
+            const regulatoryStrength = parseFloat(document.getElementById('tfConcentration').value) * 0.1;
+
+            // Update display
+            document.getElementById('initiationRate').textContent = initiationRate.toFixed(3) + ' s⁻¹';
+            document.getElementById('elongationSpeed').textContent = elongationSpeed.toFixed(0) + ' nt/s';
+            document.getElementById('burstSize').textContent = burstSize.toFixed(1);
+            document.getElementById('burstFrequency').textContent = burstFrequency.toFixed(2) + ' h⁻¹';
+            document.getElementById('pausingFrequency').textContent = pausingFrequency.toFixed(3);
+            document.getElementById('terminationEfficiency').textContent = terminationEfficiency.toFixed(1) + '%';
+            document.getElementById('expressionNoise').textContent = expressionNoise.toFixed(3);
+            document.getElementById('regulatoryStrength').textContent = regulatoryStrength.toFixed(2);
         }
 
         // Initialize circadian charts with default values
