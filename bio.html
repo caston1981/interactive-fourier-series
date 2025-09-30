@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioXen Fourier Explorer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- MathJax CDN -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Complex.js for complex number arithmetic -->
+    <script src="https://cdn.jsdelivr.net/npm/complex.js@2.1.1/complex.min.js"></script>
+
+    <script>
+        // Configure Tailwind to use Inter and Lora (requires importing them via link tags in a real scenario, but we'll stick to system defaults if those aren't available).
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        'bio-green': '#38A169', // A nice biological green
+                        'spectral-purple': '#805AD5', // A strong spectral purple
+                        'bio-bg': '#FDFBF8',
+                        'bio-text': '#4A4A4A',
+                        'bio-heading': '#2C3E50',
+                    }
+                }
+            }
+        }
+
+        // MathJax Configuration for LaTeX rendering
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+   <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex bg-bio-bg">
+
+    <!-- Sidebar Navigation (Fixed on desktop, scrolls on mobile) -->
+    <nav class="w-full lg:w-72 bg-white border-r border-gray-200 lg:h-screen lg:sticky lg:top-0 p-4 shadow-lg lg:shadow-none flex-shrink-0">
+        <h1 class="text-2xl font-bold text-bio-green mb-6">BioXen Explorer</h1>
+        <div id="nav-links" class="space-y-2">
+            <!-- Nav links will be injected here by JS -->
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow p-4 lg:p-10">
+        <article id="content-area" class="max-w-4xl mx-auto">
+            <!-- Content will be injected here by JS -->
+            <h1 class="text-4xl font-extrabold text-bio-heading mb-4">Interactive BioXen Fourier Explorer</h1>
+            <p class="text-lg text-bio-text">
+                Welcome to the conceptual bridge between frequency domain analysis and systems biology. This platform demonstrates the spectral mathematics underlying the BioXen Biological Hypervisor Architecture, emphasizing the **oscillatory nature** of cellular processes.
+            </p>
+            <p class="mt-4 text-bio-text">
+                Use the navigation menu to explore the core concepts and interact with the visualizations.
+            </p>
+            <div class="mt-8 p-4 bg-bio-green/10 border-l-4 border-bio-green rounded-r-lg">
+                <p class="font-semibold text-bio-heading">Note:</p>
+                <p class="text-sm">This tool uses stylized mathematical approximations (Fourier series) to represent biological waveforms. It is a mathematical concept demonstrator, not a biological simulation.</p>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        // =========================================================================
+        // 1. GLOBAL STATE AND DATA
+        // =========================================================================
+
+        const NAV_ITEMS = [
+            { id: 'section1', title: '🧬 Why Biology Needs Frequency Domain' },
+            { id: 'section2', title: '📐 Oscillatory Modes in Biological Systems' },
+            { id: 'section3', title: '🔄 Transient Dynamics vs. Steady Oscillations' },
+            { id: 'section4', title: '⏱️ Timescale Hierarchy in Biological Networks' },
+            { id: 'section5', title: '🔮 Phase Relationships Between Biological Oscillators' },
+            { id: 'section6', title: '📊 Oscillator Purity and Biological Robustness' },
+            { id: 'section7', title: '🧪 Canonical Biological Oscillators' },
+            { id: 'section8', title: '🏗️ From Single Cells to Hypervisor Architecture' }
+        ];
+
+        // Chart.js instances
+        let decompositionChartInstance = null;
+        let powerSpectrumChartInstance = null;
+        let couplingChartInstance = null;
+        let timescaleChartInstance = null;
+        let cfcChartInstance = null;
+
+        // Debounce utility function
+        const debounce = (func, delay) => {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        };
+
+
+        // =========================================================================
+        // 2. MATHEMATICAL CORE: BIOLOGICAL WAVEFORM FOURIER COEFFICIENTS
+        // =========================================================================
+
+        /**
+         * Calculates the Fourier series approximation for a general wave.
+         * @param {function} coefficientFunc - Function that returns c_n (complex or real) for harmonic n.
+         * @param {number} t - Time normalized to the period (0 to 1).
+         * @param {number} N - Number of harmonics to include (1 to N).
+         * @param {number} A0 - The DC component (average value).
+         * @returns {number} The reconstructed signal value f(t).
+         */
+        function fourierReconstruction(coefficientFunc, t, N, A0 = 0.5) {
+            let sum = A0; // DC offset (e.g., non-zero basal concentration)
+            const omega = 2 * Math.PI; // Normalized fundamental angular frequency
+
+            for (let n = 1; n <= N; n++) {
+                const cn = coefficientFunc(n);
+                
+                // If coefficient is a number (real), assume it's the amplitude A_n of A_n*cos(n*omega*t)
+                // If we only use A_n*sin(n*omega*t) for odd/even functions, we can simplify.
+                if (typeof cn === 'number') {
+                    // Simpler real Fourier Series (using sin for odd functions like square/sawtooth)
+                    // The standard Fourier series for odd waveforms like square/sawtooth uses only sine terms.
+                    sum += cn * Math.sin(n * omega * t);
+                } else if (cn instanceof Complex) {
+                    // Full Complex Fourier Series: f(t) = sum(c_n * exp(i * n * omega * t))
+                    // For visualization simplicity, we use the real part, but for coupling we need phase.
+                    // This demo uses the real-coefficient approach for the basic reconstruction charts.
+                    // Complex coefficients are primarily used conceptually in the "Phase Relationships" section.
+                    const realPart = cn.mul(new Complex(Math.cos(n * omega * t), Math.sin(n * omega * t))).re;
+                    sum += 2 * realPart; // Sum over positive and negative n, so we multiply by 2 (if assuming conjugate pairs)
+                }
+            }
+            return sum;
+        }
+
+        // --- 2.1 Canonical Biological Waveforms (Approximated) ---
+
+        /** Genetic Repressilator (Square-like Wave, Concentration/Activity) */
+        function repressilatorWave(t, N) {
+            // Analogous to Square Wave: only odd harmonics
+            const A0 = 0.5;
+            const coef = (n) => (n % 2 !== 0) ? (4 / (n * Math.PI)) : 0;
+            return fourierReconstruction(coef, t, N, A0);
+        }
+
+        /** Glycolytic Oscillation (Near-Sinusoidal Wave, Metabolite Concentration) */
+        function glycolyticWave(t, N) {
+            // Near-pure Sine Wave: primarily the fundamental frequency (n=1)
+            const A0 = 0.5;
+            const coef = (n) => (n === 1) ? 0.4 : (n === 3 ? 0.05 : 0); // Include a small third harmonic for "biological texture"
+            return fourierReconstruction(coef, t, N, A0);
+        }
+
+        /** Calcium Spike (Sawtooth-like Transients, Ion Concentration) */
+        function calciumSpikeWave(t, N) {
+            // Analogous to Sawtooth Wave: all harmonics decay as 1/n
+            const A0 = 0.5;
+            // Sawtooth Fourier coefficients (with a minus sign for sin terms)
+            const coef = (n) => (-2 / (n * Math.PI));
+            return fourierReconstruction(coef, t, N, A0);
+        }
+
+        /** Get Fourier Coefficients (Amplitude |c_n|) for the power spectrum chart */
+        function getFourierAmplitudes(waveType) {
+            let coefs = [];
+            let coefFunc;
+
+            switch (waveType) {
+                case 'Repressilator':
+                    coefFunc = (n) => (n % 2 !== 0) ? (4 / (n * Math.PI)) : 0;
+                    break;
+                case 'Glycolytic':
+                    coefFunc = (n) => (n === 1) ? 0.4 : (n === 3 ? 0.05 : 0);
+                    break;
+                case 'CalciumSpike':
+                    coefFunc = (n) => (2 / (n * Math.PI)); // Use absolute value for amplitude
+                    break;
+                default:
+                    return [];
+            }
+
+            // Calculate up to 25 harmonics (A0, A1, A2, ..., A25)
+            // Note: The A0 component (DC offset) is often omitted from the spectral plot of AC power
+            for (let n = 1; n <= 25; n++) {
+                coefs.push(Math.abs(coefFunc(n)));
+            }
+            return coefs;
+        }
+
+        // --- 2.2 Coupling and Interaction Functions ---
+
+        /** Simulates coupled oscillators (simple phase detuning) */
+        function coupledOscillators(t, omega1 = 1, omega2 = 1.1, coupling = 0.2, N = 5) {
+            // Simplified model: Base signal 1 (Glycolytic) + Base signal 2 (Repressilator)
+            // Coupling is modeled by perturbing the phase/amplitude of the primary signal
+            const signal1 = glycolyticWave(t, N);
+            const signal2 = repressilatorWave(t * (omega2 / omega1), N); // Signal 2 runs at a detuned frequency
+
+            // Simple additive coupling (linear)
+            const coupledSignal1 = signal1 + coupling * (signal2 - 0.5); // Couple based on signal 2's deviation from its mean (0.5)
+            const coupledSignal2 = signal2 + coupling * (signal1 - 0.5); // Couple based on signal 1's deviation from its mean
+
+            return {
+                signal1: coupledSignal1,
+                signal2: coupledSignal2
+            };
+        }
+
+        /** Simulates Cross-Frequency Coupling (PAC) - Phase of slow modulates Amplitude of fast */
+        function phaseAmplitudeCoupling(t, omegaFast = 10, omegaSlow = 1, modulationDepth = 0.4, N = 10) {
+            const A0 = 0.5;
+
+            // 1. Slow Oscillation (e.g., Transcriptional, cell cycle phase)
+            const phaseSlow = Math.sin(omegaSlow * 2 * Math.PI * t);
+
+            // 2. Fast Oscillation (e.g., Metabolic, seconds-minutes)
+            // Use the fundamental (n=1) term of a high-frequency sine wave
+            const fastFundamental = Math.sin(omegaFast * 2 * Math.PI * t);
+
+            // 3. Modulation: Amplitude of fast is modulated by the phase of the slow
+            // Base Amplitude A_fast = 0.2
+            // Modulated Amplitude = A_fast * (1 + modulationDepth * phaseSlow)
+            const modulatedAmplitude = 0.2 * (1 + modulationDepth * phaseSlow);
+
+            const pacSignal = A0 + (modulatedAmplitude * fastFundamental);
+
+            return {
+                pacSignal,
+                modulatingPhase: A0 + 0.1 * phaseSlow, // For visualization
+                fastOscillation: A0 + 0.2 * fastFundamental // For visualization
+            };
+        }
+
+
+        // =========================================================================
+        // 3. CHART.JS VISUALIZATION LOGIC
+        // =========================================================================
+
+        /** Initializes the BioXen Oscillator Decomposition Chart (Section 7) */
+        function initDecompositionChart() {
+            const chartData = { labels: [], datasets: [] };
+            const spectrumData = { labels: [], datasets: [] };
+
+            const config = {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: { type: 'linear', title: { display: true, text: 'Time (Normalized Period)' } },
+                        y: { title: { display: true, text: 'Concentration/Activity' }, min: 0, max: 1 }
+                    },
+                    plugins: { legend: { display: true } }
+                }
+            };
+
+            const spectrumConfig = {
+                type: 'bar',
+                data: spectrumData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Harmonic Index (n)' }, min: 1, max: 25 },
+                        y: { title: { display: true, text: '|cₙ| Amplitude' }, min: 0 }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            };
+
+            const ctx = document.getElementById('decompositionChart').getContext('2d');
+            const ctxSpectrum = document.getElementById('powerSpectrumChart').getContext('2d');
+
+            decompositionChartInstance = new Chart(ctx, config);
+            powerSpectrumChartInstance = new Chart(ctxSpectrum, spectrumConfig);
+
+            updateDecompositionChart();
+        }
+
+        /** Updates the BioXen Oscillator Decomposition Chart based on controls */
+        function updateDecompositionChart() {
+            if (!decompositionChartInstance || !powerSpectrumChartInstance) return;
+
+            const N = parseInt(document.getElementById('harmonicSlider').value);
+            const waveType = document.getElementById('oscillatorDropdown').value;
+
+            let waveFunc;
+            let labelSuffix;
+
+            switch (waveType) {
+                case 'Repressilator':
+                    waveFunc = repressilatorWave;
+                    labelSuffix = ' (Genetic Toggle)';
+                    break;
+                case 'Glycolytic':
+                    waveFunc = glycolyticWave;
+                    labelSuffix = ' (Metabolic Rhythm)';
+                    break;
+                case 'CalciumSpike':
+                    waveFunc = calciumSpikeWave;
+                    labelSuffix = ' (Ion Transient)';
+                    break;
+            }
+
+            // 1. Time Domain Reconstruction (Decomposition Chart)
+            const timeData = [];
+            const labels = [];
+            const points = 200;
+
+            for (let i = 0; i <= points; i++) {
+                const t = i / points;
+                labels.push(t);
+                timeData.push(waveFunc(t, N));
+            }
+
+            decompositionChartInstance.data.labels = labels;
+            decompositionChartInstance.data.datasets = [
+                {
+                    label: `Reconstructed Signal (N=${N})${labelSuffix}`,
+                    data: timeData,
+                    borderColor: 'rgb(128, 90, 213)', // spectral-purple
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.1
+                }
+            ];
+            decompositionChartInstance.options.scales.x.title.text = 'Time (Normalized Period)';
+            decompositionChartInstance.update();
+
+            // 2. Frequency Domain (Power Spectrum Chart)
+            const amplitudes = getFourierAmplitudes(waveType);
+            const spectrumLabels = Array.from({ length: amplitudes.length }, (_, i) => i + 1);
+
+            powerSpectrumChartInstance.data.labels = spectrumLabels;
+            powerSpectrumChartInstance.data.datasets = [
+                {
+                    label: 'Fourier Coefficient Amplitude |cₙ|',
+                    data: amplitudes,
+                    backgroundColor: (ctx) => ctx.dataIndex < N ? 'rgba(56, 161, 105, 1)' : 'rgba(56, 161, 105, 0.3)', // bio-green
+                    borderColor: 'rgb(56, 161, 105)',
+                    borderWidth: 1,
+                }
+            ];
+            powerSpectrumChartInstance.update();
+
+            // Update THD display (very rough approximation for demo)
+            const signalPurityElement = document.getElementById('signalPurityDisplay');
+            if (signalPurityElement) {
+                const totalEnergy = amplitudes.reduce((sum, amp) => sum + amp * amp, 0);
+                // Assume A1 is the fundamental energy
+                const fundamentalEnergy = amplitudes[0] * amplitudes[0];
+                let thd = 0;
+                if (totalEnergy > 0) {
+                     thd = Math.sqrt(Math.max(0, totalEnergy - fundamentalEnergy)) / Math.sqrt(fundamentalEnergy) * 100;
+                }
+                signalPurityElement.innerHTML = `**Oscillator Purity (THD):** ${thd.toFixed(2)}% (Lower is Purer)`;
+            }
+        }
+
+        /** Initializes the Multi-Oscillator Coupling Visualization (Section 5) */
+        function initCouplingChart() {
+            const chartData = { labels: [], datasets: [] };
+            const config = {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: { type: 'linear', title: { display: true, text: 'Time (Normalized Period)' } },
+                        y: { title: { display: true, text: 'Coupled Activity' }, min: 0, max: 1.5 }
+                    },
+                    plugins: { legend: { display: true } }
+                }
+            };
+            const ctx = document.getElementById('couplingChart').getContext('2d');
+            couplingChartInstance = new Chart(ctx, config);
+            updateCouplingChart();
+        }
+
+        /** Updates the Multi-Oscillator Coupling Chart based on controls */
+        function updateCouplingChart() {
+            if (!couplingChartInstance) return;
+
+            const coupling = parseFloat(document.getElementById('couplingSlider').value);
+            const detuning = parseFloat(document.getElementById('detuningSlider').value);
+
+            const timeData1 = [];
+            const timeData2 = [];
+            const labels = [];
+            const points = 200;
+
+            for (let i = 0; i <= points; i++) {
+                const t = i / points;
+                labels.push(t);
+                const coupled = coupledOscillators(t, 1, 1 + detuning, coupling, 10);
+                timeData1.push(coupled.signal1);
+                timeData2.push(coupled.signal2);
+            }
+
+            couplingChartInstance.data.labels = labels;
+            couplingChartInstance.data.datasets = [
+                {
+                    label: `Glycolytic Oscillator (Perturbed)`,
+                    data: timeData1,
+                    borderColor: '#E53E3E', // Red/Metabolic
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: `Repressilator (Perturbed)`,
+                    data: timeData2,
+                    borderColor: '#3182CE', // Blue/Genetic
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4
+                }
+            ];
+            couplingChartInstance.update();
+
+            // Update display values
+            document.getElementById('couplingValue').textContent = coupling.toFixed(2);
+            document.getElementById('detuningValue').textContent = detuning.toFixed(2);
+        }
+
+        /** Initializes the Timescale Hierarchy Explorer (Section 4) */
+        function initTimescaleChart() {
+            const chartData = { labels: [], datasets: [] };
+            const config = {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: { type: 'linear', title: { display: true, text: 'Time (Normalized Period)' } },
+                        y: { title: { display: true, text: 'Combined Activity' }, min: 0, max: 1.5 }
+                    },
+                    plugins: { legend: { display: true } }
+                }
+            };
+            const ctx = document.getElementById('timescaleChart').getContext('2d');
+            timescaleChartInstance = new Chart(ctx, config);
+            updateTimescaleChart();
+        }
+
+        /** Updates the Timescale Hierarchy Chart based on controls */
+        function updateTimescaleChart() {
+            if (!timescaleChartInstance) return;
+
+            const fastAmp = parseFloat(document.getElementById('fastAmpSlider').value);
+            const slowAmp = parseFloat(document.getElementById('slowAmpSlider').value);
+
+            const timeDataFast = [];
+            const timeDataSlow = [];
+            const timeDataCombined = [];
+            const labels = [];
+            const points = 200;
+            const omegaFast = 10;
+            const omegaSlow = 1;
+
+            const A0 = 0.5;
+
+            for (let i = 0; i <= points; i++) {
+                const t = i / points;
+                labels.push(t);
+
+                // Fast (Metabolic) component - Simple Sine wave at 10x frequency
+                const fast = A0 + fastAmp * Math.sin(omegaFast * 2 * Math.PI * t);
+                timeDataFast.push(fast);
+
+                // Slow (Transcriptional) component - Simple Sine wave at 1x frequency
+                const slow = A0 + slowAmp * Math.sin(omegaSlow * 2 * Math.PI * t);
+                timeDataSlow.push(slow);
+
+                // Combined signal
+                // Note: The A0 component is only added once.
+                const combined = fast + (slow - A0); // A0 + Fast_Amplitude + Slow_Amplitude
+                timeDataCombined.push(combined - A0); // Subtract A0 so it doesn't double-count the mean, then add it back to the base
+            }
+
+            timescaleChartInstance.data.labels = labels;
+            timescaleChartInstance.data.datasets = [
+                {
+                    label: `Fast Timescale (Metabolic, $\\omega=${omegaFast}$)`,
+                    data: timeDataFast,
+                    borderColor: '#2D3748', // Dark Gray
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.2,
+                    hidden: true
+                },
+                {
+                    label: `Slow Timescale (Transcriptional, $\\omega=${omegaSlow}$)`,
+                    data: timeDataSlow,
+                    borderColor: '#805AD5', // Spectral Purple
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4,
+                    hidden: true
+                },
+                {
+                    label: `Combined Hierarchical Signal`,
+                    data: timeDataCombined,
+                    borderColor: '#38A169', // Bio Green
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4
+                }
+            ];
+            timescaleChartInstance.options.scales.x.title.text = 'Time (Normalized Period)';
+            timescaleChartInstance.options.scales.y.max = 1 + fastAmp + slowAmp + 0.1;
+            timescaleChartInstance.update();
+
+            // Rerender MathJax after chart update since labels contain LaTeX
+            MathJax.typesetPromise();
+
+            // Update display values
+            document.getElementById('fastAmpValue').textContent = fastAmp.toFixed(2);
+            document.getElementById('slowAmpValue').textContent = slowAmp.toFixed(2);
+        }
+
+        /** Initializes the Cross-Frequency Coupling Demo (Section 5, as Phase Relationships) */
+        function initCFCChart() {
+            const chartData = { labels: [], datasets: [] };
+            const config = {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: { type: 'linear', title: { display: true, text: 'Time (Normalized Period of Slow Cycle)' } },
+                        y: { title: { display: true, text: 'Coupled Activity' }, min: 0, max: 1.5 }
+                    },
+                    plugins: { legend: { display: true } }
+                }
+            };
+            const ctx = document.getElementById('cfcChart').getContext('2d');
+            cfcChartInstance = new Chart(ctx, config);
+            updateCFCChart();
+        }
+
+        /** Updates the Cross-Frequency Coupling Chart based on controls */
+        function updateCFCChart() {
+            if (!cfcChartInstance) return;
+
+            const modulationDepth = parseFloat(document.getElementById('modulationDepthSlider').value);
+
+            const timeDataPAC = [];
+            const timeDataPhase = [];
+            const timeDataFast = [];
+            const labels = [];
+            const points = 300; // Need more points to show the fast frequency clearly
+            const omegaFast = 10;
+            const omegaSlow = 1;
+
+            for (let i = 0; i <= points; i++) {
+                const t = i / points;
+                labels.push(t);
+                const coupled = phaseAmplitudeCoupling(t, omegaFast, omegaSlow, modulationDepth, 10);
+                timeDataPAC.push(coupled.pacSignal);
+                timeDataPhase.push(coupled.modulatingPhase);
+                timeDataFast.push(coupled.fastOscillation);
+            }
+
+            cfcChartInstance.data.labels = labels;
+            cfcChartInstance.data.datasets = [
+                {
+                    label: `PAC Signal (Amplitude Modulated)`,
+                    data: timeDataPAC,
+                    borderColor: '#38A169', // Bio Green
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.8
+                },
+                {
+                    label: `Slow Modulating Phase`,
+                    data: timeDataPhase,
+                    borderColor: '#805AD5', // Spectral Purple
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.4
+                },
+                {
+                    label: `Unmodulated Fast Oscillation (Reference)`,
+                    data: timeDataFast,
+                    borderColor: '#CBD5E0', // Gray
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.8,
+                    hidden: true
+                }
+            ];
+            cfcChartInstance.options.scales.y.min = 0.0;
+            cfcChartInstance.options.scales.y.max = 1.0;
+            cfcChartInstance.update();
+
+            document.getElementById('modulationDepthValue').textContent = modulationDepth.toFixed(2);
+        }
+
+        // =========================================================================
+        // 4. CONTENT DEFINITIONS (HTML Templates)
+        // =========================================================================
+
+        const CONTENT_SECTIONS = {
+            section1: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">🧬 Why Biology Needs Frequency Domain</h2>
+                <hr class="border-bio-green mb-6">
+                <p>Systems biology has long relied on the **steady-state assumption**, treating cellular networks as static machines solvable by methods like **Flux Balance Analysis (FBA)** in COBRApy. However, life is inherently dynamic and rhythmic.</p>
+                <p class="mt-4">The failure of the steady-state model is evident in critical biological systems:</p>
+                <ul class="list-disc ml-6 mt-2 space-y-2">
+                    <li>**Circadian Clocks:** Hour-scale, robust gene expression cycles.</li>
+                    <li>**Glycolytic Oscillations:** Minute-scale, self-sustained metabolic rhythms.</li>
+                    <li>**Cell Cycle:** Coordinated progression governed by periodic protein concentrations.</li>
+                </ul>
+                <p class="mt-4">The **frequency domain** (spectral analysis) is the proper mathematical lens for these phenomena, transforming time series data $f(t)$ into a spectrum of frequencies $\\omega$, represented by complex coefficients $c_n$. This transformation is essential for understanding **temporal dynamics** and **system coupling**.</p>
+                <div class="mathjax-display mt-6">
+                    $$\\text{Fourier Series: } f(t) = \\sum_{n=-\\infty}^{\\infty} c_n e^{i n \\omega t}$$
+                </div>
+                <p class="mt-4">This decomposition allows us to view metabolite or protein trajectories as a superposition of harmonic components, each corresponding to a distinct biological timescale.</p>
+
+                <div class="mt-6 p-4 bg-spectral-purple/10 border-l-4 border-spectral-purple rounded-r-lg">
+                    <p class="font-semibold text-bio-heading">Practical Example:</p>
+                    <p class="text-sm mt-2">Consider measuring ATP concentration in yeast cells. FBA (COBRApy) predicts a <em>constant</em> value at steady state. But experiments show 2-5 minute oscillations (Goldbeter, 1996). These oscillations encode information about metabolic network topology—the dominant frequency reveals the rate-limiting enzyme kinetics. Without frequency-domain analysis, this structural information is invisible.</p>
+                </div>
+            `,
+            section2: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">📐 Oscillatory Modes in Biological Systems</h2>
+                <hr class="border-bio-green mb-6">
+                <p>Biological signals, such as concentration trajectories from ODE models (like those run in Tellurium), can be treated as functions in the Hilbert space $L^2$. This means they can be perfectly represented by a series of orthonormal basis functions—the Fourier basis $\\{e^{i n \\omega t}\\}$.</p>
+                <div class="mathjax-display mt-6">
+                    $$\\text{Coefficient Calculation: } c_n = \\frac{1}{T} \\int_{0}^{T} f(t) e^{-i n \\omega t} dt$$
+                </div>
+                <p class="mt-4">Each **harmonic component $n$** corresponds to a specific **oscillatory mode** or timescale. For a cell, a high-frequency mode might represent fast enzymatic reactions, while a low-frequency mode represents slow transcriptional regulation.</p>
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Key Concepts:</h3>
+                <ul class="list-disc ml-6 mt-2 space-y-2">
+                    <li>**$L^2$ Space:** Ensures that biological signals with finite total "energy" (amplitude squared) are representable.</li>
+                    <li>**Orthonormal Decomposition:** The modes are independent; changing the amplitude of one frequency $\\omega_n$ doesn't change the calculation for $\\omega_m$ (where $n \\neq m$).</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Inner Product and Orthogonality</h3>
+                <p class="mt-4">The inner product in $L^2$ space is defined as:</p>
+                <div class="mathjax-display mt-4">
+                    $$\langle f, g \rangle = \frac{1}{T} \int_{0}^{T} f(t) \overline{g(t)} \, dt$$
+                </div>
+                <p class="mt-4">The Fourier basis functions satisfy orthogonality: $\langle e^{i n \omega t}, e^{i m \omega t} \rangle = \delta_{nm}$, where $\delta_{nm}$ is the Kronecker delta. This orthogonality is what makes Fourier analysis so powerful—each frequency mode can be independently calculated and manipulated.</p>
+
+                <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg text-sm">
+                    <p class="font-semibold">Mathematical Notation Guide:</p>
+                    <ul class="list-disc ml-6 mt-2 space-y-1">
+                        <li>$\omega$ (omega): Angular frequency in radians per unit time</li>
+                        <li>$c_n$: Complex Fourier coefficient for harmonic $n$</li>
+                        <li>$L^2$: Hilbert space of square-integrable functions (finite energy signals)</li>
+                        <li>$\phi_n$: Phase angle of harmonic $n$</li>
+                    </ul>
+                </div>
+            `,
+            section3: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">🔄 Transient Dynamics vs. Steady Oscillations</h2>
+                <hr class="border-bio-green mb-6">
+                <p>When a cell experiences an external shock (e.g., nutrient change), its internal oscillators transition from a **transient state** to a **limit cycle** (steady oscillation). This transition involves the system finding its stable frequencies.</p>
+                <p class="mt-4">Mathematically, approximating a function with a finite number of harmonics ($N$) leads to the **Gibbs Phenomenon**—overshoot and ripple near discontinuities. In a biological context, sharp switches at cell state transitions (like the G1/S checkpoint) might exhibit Gibbs-like spectral effects. </p>
+                <p class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-r-lg">
+                    **Ensemble Averaging:** When observing a population of unsynchronized cells, the individual sharp discontinuities are smoothed out (analogous to **Cesàro smoothing** in Fourier analysis), often resulting in a purer, more sinusoidal population-level signal.
+                </p>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Practical Convergence in Biological Models</h3>
+                <p class="mt-4">For computational biology, convergence questions are critical:</p>
+                <ul class="list-disc ml-6 mt-2 space-y-2">
+                    <li><strong>Tellurium ODE Outputs:</strong> Typically smooth (C¹ or C²), so Fourier series converge rapidly—10-20 harmonics often suffice.</li>
+                    <li><strong>Stochastic Simulations:</strong> May have discontinuous jumps (Gillespie algorithm), requiring more harmonics or windowed analysis.</li>
+                    <li><strong>Experimental Data:</strong> Measurement noise acts as a natural low-pass filter, making high harmonics unreliable.</li>
+                </ul>
+            `,
+            section4: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">⏱️ Timescale Hierarchy in Biological Networks</h2>
+                <hr class="border-bio-green mb-6">
+                <p>Biological networks operate across an immense range of timescales. The Fourier spectrum naturally organizes this hierarchy: **low $n$ harmonics** represent **slow (transcriptional/epigenetic) processes**, while **high $n$ harmonics** represent **fast (metabolic/signaling) processes**.</p>
+                <p class="mt-4">The decay rate of the Fourier coefficients $c_n$ as $n \\to \\infty$ reveals the signal's smoothness. Smooth, near-sinusoidal oscillations (like glycolysis) have coefficients that decay rapidly (often exponentially), indicating a simple, robust structure. Discontinuous or spikey signals (like calcium transients) have coefficients that decay slowly ($\\sim 1/n$), indicating higher complexity and sharper switching.</p>
+
+                <div class="control-panel mt-6">
+                    <h3 class="text-xl font-bold mb-4 text-bio-green">Interactive Timescale Explorer</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Fast Timescale (Metabolic Amplitude - $\\omega_{fast}=10$): <span id="fastAmpValue" class="font-bold text-blue-600">0.40</span></label>
+                            <input type="range" id="fastAmpSlider" min="0" max="0.5" step="0.05" value="0.4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateTimescaleChart, 50)()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Slow Timescale (Transcriptional Amplitude - $\\omega_{slow}=1$): <span id="slowAmpValue" class="font-bold text-purple-600">0.30</span></label>
+                            <input type="range" id="slowAmpSlider" min="0" max="0.5" step="0.05" value="0.3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateTimescaleChart, 50)()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container mt-6">
+                    <canvas id="timescaleChart"></canvas>
+                </div>
+
+                <p class="mt-4">By adding and removing frequency components, you can visually decompose how multifrequency biological signals are built. The spectral representation is crucial for system identification in computational models.</p>
+            `,
+            section5: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">🔮 Phase Relationships Between Biological Oscillators</h2>
+                <hr class="border-bio-green mb-6">
+                <p>The true power of complex Fourier coefficients $c_n$ lies in their ability to encode both **amplitude** $|c_n|$ and **phase** $\\phi_n$. The phase is $\\phi_n = \\arg(c_n)$.</p>
+                <p class="mt-4">In a multi-component cell model, different processes (e.g., metabolism and gene expression) are coupled. The **relative phase** between their fundamental frequencies dictates their functional relationship. Are they synchronized (phase-locked) or offset (e.g., metabolite peaks before the corresponding protein peak)?</p>
+                <div class="mathjax-display mt-6">
+                    $$c_n = |c_n| e^{i \\phi_n}$$
+                    $$\\text{Phase Difference: } \\Delta \\phi = \\phi_{\\text{metabolic}} - \\phi_{\\text{transcriptional}}$$
+                </div>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Multi-Oscillator Coupling</h3>
+
+                <div class="control-panel mt-6">
+                    <h3 class="text-xl font-bold mb-4 text-spectral-purple">Oscillator Coupling Explorer</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Coupling Strength (Kuramoto-like $K$): <span id="couplingValue" class="font-bold text-red-600">0.20</span></label>
+                            <input type="range" id="couplingSlider" min="0" max="1" step="0.05" value="0.2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateCouplingChart, 50)()">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Frequency Detuning ($\\omega_2 - \\omega_1$): <span id="detuningValue" class="font-bold text-blue-600">0.10</span></label>
+                            <input type="range" id="detuningSlider" min="0" max="0.2" step="0.01" value="0.1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateCouplingChart, 50)()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container mt-6">
+                    <canvas id="couplingChart"></canvas>
+                </div>
+
+                <p class="mt-4">Experiment with the detuning and coupling. High coupling can enforce **phase-locking** even when the natural frequencies are mismatched (like in the **Kuramoto model** for synchronization), a fundamental concept in synthetic biology orchestration.</p>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Cross-Frequency Coupling (CFC)</h3>
+                <p>CFC is a key mechanism where the phase of a slow (low frequency) oscillator modulates the amplitude of a fast (high frequency) oscillator. This represents an explicit link between, for example, the cell cycle phase and the rate of ATP production (glycolysis).</p>
+
+                <div class="control-panel mt-6">
+                    <h3 class="text-xl font-bold mb-4 text-bio-green">Phase-Amplitude Coupling (PAC) Demo</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Modulation Depth: <span id="modulationDepthValue" class="font-bold text-bio-green">0.40</span></label>
+                        <input type="range" id="modulationDepthSlider" min="0" max="1" step="0.05" value="0.4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateCFCChart, 50)()">
+                    </div>
+                </div>
+
+                <div class="chart-container mt-6">
+                    <canvas id="cfcChart"></canvas>
+                </div>
+            `,
+            section6: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">📊 Oscillator Purity and Biological Robustness</h2>
+                <hr class="border-bio-green mb-6">
+                <p>In spectral analysis, **Total Harmonic Distortion (THD)** quantifies the energy contained in higher harmonics relative to the fundamental frequency ($\omega_1$).</p>
+                <div class="mathjax-display mt-6">
+                    $$\\text{THD} = \\frac{\\sqrt{\\sum_{n=2}^{\\infty} |c_n|^2}}{|c_1|}$$
+                </div>
+                <p class="mt-4">In a biological context, THD serves as a measure of **oscillator purity** and **biological robustness**. A low THD means the oscillation is near-sinusoidal (e.g., healthy, simple metabolism). High THD means the signal is noisy, sharp, or square-like, indicating complex regulatory or high-gain switching mechanisms.</p>
+
+                <p class="mt-4">The relationship between frequency components and total energy is formalized by **Parseval's identity**, which states that the total average power of the signal in the time domain equals the sum of the power of its frequency components:</p>
+                <div class="mathjax-display mt-6">
+                    $$\\frac{1}{T} \\int_{0}^{T} |f(t)|^2 dt = \\sum_{n=-\\infty}^{\\infty} |c_n|^2$$
+                </div>
+                <p class="mt-4">This identity connects the observable amplitude dynamics to the underlying spectral architecture, making it a powerful diagnostic tool for biological noise and stability.</p>
+                <div id="signalPurityDisplay" class="mt-4 p-3 bg-gray-100 border-l-4 border-gray-500 rounded-r-lg font-mono">
+                    **Oscillator Purity (THD):** N/A (Select an oscillator in the next section)
+                </div>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Parseval's Identity in Action</h3>
+                <p class="mt-4">For the Repressilator (square wave), the first 3 odd harmonics contain:</p>
+                <div class="mathjax-display mt-4">
+                    $$|c_1|^2 + |c_3|^2 + |c_5|^2 = \left(\frac{4}{\pi}\right)^2 + \left(\frac{4}{3\pi}\right)^2 + \left(\frac{4}{5\pi}\right)^2 \approx 1.76$$
+                </div>
+                <p class="mt-4">The total energy is $\approx 2.0$. This means the first 3 harmonics capture <strong>88% of the signal energy</strong>—demonstrating why even crude approximations can be biologically meaningful.</p>
+            `,
+            section7: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">🧪 Canonical Biological Oscillators</h2>
+                <hr class="border-bio-green mb-6">
+                <p>We analyze three classic biological waveforms using a finite Fourier series approximation to reveal their spectral signature. By increasing the number of harmonics, you can see how higher frequencies build the sharp features of the biological signal.</p>
+
+                <div class="control-panel mt-6">
+                    <h3 class="text-xl font-bold mb-4 text-bio-green">Biological Oscillator Decomposition</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Select Oscillator Type:</label>
+                            <select id="oscillatorDropdown" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-bio-green focus:border-bio-green sm:text-sm rounded-md" onchange="debounce(updateDecompositionChart, 50)()">
+                                <option value="Glycolytic">Glycolytic Oscillations (Near-Sine)</option>
+                                <option value="Repressilator">Repressilator (Square-like)</option>
+                                <option value="CalciumSpike">Calcium Spikes (Sawtooth-like)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Number of Harmonics ($N$): <span id="harmonicValue" class="font-bold text-spectral-purple">10</span></label>
+                            <input type="range" id="harmonicSlider" min="1" max="50" step="1" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="document.getElementById('harmonicValue').textContent=this.value; debounce(updateDecompositionChart, 50)()">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Time Domain Reconstruction</h3>
+                <div class="chart-container mt-4">
+                    <canvas id="decompositionChart"></canvas>
+                </div>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Frequency Domain (Power Spectrum)</h3>
+                <div class="chart-container mt-4" style="height: 30vh; min-height: 200px;">
+                    <canvas id="powerSpectrumChart"></canvas>
+                </div>
+
+                <p class="mt-4">**Key Insight:** Notice how the **Repressilator** (Elowitz & Leibler, 2000) requires many odd harmonics (slow decay of $c_n$) to approximate its sharp switching, while **Glycolytic** rhythms (Goldbeter, 1996) are dominated by the fundamental frequency (fast decay of $c_n$).</p>
+            `,
+            section8: `
+                <h2 class="text-3xl font-extrabold text-bio-heading mb-4">🏗️ From Single Cells to Hypervisor Architecture</h2>
+                <hr class="border-bio-green mb-6">
+                <p>The **BioXen Biological Hypervisor Architecture** is a conceptual framework that uses spectral analysis operationally to orchestrate multiple, heterogeneous cell models (e.g., metabolic, genetic, mechanical models) in a single virtual environment.</p>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Mathematical Foundations in Biology</h3>
+                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 mt-4">
+                    <p class="font-semibold mb-2">Key Papers Bridging Spectral Analysis and Systems Biology:</p>
+                    <ul class="list-disc ml-6 space-y-1 text-sm">
+                        <li><strong>Elowitz & Leibler (2000):</strong> "A synthetic oscillatory network of transcriptional regulators" <em>Nature</em> 403:335-338</li>
+                        <li><strong>Goldbeter (1996):</strong> <em>Biochemical Oscillations and Cellular Rhythms</em>, Cambridge University Press</li>
+                        <li><strong>Kuramoto (1984):</strong> <em>Chemical Oscillations, Waves, and Turbulence</em>, Springer</li>
+                        <li><strong>Pikovsky et al. (2001):</strong> <em>Synchronization: A Universal Concept in Nonlinear Sciences</em>, Cambridge</li>
+                    </ul>
+                    <p class="mt-3 text-sm"><strong>BioXen Project:</strong> <a href="https://github.com/aptitudetechnology/BioXen_Fourier" class="text-bio-green underline hover:text-spectral-purple">github.com/aptitudetechnology/BioXen_Fourier</a></p>
+                </div>
+
+                <h3 class="text-2xl font-bold text-bio-heading mt-6">Spectral Orchestration Schematic</h3>
+
+                <div class="p-6 bg-spectral-purple/10 border-2 border-spectral-purple rounded-xl shadow-xl">
+                    <div class="text-center font-mono text-lg font-semibold text-spectral-purple mb-4">
+                        BioXen Hypervisor (Frequency Domain Supervisor)
+                    </div>
+                    <div class="flex flex-col lg:flex-row justify-around items-center space-y-8 lg:space-y-0 lg:space-x-8">
+
+                        <!-- Cell Model 1 -->
+                        <div class="bg-white p-4 border border-gray-300 rounded-lg shadow-md w-full lg:w-1/3">
+                            <p class="font-bold text-center mb-2">Cell Model A (Glycolysis)</p>
+                            <div class="h-10 bg-bio-green/20 flex items-center justify-center text-sm font-mono">
+                                $\\omega_1$ Dominant Spectrum
+                            </div>
+                            <p class="text-xs text-center mt-1">Requires $\\omega_3$ signal from Hypervisor.</p>
+                        </div>
+
+                        <!-- Communication Hub -->
+                        <div class="text-center text-4xl text-gray-500 transform rotate-90 lg:rotate-0">
+                            &harr;
+                            <p class="text-sm font-mono text-spectral-purple mt-2">Spectral API</p>
+                        </div>
+
+                        <!-- Cell Model 2 -->
+                        <div class="bg-white p-4 border border-gray-300 rounded-lg shadow-md w-full lg:w-1/3">
+                            <p class="font-bold text-center mb-2">Cell Model B (Repressilator)</p>
+                            <div class="h-10 bg-spectral-purple/20 flex items-center justify-center text-sm font-mono">
+                                $\\omega_{odd}$ Spectrum
+                            </div>
+                            <p class="text-xs text-center mt-1">Sends $\\omega_1$ phase lock command.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-sm text-center">
+                        <p class="font-semibold text-spectral-purple">Interaction Principle:</p>
+                        <p>Models communicate by exchanging frequency characteristics ($c_n$) instead of raw time-series data. The Hypervisor enforces synchronization and coupling by injecting or dampening specific harmonics based on phase and amplitude requirements.</p>
+                    </div>
+                </div>
+
+                <p class="mt-4">This frequency-domain approach enables **multi-model orchestration** by allowing communication to target only the relevant timescales. For instance, the low-frequency component ($\omega_1$) of a metabolic model could be used to phase-lock the transcriptional rhythm of a neighboring cell model, achieving synchronization without direct, computationally expensive time-domain integration.</p>
+            `,
+            // Add initial content for the landing page before user clicks a link
+            initial: `
+                <h1 class="text-4xl font-extrabold text-bio-heading mb-4">Interactive BioXen Fourier Explorer</h1>
+                <p class="text-lg text-bio-text">
+                    Welcome to the conceptual bridge between frequency domain analysis and systems biology. This platform demonstrates the spectral mathematics underlying the <strong>BioXen Biological Hypervisor Architecture</strong>, emphasizing the <strong>oscillatory nature</strong> of cellular processes.
+                </p>
+
+                <h2 class="text-2xl font-bold text-bio-heading mt-6">Suggested Learning Path</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="p-4 bg-green-50 border-l-4 border-bio-green rounded-r-lg">
+                        <p class="font-bold text-bio-green mb-2">Beginner Track</p>
+                        <ol class="list-decimal ml-4 text-sm space-y-1">
+                            <li>Why Biology Needs Frequency Domain</li>
+                            <li>Canonical Biological Oscillators</li>
+                            <li>Oscillator Purity</li>
+                        </ol>
+                    </div>
+                    <div class="p-4 bg-purple-50 border-l-4 border-spectral-purple rounded-r-lg">
+                        <p class="font-bold text-spectral-purple mb-2">Intermediate Track</p>
+                        <ol class="list-decimal ml-4 text-sm space-y-1">
+                            <li>Oscillatory Modes in Biological Systems</li>
+                            <li>Timescale Hierarchy</li>
+                            <li>Phase Relationships</li>
+                        </ol>
+                    </div>
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-600 rounded-r-lg">
+                        <p class="font-bold text-blue-600 mb-2">Advanced Track</p>
+                        <ol class="list-decimal ml-4 text-sm space-y-1">
+                            <li>Transient Dynamics</li>
+                            <li>Cross-Frequency Coupling</li>
+                            <li>Hypervisor Architecture</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-bio-green/10 border-l-4 border-bio-green rounded-r-lg">
+                    <p class="font-semibold text-bio-heading">Educational Goal:</p>
+                    <p class="text-sm">Understand how frequency domain analysis reveals coupling and timescale hierarchy in biological systems, which is the foundational mathematical primitive for orchestrating multi-scale cell models.</p>
+                </div>
+            `
+        };
+
+
+        // =========================================================================
+        // 5. APPLICATION INITIALIZATION AND NAVIGATION
+        // =========================================================================
+
+        /** Renders the navigation links in the sidebar */
+        function renderNavigation() {
+            const navContainer = document.getElementById('nav-links');
+            navContainer.innerHTML = NAV_ITEMS.map(item => `
+                <a id="nav-${item.id}" href="#${item.id}" class="nav-link block p-3 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200" data-section="${item.id}">
+                    ${item.title}
+                </a>
+            `).join('');
+
+            // Attach event listeners
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = e.currentTarget.getAttribute('data-section');
+                    loadSection(sectionId);
+                });
+            });
+
+            // Load initial content or deep link
+            const initialSection = window.location.hash.substring(1) || 'initial';
+            loadSection(initialSection);
+        }
+
+        /** Loads content and initializes charts for the given section */
+        function loadSection(sectionId) {
+            const contentArea = document.getElementById('content-area');
+
+            // 1. Update Navigation Styles
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            const activeLink = document.getElementById(`nav-${sectionId}`);
+            if (activeLink) activeLink.classList.add('active');
+
+            // 2. Inject Content HTML
+            contentArea.innerHTML = CONTENT_SECTIONS[sectionId] || CONTENT_SECTIONS.initial;
+            window.location.hash = sectionId;
+
+            // 3. Rerender MathJax
+            MathJax.typesetPromise().then(() => {
+                // 4. Initialize Charts After MathJax is Done (to ensure all elements are stable)
+                if (sectionId === 'section7' && !decompositionChartInstance) {
+                    initDecompositionChart();
+                } else if (sectionId === 'section7') {
+                    // Update only, in case the user switched back without refreshing
+                    updateDecompositionChart();
+                }
+
+                if (sectionId === 'section5' && !couplingChartInstance) {
+                    initCouplingChart();
+                    initCFCChart();
+                } else if (sectionId === 'section5') {
+                    updateCouplingChart();
+                    updateCFCChart();
+                }
+
+                if (sectionId === 'section4' && !timescaleChartInstance) {
+                    initTimescaleChart();
+                } else if (sectionId === 'section4') {
+                    updateTimescaleChart();
+                }
+            });
+
+            // 5. Attach event listeners for sliders/dropdowns specific to the loaded section
+            if (sectionId === 'section7') {
+                document.getElementById('harmonicSlider').oninput = function() {
+                    document.getElementById('harmonicValue').textContent = this.value;
+                    debounce(updateDecompositionChart, 50)();
+                };
+                document.getElementById('oscillatorDropdown').onchange = debounce(updateDecompositionChart, 50);
+            } else if (sectionId === 'section5') {
+                document.getElementById('couplingSlider').oninput = debounce(updateCouplingChart, 50);
+                document.getElementById('detuningSlider').oninput = debounce(updateCouplingChart, 50);
+                document.getElementById('modulationDepthSlider').oninput = debounce(updateCFCChart, 50);
+            } else if (sectionId === 'section4') {
+                document.getElementById('fastAmpSlider').oninput = debounce(updateTimescaleChart, 50);
+                document.getElementById('slowAmpSlider').oninput = debounce(updateTimescaleChart, 50);
+            }
+        }
+
+        // Initialize the application on window load
+        window.onload = renderNavigation;
+    </script>
+
+    <footer class="mt-12 p-6 bg-gray-100 border-t border-gray-300 text-center text-sm text-gray-600">
+        <p><strong>Disclaimer:</strong> This is a mathematical concept demonstrator using stylized Fourier approximations. It does not simulate actual biochemical pathways or replace tools like Tellurium/COBRApy.</p>
+        <p class="mt-2">For actual BioXen implementation, see: <a href="https://github.com/aptitudetechnology/BioXen_Fourier" class="text-bio-green underline">BioXen_Fourier Repository</a></p>
+        <p class="mt-4 text-xs">Built with Chart.js, MathJax, and Tailwind CSS | No browser storage used (all state is in-memory)</p>
+    </footer>
+</body>
+</html>
