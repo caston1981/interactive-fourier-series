@@ -312,13 +312,13 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Time Domain Signals</h3>
-                        <div class="chart-container" style="height: 250px;">
+                        <div style="position: relative; height: 250px; width: 100%;">
                             <canvas id="hosaTimeChart"></canvas>
                         </div>
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Frequency Domain (PSD)</h3>
-                        <div class="chart-container" style="height: 250px;">
+                        <div style="position: relative; height: 250px; width: 100%;">
                             <canvas id="hosaPSDChart"></canvas>
                         </div>
                     </div>
@@ -327,13 +327,13 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Bispectrum Magnitude</h3>
-                        <div class="chart-container" style="height: 300px;">
+                        <div style="position: relative; height: 300px; width: 100%;">
                             <canvas id="bispectrumChart"></canvas>
                         </div>
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Bicoherence</h3>
-                        <div class="chart-container" style="height: 300px;">
+                        <div style="position: relative; height: 300px; width: 100%;">
                             <canvas id="bicoherenceChart"></canvas>
                         </div>
                     </div>
@@ -427,11 +427,31 @@
                 type: 'line',
                 data: {
                     datasets: [
-                        { label: 'Signal 1', data: [], borderColor: 'rgb(255, 99, 132)' },
-                        { label: 'Signal 2', data: [], borderColor: 'rgb(54, 162, 235)' }
+                        { label: 'Signal 1', data: [], borderColor: 'rgb(255, 99, 132)', borderWidth: 1, pointRadius: 0 },
+                        { label: 'Signal 2', data: [], borderColor: 'rgb(54, 162, 235)', borderWidth: 1, pointRadius: 0 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Time (s)' },
+                            ticks: { maxTicksLimit: 10 }
+                        },
+                        y: {
+                            title: { display: true, text: 'Amplitude' },
+                            min: -2,
+                            max: 2
+                        }
+                    },
+                    elements: {
+                        point: { radius: 0 }
+                    }
+                }
             });
 
             const hosaPSDCtx = document.getElementById('hosaPSDChart').getContext('2d');
@@ -439,11 +459,35 @@
                 type: 'line',
                 data: {
                     datasets: [
-                        { label: 'PSD 1', data: [], borderColor: 'rgb(255, 99, 132)' },
-                        { label: 'PSD 2', data: [], borderColor: 'rgb(54, 162, 235)' }
+                        { label: 'PSD 1', data: [], borderColor: 'rgb(255, 99, 132)', borderWidth: 1, pointRadius: 0 },
+                        { label: 'PSD 2', data: [], borderColor: 'rgb(54, 162, 235)', borderWidth: 1, pointRadius: 0 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic' } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: { display: true, text: 'Frequency (Hz)' },
+                            min: 0,
+                            max: 100,
+                            ticks: { maxTicksLimit: 10 }
+                        },
+                        y: {
+                            type: 'logarithmic',
+                            title: { display: true, text: 'Power' },
+                            min: 0.001,
+                            max: 10
+                        }
+                    },
+                    elements: {
+                        point: { radius: 0 }
+                    }
+                }
             });
 
             // Bispectrum Chart
@@ -461,12 +505,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'Frequency f1 (Hz)' } },
-                        y: { title: { display: true, text: 'Frequency f2 (Hz)' } }
-                    },
                     plugins: {
                         legend: { display: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Frequency f1 (Hz)' }, min: 0, max: 50 },
+                        y: { title: { display: true, text: 'Frequency f2 (Hz)' }, min: 0, max: 50 }
                     }
                 }
             });
@@ -486,12 +530,12 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'Frequency f1 (Hz)' } },
-                        y: { title: { display: true, text: 'Frequency f2 (Hz)' } }
-                    },
                     plugins: {
                         legend: { display: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Frequency f1 (Hz)' }, min: 0, max: 50 },
+                        y: { title: { display: true, text: 'Frequency f2 (Hz)' }, min: 0, max: 50 }
                     }
                 }
             });
@@ -643,9 +687,9 @@
             }
 
             // Update time domain chart
-            hosaTimeChart.data.labels = time.filter((_, i) => i % 5 === 0);
-            hosaTimeChart.data.datasets[0].data = signal1.filter((_, i) => i % 5 === 0);
-            hosaTimeChart.data.datasets[1].data = signal2.filter((_, i) => i % 5 === 0);
+            hosaTimeChart.data.labels = time.filter((_, i) => i % 10 === 0);
+            hosaTimeChart.data.datasets[0].data = signal1.filter((_, i) => i % 10 === 0);
+            hosaTimeChart.data.datasets[1].data = signal2.filter((_, i) => i % 10 === 0);
             hosaTimeChart.update();
 
             // Compute PSDs
