@@ -367,93 +367,7 @@
         <section id="circadian" class="mb-16">
             <div class="bg-white rounded-lg shadow-lg p-8">
                 <h2 class="text-3xl font-bold text-bio-heading mb-4">⏰ Circadian Rhythm Analysis</h2>
-                <p class="text-bio-text mb-6">
-                    Circadian rhythms are biological oscillations with periods of approximately 24 hours. This interactive tool demonstrates spectral analysis of circadian signals, including period detection, phase coherence, and damping rhythm analysis using concepts from specialized tools like Rhythmidia.
-                </p>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Circadian Signal Parameters</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Circadian Period (hours): <span id="periodValue">24.0</span></label>
-                                <input type="range" id="circadianPeriod" min="20" max="28" step="0.5" value="24.0" class="w-full">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Amplitude Damping: <span id="dampingValue">0.1</span></label>
-                                <input type="range" id="amplitudeDamping" min="0" max="0.5" step="0.05" value="0.1" class="w-full">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Phase Noise: <span id="phaseNoiseValue">0.2</span></label>
-                                <input type="range" id="phaseNoise" min="0" max="1" step="0.05" value="0.2" class="w-full">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Observation Days: <span id="daysValue">7</span></label>
-                                <input type="range" id="observationDays" min="3" max="14" step="1" value="7" class="w-full">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Analysis Method</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Analysis Type</label>
-                                <select id="circadianAnalysisType" class="w-full p-2 border border-gray-300 rounded-md">
-                                    <option value="periodogram">Periodogram Analysis</option>
-                                    <option value="wavelet">Wavelet Transform</option>
-                                    <option value="autocorr">Autocorrelation</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Sampling Rate (samples/hour): <span id="samplingValue">4</span></label>
-                                <input type="range" id="samplingRate" min="1" max="12" step="1" value="4" class="w-full">
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="checkbox" id="showDamping" class="rounded">
-                                <label for="showDamping" class="text-sm font-medium text-gray-700">Show Damping Analysis</label>
-                            </div>
-                            <button id="analyzeCircadian" class="bg-bio-green text-white px-4 py-2 rounded-md hover:bg-bio-green/80 transition-colors w-full">
-                                Analyze Circadian Rhythm
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Time Domain Signal</h3>
-                        <div style="position: relative; height: 300px; width: 100%;">
-                            <canvas id="circadianTimeChart"></canvas>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Periodogram Analysis</h3>
-                        <div style="position: relative; height: 300px; width: 100%;">
-                            <canvas id="circadianPeriodogram"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Phase Distribution</h3>
-                        <div style="position: relative; height: 300px; width: 100%;">
-                            <canvas id="circadianPhaseChart"></canvas>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold mb-4">Rhythm Metrics</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>Detected Period: <span id="detectedPeriod" class="font-mono text-bio-green">24.0 h</span></div>
-                                <div>Phase Coherence: <span id="phaseCoherence" class="font-mono">0.85</span></div>
-                                <div>Amplitude Stability: <span id="amplitudeStability" class="font-mono">78%</span></div>
-                                <div>Rhythm Strength: <span id="rhythmStrength" class="font-mono">0.92</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <p class="text-bio-text mb-6">Coming soon: Analysis of circadian rhythms using specialized tools like Rhythmidia.</p>
             </div>
         </section>
 
@@ -472,7 +386,7 @@
 
     <script>
         // Global chart instances
-        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart;
+        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart;
 
         // Initialize all charts and controls
         document.addEventListener('DOMContentLoaded', function() {
@@ -668,62 +582,6 @@
                     }
                 }
             });
-
-            // Circadian Charts
-            const circadianTimeCtx = document.getElementById('circadianTimeChart').getContext('2d');
-            circadianTimeChart = new Chart(circadianTimeCtx, {
-                type: 'line',
-                data: { datasets: [{ label: 'Circadian Signal', data: [], borderColor: 'rgb(34, 197, 94)', tension: 0.1, pointRadius: 0 }] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'Time (hours)' } },
-                        y: { title: { display: true, text: 'Amplitude' } }
-                    },
-                    elements: { point: { radius: 0 } }
-                }
-            });
-
-            const circadianPeriodogramCtx = document.getElementById('circadianPeriodogram').getContext('2d');
-            circadianPeriodogram = new Chart(circadianPeriodogramCtx, {
-                type: 'line',
-                data: { datasets: [{ label: 'Periodogram', data: [], borderColor: 'rgb(168, 85, 247)', tension: 0.1 }] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'Period (hours)' }, min: 20, max: 28 },
-                        y: { title: { display: true, text: 'Power' } }
-                    }
-                }
-            });
-
-            const circadianPhaseCtx = document.getElementById('circadianPhaseChart').getContext('2d');
-            circadianPhaseChart = new Chart(circadianPhaseCtx, {
-                type: 'bar',
-                data: {
-                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-                    datasets: [{
-                        label: 'Phase Distribution',
-                        data: [],
-                        backgroundColor: 'rgba(34, 197, 94, 0.6)',
-                        borderColor: 'rgba(34, 197, 94, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'Hour of Day' } },
-                        y: { title: { display: true, text: 'Activity Level' } }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
         }
 
         function setupEventListeners() {
@@ -769,30 +627,6 @@
             });
             document.getElementById('windowLength').addEventListener('input', function() {
                 document.getElementById('windowLengthValue').textContent = this.value;
-            });
-
-            // Circadian controls
-            ['circadianPeriod', 'amplitudeDamping', 'phaseNoise', 'observationDays', 'samplingRate'].forEach(id => {
-                document.getElementById(id).addEventListener('input', updateCircadianDisplay);
-            });
-
-            document.getElementById('analyzeCircadian').addEventListener('click', analyzeCircadianRhythm);
-
-            // Update circadian display values
-            document.getElementById('circadianPeriod').addEventListener('input', function() {
-                document.getElementById('periodValue').textContent = this.value;
-            });
-            document.getElementById('amplitudeDamping').addEventListener('input', function() {
-                document.getElementById('dampingValue').textContent = this.value;
-            });
-            document.getElementById('phaseNoise').addEventListener('input', function() {
-                document.getElementById('phaseNoiseValue').textContent = this.value;
-            });
-            document.getElementById('observationDays').addEventListener('input', function() {
-                document.getElementById('daysValue').textContent = this.value;
-            });
-            document.getElementById('samplingRate').addEventListener('input', function() {
-                document.getElementById('samplingValue').textContent = this.value;
             });
         }
 
@@ -948,169 +782,8 @@
             bicoherenceChart.update();
         }
 
-        function updateCircadianDisplay() {
-            // Update display values for circadian controls
-            document.getElementById('periodValue').textContent = document.getElementById('circadianPeriod').value;
-            document.getElementById('dampingValue').textContent = document.getElementById('amplitudeDamping').value;
-            document.getElementById('phaseNoiseValue').textContent = document.getElementById('phaseNoise').value;
-            document.getElementById('daysValue').textContent = document.getElementById('observationDays').value;
-            document.getElementById('samplingValue').textContent = document.getElementById('samplingRate').value;
-        }
-
-        function analyzeCircadianRhythm() {
-            const period = parseFloat(document.getElementById('circadianPeriod').value);
-            const damping = parseFloat(document.getElementById('amplitudeDamping').value);
-            const phaseNoise = parseFloat(document.getElementById('phaseNoise').value);
-            const days = parseInt(document.getElementById('observationDays').value);
-            const samplingRate = parseInt(document.getElementById('samplingRate').value);
-
-            // Generate circadian signal
-            const signal = generateCircadianSignal(period, damping, phaseNoise, days, samplingRate);
-            const timeHours = Array.from({length: signal.length}, (_, i) => i / samplingRate);
-
-            // Update time domain chart
-            circadianTimeChart.data.labels = timeHours;
-            circadianTimeChart.data.datasets[0].data = signal;
-            circadianTimeChart.update();
-
-            // Compute periodogram
-            const periodogram = computeCircadianPeriodogram(signal, samplingRate);
-            const periods = Array.from({length: periodogram.length}, (_, i) => 20 + i * 0.1);
-
-            circadianPeriodogram.data.labels = periods;
-            circadianPeriodogram.data.datasets[0].data = periodogram;
-            circadianPeriodogram.update();
-
-            // Analyze phase distribution
-            const phases = analyzeCircadianPhases(signal, period, samplingRate);
-            circadianPhaseChart.data.datasets[0].data = phases;
-            circadianPhaseChart.update();
-
-            // Update metrics
-            const detectedPeriod = detectCircadianPeriod(periodogram, periods);
-            const coherence = calculatePhaseCoherence(signal, period, samplingRate);
-            const stability = calculateAmplitudeStability(signal);
-            const strength = Math.max(...periodogram) / periodogram.reduce((a, b) => a + b, 0) * periodogram.length;
-
-            document.getElementById('detectedPeriod').textContent = detectedPeriod.toFixed(1) + ' h';
-            document.getElementById('phaseCoherence').textContent = coherence.toFixed(2);
-            document.getElementById('amplitudeStability').textContent = (stability * 100).toFixed(0) + '%';
-            document.getElementById('rhythmStrength').textContent = strength.toFixed(2);
-        }
-
-        function generateCircadianSignal(period, damping, phaseNoise, days, samplingRate) {
-            const totalHours = days * 24;
-            const numSamples = totalHours * samplingRate;
-            const signal = [];
-
-            for (let i = 0; i < numSamples; i++) {
-                const time = i / samplingRate;
-                const cycles = time / period;
-
-                // Base circadian oscillation
-                let amplitude = Math.exp(-damping * cycles); // Damping over cycles
-                let phase = 2 * Math.PI * cycles + (Math.random() - 0.5) * phaseNoise * 2 * Math.PI;
-
-                const value = amplitude * Math.sin(phase);
-                signal.push(value);
-            }
-
-            return signal;
-        }
-
-        function computeCircadianPeriodogram(signal, samplingRate) {
-            // Simple periodogram for circadian range (20-28 hours)
-            const periods = [];
-            for (let p = 20; p <= 28; p += 0.1) {
-                periods.push(p);
-            }
-
-            const periodogram = periods.map(period => {
-                const freq = 1 / period;
-                let real = 0, imag = 0;
-
-                for (let i = 0; i < signal.length; i++) {
-                    const time = i / samplingRate;
-                    const angle = -2 * Math.PI * freq * time;
-                    real += signal[i] * Math.cos(angle);
-                    imag += signal[i] * Math.sin(angle);
-                }
-
-                return (real * real + imag * imag) / signal.length;
-            });
-
-            return periodogram;
-        }
-
-        function analyzeCircadianPhases(signal, period, samplingRate) {
-            // Analyze phase distribution over 24 hours
-            const phases = new Array(24).fill(0);
-            const freq = 1 / period;
-
-            for (let i = 0; i < signal.length; i++) {
-                const time = i / samplingRate;
-                const phase = (freq * time * 24) % 24; // Phase in hours
-                const bin = Math.floor(phase);
-                if (bin >= 0 && bin < 24) {
-                    phases[bin] += Math.abs(signal[i]);
-                }
-            }
-
-            return phases;
-        }
-
-        function detectCircadianPeriod(periodogram, periods) {
-            const maxIndex = periodogram.indexOf(Math.max(...periodogram));
-            return periods[maxIndex];
-        }
-
-        function calculatePhaseCoherence(signal, period, samplingRate) {
-            // Simplified phase coherence calculation
-            const freq = 1 / period;
-            let coherenceSum = 0;
-            let count = 0;
-
-            for (let i = 0; i < signal.length - samplingRate * period; i += samplingRate) {
-                const phase1 = Math.atan2(
-                    signal.slice(i, i + samplingRate).reduce((sum, val, idx) => sum + val * Math.sin(2 * Math.PI * freq * idx / samplingRate), 0),
-                    signal.slice(i, i + samplingRate).reduce((sum, val, idx) => sum + val * Math.cos(2 * Math.PI * freq * idx / samplingRate), 0)
-                );
-
-                const phase2 = Math.atan2(
-                    signal.slice(i + samplingRate * period, i + 2 * samplingRate * period).reduce((sum, val, idx) => sum + val * Math.sin(2 * Math.PI * freq * (idx + samplingRate * period) / samplingRate), 0),
-                    signal.slice(i + samplingRate * period, i + 2 * samplingRate * period).reduce((sum, val, idx) => sum + val * Math.cos(2 * Math.PI * freq * (idx + samplingRate * period) / samplingRate), 0)
-                );
-
-                coherenceSum += Math.cos(phase1 - phase2);
-                count++;
-            }
-
-            return count > 0 ? Math.abs(coherenceSum / count) : 0;
-        }
-
-        function calculateAmplitudeStability(signal) {
-            // Calculate coefficient of variation of local maxima
-            const peaks = [];
-            for (let i = 1; i < signal.length - 1; i++) {
-                if (signal[i] > signal[i-1] && signal[i] > signal[i+1] && signal[i] > 0) {
-                    peaks.push(signal[i]);
-                }
-            }
-
-            if (peaks.length < 2) return 0;
-
-            const mean = peaks.reduce((a, b) => a + b, 0) / peaks.length;
-            const variance = peaks.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / peaks.length;
-            const cv = Math.sqrt(variance) / mean;
-
-            return Math.max(0, 1 - cv); // Convert to stability score
-        }
-
         // Initialize HOSA charts with default values
         updateHOSA();
-
-        // Initialize circadian charts with default values
-        analyzeCircadianRhythm();
     </script>
 
     <script>
