@@ -147,11 +147,15 @@
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Time Domain Signal</h3>
-                        <canvas id="timeDomainChart" width="400" height="300"></canvas>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="timeDomainChart"></canvas>
+                        </div>
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold mb-4">Power Spectral Density</h3>
-                        <canvas id="psdChart" width="400" height="300"></canvas>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="psdChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -391,20 +395,58 @@
             updatePSD(); // Initial render
         });
 
+        // Debounce utility function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         function initializeCharts() {
             // PSD Analysis Charts
             const timeCtx = document.getElementById('timeDomainChart').getContext('2d');
             timeDomainChart = new Chart(timeCtx, {
                 type: 'line',
-                data: { datasets: [{ label: 'Signal', data: [], borderColor: 'rgb(75, 192, 192)', tension: 0.1 }] },
-                options: { responsive: true, maintainAspectRatio: false }
+                data: { datasets: [{ label: 'Signal', data: [], borderColor: 'rgb(75, 192, 192)', tension: 0.1, pointRadius: 0 }] },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Time (s)' } },
+                        y: { title: { display: true, text: 'Amplitude' } }
+                    },
+                    elements: { point: { radius: 0 } }
+                }
             });
 
             const psdCtx = document.getElementById('psdChart').getContext('2d');
             psdChart = new Chart(psdCtx, {
                 type: 'line',
                 data: { datasets: [{ label: 'PSD', data: [], borderColor: 'rgb(153, 102, 255)', tension: 0.1 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'logarithmic' } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { 
+                        x: { 
+                            type: 'logarithmic',
+                            min: 0.1,
+                            max: 500,
+                            title: { display: true, text: 'Frequency (Hz)' }
+                        },
+                        y: {
+                            type: 'logarithmic',
+                            min: 0.001,
+                            max: 10,
+                            title: { display: true, text: 'Power' }
+                        }
+                    }
+                }
             });
 
             // Wavelet Charts
@@ -543,12 +585,13 @@
         }
 
         function setupEventListeners() {
-            // PSD controls
+            // PSD controls - use debounced update for performance
+            const debouncedUpdatePSD = debounce(updatePSD, 150);
             ['signalType', 'frequency', 'noiseLevel', 'windowType', 'fftSize', 'overlap'].forEach(id => {
-                document.getElementById(id).addEventListener('input', updatePSD);
+                document.getElementById(id).addEventListener('input', debouncedUpdatePSD);
             });
 
-            // Update display values
+            // Update display values (immediate, no debounce needed)
             document.getElementById('frequency').addEventListener('input', function() {
                 document.getElementById('freqValue').textContent = this.value;
             });
@@ -631,7 +674,7 @@
 
             // Compute PSD (simplified)
             const psd = computePSD(signal, fftSize, sampleRate);
-            const freqs = Array.from({length: psd.length}, (_, i) => i * sampleRate / fftSize);
+            const freqs = Array.from({length: psd.length}, (_, i) => Math.max(0.1, i * sampleRate / fftSize)); // Avoid zero for log scale
 
             psdChart.data.labels = freqs;
             psdChart.data.datasets[0].data = psd;
