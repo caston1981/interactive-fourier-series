@@ -20,6 +20,9 @@
     <!-- Complex.js for complex number arithmetic -->
     <script src="https://cdn.jsdelivr.net/npm/complex.js@2.1.1/complex.min.js"></script>
 
+    <!-- Chart.js for interactive visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -721,11 +724,11 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Fast Timescale (Metabolic Amplitude - $\\omega_{fast}=10$): <span id="fastAmpValue" class="font-bold text-blue-600">0.40</span></label>
-                            <input type="range" id="fastAmpSlider" min="0" max="0.5" step="0.05" value="0.4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateTimescaleChart, 50)()">
+                            <input type="range" id="fastAmpSlider" min="0" max="0.5" step="0.05" value="0.4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Slow Timescale (Transcriptional Amplitude - $\\omega_{slow}=1$): <span id="slowAmpValue" class="font-bold text-purple-600">0.30</span></label>
-                            <input type="range" id="slowAmpSlider" min="0" max="0.5" step="0.05" value="0.3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateTimescaleChart, 50)()">
+                            <input type="range" id="slowAmpSlider" min="0" max="0.5" step="0.05" value="0.3" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
                         </div>
                     </div>
                 </div>
@@ -753,11 +756,11 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Coupling Strength (Kuramoto-like $K$): <span id="couplingValue" class="font-bold text-red-600">0.20</span></label>
-                            <input type="range" id="couplingSlider" min="0" max="1" step="0.05" value="0.2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateCouplingChart, 50)()">
+                            <input type="range" id="couplingSlider" min="0" max="1" step="0.05" value="0.2" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Frequency Detuning ($\\omega_2 - \\omega_1$): <span id="detuningValue" class="font-bold text-blue-600">0.10</span></label>
-                            <input type="range" id="detuningSlider" min="0" max="0.2" step="0.01" value="0.1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateCouplingChart, 50)()">
+                            <input type="range" id="detuningSlider" min="0" max="0.2" step="0.01" value="0.1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
                         </div>
                     </div>
                 </div>
@@ -775,7 +778,7 @@
                     <h3 class="text-xl font-bold mb-4 text-bio-green">Phase-Amplitude Coupling (PAC) Demo</h3>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Modulation Depth: <span id="modulationDepthValue" class="font-bold text-bio-green">0.40</span></label>
-                        <input type="range" id="modulationDepthSlider" min="0" max="1" step="0.05" value="0.4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="debounce(updateCFCChart, 50)()">
+                        <input type="range" id="modulationDepthSlider" min="0" max="1" step="0.05" value="0.4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
                     </div>
                 </div>
 
@@ -818,7 +821,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Select Oscillator Type:</label>
-                            <select id="oscillatorDropdown" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-bio-green focus:border-bio-green sm:text-sm rounded-md" onchange="debounce(updateDecompositionChart, 50)()">
+                            <select id="oscillatorDropdown" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-bio-green focus:border-bio-green sm:text-sm rounded-md">
                                 <option value="Glycolytic">Glycolytic Oscillations (Near-Sine)</option>
                                 <option value="Repressilator">Repressilator (Square-like)</option>
                                 <option value="CalciumSpike">Calcium Spikes (Sawtooth-like)</option>
@@ -826,7 +829,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Number of Harmonics ($N$): <span id="harmonicValue" class="font-bold text-spectral-purple">10</span></label>
-                            <input type="range" id="harmonicSlider" min="1" max="50" step="1" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg" oninput="document.getElementById('harmonicValue').textContent=this.value; debounce(updateDecompositionChart, 50)()">
+                            <input type="range" id="harmonicSlider" min="1" max="50" step="1" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
                         </div>
                     </div>
                 </div>
