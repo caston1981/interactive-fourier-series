@@ -360,7 +360,100 @@
         <section id="graphs" class="mb-16">
             <div class="bg-white rounded-lg shadow-lg p-8">
                 <h2 class="text-3xl font-bold text-bio-heading mb-4">🕸️ Spectral Graph Theory in GRNs</h2>
-                <p class="text-bio-text mb-6">Coming soon: Interactive demonstration of spectral graph theory applied to gene regulatory networks.</p>
+                <p class="text-bio-text mb-6">
+                    Spectral Graph Theory analyzes gene regulatory networks using eigenvalue decomposition of adjacency and Laplacian matrices. This reveals network connectivity patterns, prioritizes critical interactions, and provides robust analysis against molecular noise.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Network Generation</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Network Type</label>
+                                <select id="networkType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="random">Random Network</option>
+                                    <option value="scalefree">Scale-Free Network</option>
+                                    <option value="smallworld">Small-World Network</option>
+                                    <option value="modular">Modular Network</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Number of Genes: <span id="geneCountValue">20</span></label>
+                                <input type="range" id="geneCount" min="10" max="50" step="5" value="20" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Connectivity: <span id="connectivityValue">0.3</span></label>
+                                <input type="range" id="connectivity" min="0.1" max="0.8" step="0.05" value="0.3" class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Noise Level: <span id="noiseLevelValue">0.1</span></label>
+                                <input type="range" id="networkNoise" min="0" max="0.5" step="0.05" value="0.1" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Spectral Analysis</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Matrix Type</label>
+                                <select id="matrixType" class="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="adjacency">Adjacency Matrix</option>
+                                    <option value="laplacian">Laplacian Matrix</option>
+                                    <option value="normalized">Normalized Laplacian</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Eigenvalue Range: <span id="eigenRangeValue">10</span></label>
+                                <input type="range" id="eigenRange" min="5" max="20" step="1" value="10" class="w-full">
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" id="showEigenvectors" class="rounded">
+                                <label for="showEigenvectors" class="text-sm font-medium text-gray-700">Show Eigenvector Analysis</label>
+                            </div>
+                            <button id="analyzeNetwork" class="bg-spectral-purple text-white px-4 py-2 rounded-md hover:bg-spectral-purple/80 transition-colors w-full">
+                                Analyze Network
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Network Visualization</h3>
+                        <div style="position: relative; height: 350px; width: 100%;">
+                            <canvas id="networkChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Eigenvalue Spectrum</h3>
+                        <div style="position: relative; height: 350px; width: 100%;">
+                            <canvas id="eigenvalueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Adjacency Matrix</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="adjacencyChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Network Metrics</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>Clustering Coefficient: <span id="clusteringCoeff" class="font-mono">0.00</span></div>
+                                <div>Average Path Length: <span id="avgPathLength" class="font-mono">0.00</span></div>
+                                <div>Spectral Gap: <span id="spectralGap" class="font-mono">0.00</span></div>
+                                <div>Algebraic Connectivity: <span id="algebraicConn" class="font-mono">0.00</span></div>
+                                <div>Network Diameter: <span id="networkDiameter" class="font-mono">0</span></div>
+                                <div>Robustness Score: <span id="robustnessScore" class="font-mono">0.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -472,7 +565,7 @@
 
     <script>
         // Global chart instances
-        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart;
+        let timeDomainChart, psdChart, waveletTimeChart, waveletSpectrogram, hosaTimeChart, hosaPSDChart, bispectrumChart, bicoherenceChart, circadianTimeChart, circadianPeriodogram, circadianPhaseChart, networkChart, eigenvalueChart, adjacencyChart;
 
         // Initialize all charts and controls
         document.addEventListener('DOMContentLoaded', function() {
@@ -724,6 +817,92 @@
                     }
                 }
             });
+
+            // Spectral Graph Theory Charts
+            const networkCtx = document.getElementById('networkChart').getContext('2d');
+            networkChart = new Chart(networkCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Gene Nodes',
+                        data: [],
+                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        pointRadius: 8
+                    }, {
+                        label: 'Edges',
+                        data: [],
+                        type: 'line',
+                        backgroundColor: 'rgba(156, 163, 175, 0.3)',
+                        borderColor: 'rgba(156, 163, 175, 0.5)',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        showLine: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { min: -1.2, max: 1.2, title: { display: true, text: 'X Position' } },
+                        y: { min: -1.2, max: 1.2, title: { display: true, text: 'Y Position' } }
+                    }
+                }
+            });
+
+            const eigenvalueCtx = document.getElementById('eigenvalueChart').getContext('2d');
+            eigenvalueChart = new Chart(eigenvalueCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Eigenvalues',
+                        data: [],
+                        backgroundColor: 'rgba(245, 101, 101, 0.8)',
+                        borderColor: 'rgba(245, 101, 101, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Index' } },
+                        y: { title: { display: true, text: 'Eigenvalue' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            const adjacencyCtx = document.getElementById('adjacencyChart').getContext('2d');
+            adjacencyChart = new Chart(adjacencyCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Matrix Entries',
+                        data: [],
+                        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                        borderColor: 'rgba(34, 197, 94, 1)',
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Gene i' }, min: 0 },
+                        y: { title: { display: true, text: 'Gene j' }, min: 0 }
+                    }
+                }
+            });
         }
 
         function setupEventListeners() {
@@ -793,6 +972,27 @@
             });
             document.getElementById('samplingRate').addEventListener('input', function() {
                 document.getElementById('samplingValue').textContent = this.value;
+            });
+
+            // Spectral Graph Theory controls
+            ['geneCount', 'connectivity', 'networkNoise', 'eigenRange'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateNetworkDisplay);
+            });
+
+            document.getElementById('analyzeNetwork').addEventListener('click', analyzeNetwork);
+
+            // Update network display values
+            document.getElementById('geneCount').addEventListener('input', function() {
+                document.getElementById('geneCountValue').textContent = this.value;
+            });
+            document.getElementById('connectivity').addEventListener('input', function() {
+                document.getElementById('connectivityValue').textContent = this.value;
+            });
+            document.getElementById('networkNoise').addEventListener('input', function() {
+                document.getElementById('noiseLevelValue').textContent = this.value;
+            });
+            document.getElementById('eigenRange').addEventListener('input', function() {
+                document.getElementById('eigenRangeValue').textContent = this.value;
             });
         }
 
@@ -1108,6 +1308,387 @@
 
         // Initialize HOSA charts with default values
         updateHOSA();
+
+        function updateNetworkDisplay() {
+            // Update display values for network controls
+            document.getElementById('geneCountValue').textContent = document.getElementById('geneCount').value;
+            document.getElementById('connectivityValue').textContent = document.getElementById('connectivity').value;
+            document.getElementById('noiseLevelValue').textContent = document.getElementById('networkNoise').value;
+            document.getElementById('eigenRangeValue').textContent = document.getElementById('eigenRange').value;
+        }
+
+        function analyzeNetwork() {
+            const networkType = document.getElementById('networkType').value;
+            const geneCount = parseInt(document.getElementById('geneCount').value);
+            const connectivity = parseFloat(document.getElementById('connectivity').value);
+            const noiseLevel = parseFloat(document.getElementById('networkNoise').value);
+            const matrixType = document.getElementById('matrixType').value;
+            const eigenRange = parseInt(document.getElementById('eigenRange').value);
+
+            // Generate network
+            const network = generateNetwork(networkType, geneCount, connectivity, noiseLevel);
+
+            // Compute spectral properties
+            const spectralData = computeSpectralProperties(network, matrixType, eigenRange);
+
+            // Update visualizations
+            updateNetworkVisualization(network);
+            updateEigenvalueVisualization(spectralData.eigenvalues, eigenRange);
+            updateAdjacencyVisualization(network.adjacencyMatrix);
+
+            // Update metrics
+            updateNetworkMetrics(network, spectralData);
+        }
+
+        function generateNetwork(type, size, connectivity, noise) {
+            const network = {
+                nodes: [],
+                edges: [],
+                adjacencyMatrix: []
+            };
+
+            // Initialize adjacency matrix
+            for (let i = 0; i < size; i++) {
+                network.adjacencyMatrix[i] = new Array(size).fill(0);
+            }
+
+            // Generate node positions (circular layout)
+            for (let i = 0; i < size; i++) {
+                const angle = (2 * Math.PI * i) / size;
+                const radius = 0.8;
+                network.nodes.push({
+                    id: i,
+                    x: radius * Math.cos(angle) + (Math.random() - 0.5) * noise,
+                    y: radius * Math.sin(angle) + (Math.random() - 0.5) * noise
+                });
+            }
+
+            // Generate connections based on network type
+            switch (type) {
+                case 'random':
+                    generateRandomNetwork(network, connectivity, noise);
+                    break;
+                case 'scalefree':
+                    generateScaleFreeNetwork(network, connectivity, noise);
+                    break;
+                case 'smallworld':
+                    generateSmallWorldNetwork(network, connectivity, noise);
+                    break;
+                case 'modular':
+                    generateModularNetwork(network, connectivity, noise);
+                    break;
+            }
+
+            return network;
+        }
+
+        function generateRandomNetwork(network, connectivity, noise) {
+            const size = network.nodes.length;
+            for (let i = 0; i < size; i++) {
+                for (let j = i + 1; j < size; j++) {
+                    if (Math.random() < connectivity) {
+                        const weight = 1 + (Math.random() - 0.5) * noise;
+                        network.adjacencyMatrix[i][j] = weight;
+                        network.adjacencyMatrix[j][i] = weight;
+                        network.edges.push({ source: i, target: j, weight: weight });
+                    }
+                }
+            }
+        }
+
+        function generateScaleFreeNetwork(network, connectivity, noise) {
+            const size = network.nodes.length;
+            // Start with a small fully connected core
+            const coreSize = Math.min(3, size);
+            for (let i = 0; i < coreSize; i++) {
+                for (let j = i + 1; j < coreSize; j++) {
+                    network.adjacencyMatrix[i][j] = 1;
+                    network.adjacencyMatrix[j][i] = 1;
+                    network.edges.push({ source: i, target: j, weight: 1 });
+                }
+            }
+
+            // Add remaining nodes with preferential attachment
+            for (let i = coreSize; i < size; i++) {
+                const degrees = network.adjacencyMatrix.map(row => row.reduce((sum, val) => sum + val, 0));
+                const totalDegree = degrees.reduce((sum, deg) => sum + deg, 0);
+
+                for (let j = 0; j < i; j++) {
+                    const attachmentProb = degrees[j] / totalDegree;
+                    if (Math.random() < attachmentProb * connectivity * 2) {
+                        const weight = 1 + (Math.random() - 0.5) * noise;
+                        network.adjacencyMatrix[i][j] = weight;
+                        network.adjacencyMatrix[j][i] = weight;
+                        network.edges.push({ source: i, target: j, weight: weight });
+                    }
+                }
+            }
+        }
+
+        function generateSmallWorldNetwork(network, connectivity, noise) {
+            const size = network.nodes.length;
+            const k = Math.floor(connectivity * size / 2); // Average degree
+
+            // Create regular ring lattice
+            for (let i = 0; i < size; i++) {
+                for (let j = 1; j <= k; j++) {
+                    const neighbor = (i + j) % size;
+                    const weight = 1 + (Math.random() - 0.5) * noise;
+                    network.adjacencyMatrix[i][neighbor] = weight;
+                    network.adjacencyMatrix[neighbor][i] = weight;
+                    network.edges.push({ source: i, target: neighbor, weight: weight });
+                }
+            }
+
+            // Add random rewiring (Watts-Strogatz model)
+            for (let i = 0; i < size; i++) {
+                for (let j = 1; j <= k; j++) {
+                    if (Math.random() < 0.1) { // Rewiring probability
+                        const neighbor = (i + j) % size;
+                        network.adjacencyMatrix[i][neighbor] = 0;
+                        network.adjacencyMatrix[neighbor][i] = 0;
+
+                        // Find new random connection
+                        let newNeighbor;
+                        do {
+                            newNeighbor = Math.floor(Math.random() * size);
+                        } while (newNeighbor === i || network.adjacencyMatrix[i][newNeighbor] > 0);
+
+                        const weight = 1 + (Math.random() - 0.5) * noise;
+                        network.adjacencyMatrix[i][newNeighbor] = weight;
+                        network.adjacencyMatrix[newNeighbor][i] = weight;
+                        network.edges.push({ source: i, target: newNeighbor, weight: weight });
+                    }
+                }
+            }
+        }
+
+        function generateModularNetwork(network, connectivity, noise) {
+            const size = network.nodes.length;
+            const modules = Math.max(2, Math.floor(size / 10)); // Number of modules
+            const moduleSize = Math.floor(size / modules);
+
+            for (let m = 0; m < modules; m++) {
+                const startIdx = m * moduleSize;
+                const endIdx = Math.min((m + 1) * moduleSize, size);
+
+                // Dense connections within modules
+                for (let i = startIdx; i < endIdx; i++) {
+                    for (let j = i + 1; j < endIdx; j++) {
+                        if (Math.random() < connectivity * 2) {
+                            const weight = 1 + (Math.random() - 0.5) * noise;
+                            network.adjacencyMatrix[i][j] = weight;
+                            network.adjacencyMatrix[j][i] = weight;
+                            network.edges.push({ source: i, target: j, weight: weight });
+                        }
+                    }
+                }
+
+                // Sparse connections between modules
+                if (m < modules - 1) {
+                    const nextStart = (m + 1) * moduleSize;
+                    for (let i = startIdx; i < endIdx; i++) {
+                        for (let j = nextStart; j < Math.min(nextStart + moduleSize, size); j++) {
+                            if (Math.random() < connectivity * 0.1) {
+                                const weight = 1 + (Math.random() - 0.5) * noise;
+                                network.adjacencyMatrix[i][j] = weight;
+                                network.adjacencyMatrix[j][i] = weight;
+                                network.edges.push({ source: i, target: j, weight: weight });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function computeSpectralProperties(network, matrixType, eigenRange) {
+            const size = network.adjacencyMatrix.length;
+            let matrix = JSON.parse(JSON.stringify(network.adjacencyMatrix)); // Deep copy
+
+            // Compute matrix type
+            if (matrixType === 'laplacian') {
+                // Degree matrix
+                const degrees = matrix.map(row => row.reduce((sum, val) => sum + val, 0));
+                const degreeMatrix = degrees.map(deg => new Array(size).fill(0));
+                for (let i = 0; i < size; i++) {
+                    degreeMatrix[i][i] = degrees[i];
+                }
+
+                // Laplacian = Degree - Adjacency
+                for (let i = 0; i < size; i++) {
+                    for (let j = 0; j < size; j++) {
+                        matrix[i][j] = degreeMatrix[i][j] - matrix[i][j];
+                    }
+                }
+            } else if (matrixType === 'normalized') {
+                // Normalized Laplacian
+                const degrees = matrix.map(row => row.reduce((sum, val) => sum + val, 0));
+                for (let i = 0; i < size; i++) {
+                    for (let j = 0; j < size; j++) {
+                        if (i === j) {
+                            matrix[i][j] = 1;
+                        } else if (degrees[i] > 0 && degrees[j] > 0) {
+                            matrix[i][j] = -matrix[i][j] / Math.sqrt(degrees[i] * degrees[j]);
+                        }
+                    }
+                }
+            }
+
+            // Simplified eigenvalue computation (power iteration for largest eigenvalues)
+            const eigenvalues = [];
+            const eigenvectors = [];
+
+            // For demonstration, compute a few eigenvalues using simplified method
+            for (let k = 0; k < Math.min(eigenRange, size); k++) {
+                const { eigenvalue, eigenvector } = powerIteration(matrix, k > 0 ? eigenvectors : null);
+                eigenvalues.push(eigenvalue);
+                eigenvectors.push(eigenvector);
+            }
+
+            return { eigenvalues, eigenvectors, matrix };
+        }
+
+        function powerIteration(matrix, previousVectors) {
+            const size = matrix.length;
+            let vector = new Array(size).fill(0);
+            vector[0] = 1; // Initial guess
+
+            // Deflate previous eigenvectors
+            if (previousVectors) {
+                for (const prevVector of previousVectors) {
+                    const dotProduct = vector.reduce((sum, val, i) => sum + val * prevVector[i], 0);
+                    for (let i = 0; i < size; i++) {
+                        vector[i] -= dotProduct * prevVector[i];
+                    }
+                }
+            }
+
+            // Normalize
+            const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+            vector = vector.map(val => val / norm);
+
+            // Power iteration
+            for (let iter = 0; iter < 50; iter++) {
+                // Matrix-vector multiplication
+                const newVector = new Array(size).fill(0);
+                for (let i = 0; i < size; i++) {
+                    for (let j = 0; j < size; j++) {
+                        newVector[i] += matrix[i][j] * vector[j];
+                    }
+                }
+
+                // Normalize
+                const newNorm = Math.sqrt(newVector.reduce((sum, val) => sum + val * val, 0));
+                vector = newVector.map(val => val / newNorm);
+            }
+
+            // Compute Rayleigh quotient for eigenvalue
+            let eigenvalue = 0;
+            const mv = new Array(size).fill(0);
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    mv[i] += matrix[i][j] * vector[j];
+                }
+            }
+            eigenvalue = vector.reduce((sum, val, i) => sum + val * mv[i], 0);
+
+            return { eigenvalue, eigenvector: vector };
+        }
+
+        function updateNetworkVisualization(network) {
+            // Update node positions
+            networkChart.data.datasets[0].data = network.nodes.map(node => ({
+                x: node.x,
+                y: node.y
+            }));
+
+            // Update edges
+            const edgeData = [];
+            network.edges.forEach(edge => {
+                const source = network.nodes[edge.source];
+                const target = network.nodes[edge.target];
+                edgeData.push({ x: source.x, y: source.y });
+                edgeData.push({ x: target.x, y: target.y });
+                edgeData.push({ x: null, y: null }); // Break line
+            });
+            networkChart.data.datasets[1].data = edgeData;
+
+            networkChart.update();
+        }
+
+        function updateEigenvalueVisualization(eigenvalues, range) {
+            eigenvalueChart.data.labels = eigenvalues.slice(0, range).map((_, i) => `λ${i + 1}`);
+            eigenvalueChart.data.datasets[0].data = eigenvalues.slice(0, range);
+            eigenvalueChart.update();
+        }
+
+        function updateAdjacencyVisualization(adjacencyMatrix) {
+            const data = [];
+            const size = adjacencyMatrix.length;
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    if (adjacencyMatrix[i][j] > 0) {
+                        data.push({ x: i, y: j });
+                    }
+                }
+            }
+            adjacencyChart.data.datasets[0].data = data;
+            adjacencyChart.update();
+        }
+
+        function updateNetworkMetrics(network, spectralData) {
+            const size = network.nodes.length;
+
+            // Clustering coefficient
+            let totalClustering = 0;
+            for (let i = 0; i < size; i++) {
+                const neighbors = [];
+                for (let j = 0; j < size; j++) {
+                    if (network.adjacencyMatrix[i][j] > 0) {
+                        neighbors.push(j);
+                    }
+                }
+
+                if (neighbors.length >= 2) {
+                    let triangles = 0;
+                    for (let k = 0; k < neighbors.length; k++) {
+                        for (let l = k + 1; l < neighbors.length; l++) {
+                            if (network.adjacencyMatrix[neighbors[k]][neighbors[l]] > 0) {
+                                triangles++;
+                            }
+                        }
+                    }
+                    const possibleTriangles = neighbors.length * (neighbors.length - 1) / 2;
+                    totalClustering += possibleTriangles > 0 ? triangles / possibleTriangles : 0;
+                }
+            }
+            const clusteringCoeff = size > 0 ? totalClustering / size : 0;
+
+            // Average path length (simplified)
+            const avgPathLength = Math.log(size) / Math.log(2); // Approximation
+
+            // Spectral gap
+            const spectralGap = spectralData.eigenvalues.length >= 2 ?
+                spectralData.eigenvalues[1] - spectralData.eigenvalues[0] : 0;
+
+            // Algebraic connectivity (second smallest eigenvalue of Laplacian)
+            const algebraicConn = spectralData.eigenvalues.length >= 2 ?
+                spectralData.eigenvalues[1] : 0;
+
+            // Network diameter (simplified)
+            const networkDiameter = Math.ceil(Math.log2(size));
+
+            // Robustness score (based on spectral gap and connectivity)
+            const robustnessScore = (spectralGap + algebraicConn) / 2;
+
+            // Update display
+            document.getElementById('clusteringCoeff').textContent = clusteringCoeff.toFixed(3);
+            document.getElementById('avgPathLength').textContent = avgPathLength.toFixed(2);
+            document.getElementById('spectralGap').textContent = spectralGap.toFixed(3);
+            document.getElementById('algebraicConn').textContent = algebraicConn.toFixed(3);
+            document.getElementById('networkDiameter').textContent = networkDiameter;
+            document.getElementById('robustnessScore').textContent = robustnessScore.toFixed(3);
+        }
 
         // Initialize circadian charts with default values
         analyzeCircadianRhythm();
