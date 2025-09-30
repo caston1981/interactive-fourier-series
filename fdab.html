@@ -61,37 +61,31 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="min-h-screen bg-bio-bg">
+<body class="flex flex-col md:flex-row min-h-screen">
+    <nav class="w-full md:w-64 bg-[#F0EBE3] p-4 md:p-6 flex-shrink-0">
+        <h2 class="text-2xl font-bold mb-6 text-center md:text-left">FDA Biology</h2>
+        <ul id="navigation" class="space-y-2">
+            <li><a href="#psd" class="nav-link block p-3 rounded-lg font-medium">PSD Analysis</a></li>
+            <li><a href="#wavelet" class="nav-link block p-3 rounded-lg font-medium">Wavelet Analysis</a></li>
+            <li><a href="#hosa" class="nav-link block p-3 rounded-lg font-medium">Higher-Order Spectra</a></li>
+            <li><a href="#graphs" class="nav-link block p-3 rounded-lg font-medium">Graph Theory</a></li>
+            <li><a href="#circadian" class="nav-link block p-3 rounded-lg font-medium">Circadian Analysis</a></li>
+        </ul>
+    </nav>
 
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <h1 class="text-2xl font-bold text-spectral-purple">FDA Biology Explorer</h1>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="#psd" class="text-gray-600 hover:text-spectral-purple transition-colors">PSD Analysis</a>
-                    <a href="#wavelet" class="text-gray-600 hover:text-spectral-purple transition-colors">Wavelets</a>
-                    <a href="#hosa" class="text-gray-600 hover:text-spectral-purple transition-colors">HOSA</a>
-                    <a href="#graphs" class="text-gray-600 hover:text-spectral-purple transition-colors">Graph Theory</a>
-                    <a href="#circadian" class="text-gray-600 hover:text-spectral-purple transition-colors">Circadian</a>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
 
         <!-- Hero Section -->
         <section class="text-center mb-12">
             <h1 class="text-4xl md:text-6xl font-bold text-bio-heading mb-4">
                 Interactive Frequency Domain Analysis
             </h1>
-            <p class="text-xl text-bio-text max-w-3xl mx-auto mb-8">
+            <p class="text-xl text-bio-text mb-8">
                 Explore advanced spectral techniques applied to biological systems. This platform demonstrates key concepts from the comprehensive review on Frequency Domain Analysis in Systems Biology.
             </p>
-            <div class="bg-spectral-purple/10 border-l-4 border-spectral-purple p-6 rounded-r-lg max-w-4xl mx-auto">
+            <div class="bg-spectral-purple/10 border-l-4 border-spectral-purple p-6 rounded-r-lg">
                 <h2 class="font-semibold text-bio-heading mb-2">Learning Objectives</h2>
                 <p class="text-sm">Master spectral decomposition, wavelet analysis, higher-order statistics, and their applications to biological time series, networks, and omics data.</p>
             </div>
@@ -616,6 +610,42 @@
             document.getElementById('couplingFreq').textContent = (f1 + f2) + ' Hz';
             document.getElementById('phaseCoupling').textContent = (phaseOffset * 180 / Math.PI).toFixed(0) + '°';
         }
+    </script>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navigationLinks = document.querySelectorAll('#navigation a');
+            
+            navigationLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navigationLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Smooth scroll to target section
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Set initial active state
+            const firstLink = document.querySelector('#navigation a');
+            if (firstLink) {
+                firstLink.classList.add('active');
+            }
+        });
     </script>
 </body>
 </html>
