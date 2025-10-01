@@ -9,7 +9,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        #main-content.sidebar-open {
+            margin-left: 16rem; /* 256px = w-64 */
+        }
+        @media (min-width: 1024px) {
+            #main-content.sidebar-open {
+                margin-left: 0;
+            }
+        }
+    </style>
     <!-- Chosen Palette: Warm Neutrals -->
     <!-- Application Structure Plan: The application is structured as an interactive "Method Selection Guide" rather than a linear report. This design prioritizes user task-flow and comprehension over mimicking the source document's layout. The structure includes: 1) A top navigation for quick access to key themes (Core Concepts, Challenges, Method Explorer, Implementation). 2) A "Core Concepts" section to clarify the Z-Transform's role. 3) An interactive "Challenges" section using a card layout to break down complex limitations. 4) The central "Method Explorer," which allows users to select a biological signal type and receive a tailored recommendation and visualization. This interactive, problem-solution format is chosen to make the dense, technical information more digestible and actionable for researchers and students. -->
     <!-- Visualization & Content Choices: 
@@ -89,28 +101,9 @@
       <main id="main-content" class="flex-1 p-4 lg:p-8 flex flex-col">
 
         <section id="hero" class="content-section active">
-            <div class="text-center mb-12">
+            <div class="text-center mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">Choosing the Right Tool for Biological Signal Analysis</h2>
                 <p class="text-lg text-gray-600">An interactive guide to understanding Z-Transforms, their limitations, and modern alternatives for analyzing complex biological data.</p>
-            </div>
-            
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-gradient-to-r from-cyan-50 to-blue-50 border-l-4 border-cyan-500 p-6 rounded-r-lg mb-8">
-                    <h3 class="font-semibold text-cyan-900 mb-3 flex items-center">
-                        🔬 Research-Enhanced Guide
-                        <span class="ml-2 text-xs bg-cyan-600 text-white px-2 py-1 rounded">v2.0</span>
-                    </h3>
-                    <p class="text-sm text-cyan-800 leading-relaxed mb-3">
-                        This guide has been updated based on comprehensive peer-reviewed research into biological signal analysis. 
-                        Key findings include:
-                    </p>
-                    <ul class="text-sm text-cyan-800 space-y-1 ml-4">
-                        <li>• <strong>Wavelet Transform is essential</strong> for non-stationary biological signals (not just "alternative")</li>
-                        <li>• <strong>Lomb-Scargle Periodogram</strong> is the biology standard for irregular sampling (not FFT)</li>
-                        <li>• <strong>Higher-Order Spectral Analysis (HOSA)</strong> needed for nonlinear biological systems</li>
-                        <li>• <strong>State-Space Models</strong> superior to transfer functions for MIMO biological networks</li>
-                    </ul>
-                </div>
             </div>
         </section>
 
@@ -141,83 +134,45 @@
         <section id="challenges" class="content-section">
             <h3 class="text-3xl font-bold text-center mb-2">The Biological Reality</h3>
             <p class="text-center text-gray-500 mb-12">Why Linear Transform Methods Often Fall Short</p>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="card">
                     <h4 class="font-semibold text-lg mb-2">Non-Linearity</h4>
                     <p class="text-sm text-gray-600">Biological systems are rarely linear. Processes like enzyme kinetics (Michaelis-Menten) and gene regulation (Hill functions) exhibit saturation. Transforms assume linearity, so they are often only valid for small perturbations around a specific operating point.</p>
-                    <div class="mt-3 p-2 bg-orange-50 border-l-2 border-orange-400 rounded">
-                        <p class="text-xs text-orange-900"><strong>Solution:</strong> Use Higher-Order Spectral Analysis (HOSA) like Bispectrum/Bicoherence to detect nonlinear interactions</p>
-                    </div>
                 </div>
                 <div class="card">
                     <h4 class="font-semibold text-lg mb-2">Stochasticity</h4>
                     <p class="text-sm text-gray-600">Molecular noise is significant, especially at low copy numbers of proteins or mRNA. Transform methods are deterministic and can fail to capture the random fluctuations that are often biologically important. Analysis often requires averaging over many cells or trials.</p>
-                    <div class="mt-3 p-2 bg-blue-50 border-l-2 border-blue-400 rounded">
-                        <p class="text-xs text-blue-900"><strong>Solution:</strong> Use stochastic differential equations (SDEs) or ensemble averaging with statistical significance testing</p>
-                    </div>
                 </div>
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-2">Non-Stationarity ⭐</h4>
+                    <h4 class="font-semibold text-lg mb-2">Non-Stationarity</h4>
                     <p class="text-sm text-gray-600">The properties of biological systems change over time. Cells age, differentiate, or adapt to new environments. This means the underlying "rules" of the system are not constant, violating a key assumption of standard Fourier and Z-Transforms.</p>
-                    <div class="mt-3 p-2 bg-cyan-50 border-l-2 border-cyan-400 rounded">
-                        <p class="text-xs text-cyan-900"><strong>Solution:</strong> Use <strong>Wavelet Transform</strong> for time-frequency localization - this is ESSENTIAL, not optional!</p>
-                    </div>
                 </div>
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-2">Irregular Sampling ⭐</h4>
-                    <p class="text-sm text-gray-600">Real biological data is often irregularly sampled due to missed measurements, instrument downtime, or event-driven data collection. Standard FFT requires uniform sampling intervals.</p>
-                    <div class="mt-3 p-2 bg-purple-50 border-l-2 border-purple-400 rounded">
-                        <p class="text-xs text-purple-900"><strong>Solution:</strong> Use <strong>Lomb-Scargle Periodogram</strong> - the gold standard in biology (used by MetaCycle)</p>
-                    </div>
+                    <h4 class="font-semibold text-lg mb-2">Parameter Identification</h4>
+                    <p class="text-sm text-gray-600">Measuring the precise parameters needed to create an accurate transfer function in a living cell is incredibly difficult. Unlike engineered systems, biological "components" are hard to isolate and characterize, making system identification a major challenge.</p>
                 </div>
-            </div>
-            
-            <div class="max-w-4xl mx-auto bg-amber-50 border-2 border-amber-300 rounded-lg p-6">
-                <h4 class="font-semibold text-amber-900 mb-3 text-center">⚡ Critical Insight from Research</h4>
-                <p class="text-sm text-amber-900 text-center leading-relaxed">
-                    The challenges above are not theoretical—they're the <strong>daily reality of biological data</strong>. 
-                    Traditional Z-Transform and FFT were designed for engineered systems (electronics, control systems) with 
-                    <strong>linear, stationary, uniformly-sampled</strong> signals. Biology violates all three assumptions! 
-                    This is why specialized methods like Wavelets, Lomb-Scargle, and HOSA exist.
-                </p>
             </div>
         </section>
 
         <section id="explorer" class="content-section">
             <h3 class="text-3xl font-bold text-center mb-2">Interactive Method Explorer</h3>
             <p class="text-center text-gray-500 mb-8">Select a biological signal type to see the recommended analysis method.</p>
-            <div class="card max-w-5xl mx-auto">
+            <div class="card max-w-4xl mx-auto">
                 <div class="mb-6">
                     <label for="signal-type" class="block text-sm font-medium text-gray-700 mb-2">Biological Signal Type:</label>
-                    <select id="signal-type" class="w-full p-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 font-medium">
-                        <option value="stationary">Stationary Rhythmic Signal (e.g., Stable Heartbeat, Clean Filtered Data)</option>
-                        <option value="irregular">Irregularly Sampled Data (e.g., Missing Timepoints, Field Measurements)</option>
-                        <option value="nonstationary">Non-Stationary Signal (e.g., Cell Cycle Transitions, Aging)</option>
-                        <option value="transient">Transient Event (e.g., Stress Response, Neural Spike)</option>
-                        <option value="nonlinear">Nonlinear Coupling (e.g., Gene Networks, Multi-pathway Interactions)</option>
+                    <select id="signal-type" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="stationary">Stationary Rhythmic Signal (e.g., Stable Heartbeat, Filtered Sensor Data)</option>
+                        <option value="nonstationary">Non-Stationary Signal (e.g., Circadian Rhythm with Phase Shift)</option>
+                        <option value="transient">Transient Event (e.g., Neural Spike, Gene Expression Burst)</option>
                     </select>
                 </div>
-                <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
                     <div>
                         <h4 id="recommendation-title" class="text-xl font-semibold mb-3 text-blue-600"></h4>
-                        <p id="recommendation-text" class="text-gray-700 mb-4"></p>
-                        
-                        <div id="recommendation-details" class="space-y-3">
-                            <!-- Details populated by JS -->
-                        </div>
-                        
-                        <div id="recommendation-tools" class="mt-4 p-3 bg-blue-50 rounded-lg">
-                            <p class="text-xs font-semibold text-blue-900 mb-1">Recommended Tools:</p>
-                            <p id="tools-list" class="text-xs text-blue-800"></p>
-                        </div>
+                        <p id="recommendation-text" class="text-gray-700"></p>
                     </div>
-                    <div>
-                        <div class="chart-container" style="height: 250px;">
-                            <canvas id="explorer-chart"></canvas>
-                        </div>
-                        <div id="chart-interpretation" class="mt-3 p-3 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-700"></p>
-                        </div>
+                    <div class="chart-container">
+                        <canvas id="explorer-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -255,48 +210,13 @@
         </section>
         
         <section id="conclusion" class="content-section">
-            <div class="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-8 mb-8">
-                <h3 class="text-2xl font-bold text-center mb-4 text-blue-800">Conclusion: The Four-Lens Necessity</h3>
-                <p class="text-center text-blue-900 mb-6">
-                    No single transform is universally optimal for the diverse challenges in biological data analysis. The research is clear: 
-                    biological systems violate the assumptions of classical signal processing methods.
+            <div class="bg-blue-50 border-2 border-blue-100 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-center mb-4 text-blue-800">Conclusion & Justification for BioXen</h3>
+                <p class="text-center text-blue-900">
+                    No single transform is universally optimal for the diverse challenges in biological data analysis. Classical Fourier and Z-Transforms excel for linear, stationary systems like filtered biosensor data, but they struggle with the non-stationarity and transient events common in living systems. This is where methods like Wavelet analysis provide crucial time-frequency localization.
+                    <br><br>
+                    The necessity of a multi-transform toolkit like the proposed BioXen Fourier VM Library is clear. By integrating Fourier, Z, and Wavelet transforms, such a library empowers researchers to select the most appropriate tool for their specific biological problem, bridging the gap between classical signal processing and the complex, dynamic nature of biology.
                 </p>
-                
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-white p-4 rounded-lg border border-blue-200">
-                        <h4 class="font-semibold text-blue-800 mb-2">❌ What Fails</h4>
-                        <ul class="text-sm text-blue-900 space-y-1">
-                            <li>• <strong>FFT alone:</strong> Fails on irregular sampling</li>
-                            <li>• <strong>Z-Transform alone:</strong> Assumes linearity (biology is nonlinear)</li>
-                            <li>• <strong>Fourier alone:</strong> Cannot handle non-stationary signals</li>
-                            <li>• <strong>Single method:</strong> Misses critical biological phenomena</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="bg-white p-4 rounded-lg border border-green-200">
-                        <h4 class="font-semibold text-green-800 mb-2">✅ What Works</h4>
-                        <ul class="text-sm text-green-900 space-y-1">
-                            <li>• <strong>Lomb-Scargle:</strong> Handles irregular sampling</li>
-                            <li>• <strong>Wavelet:</strong> Detects transients and non-stationarity</li>
-                            <li>• <strong>HOSA:</strong> Reveals nonlinear coupling</li>
-                            <li>• <strong>Multi-algorithm consensus:</strong> Fault tolerance (MetaCycle approach)</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="bg-gradient-to-r from-cyan-100 to-blue-100 p-6 rounded-lg border-2 border-cyan-400">
-                    <h4 class="font-bold text-center text-cyan-900 mb-3">🎯 The BioXen Four-Lens System</h4>
-                    <p class="text-sm text-cyan-900 text-center leading-relaxed mb-4">
-                        By integrating <strong>Fourier (Lomb-Scargle)</strong>, <strong>Wavelet</strong>, <strong>Laplace</strong>, 
-                        and <strong>Z-Transform</strong> into a unified framework, the BioXen library empowers researchers to 
-                        select the appropriate tool for their biological problem. This isn't theoretical—it's based on extensive 
-                        peer-reviewed research showing these methods are <em>complementary, not competing</em>.
-                    </p>
-                    <p class="text-xs text-cyan-800 text-center font-medium">
-                        See the <a href="bioxen-lenses.html" class="underline hover:text-cyan-600">BioXen Four-Lens Interactive Demo</a> 
-                        to explore how each lens reveals different insights from the same data.
-                    </p>
-                </div>
             </div>
         </section>
 
@@ -362,15 +282,8 @@
 
             const chartData = {
                 stationary: {
-                    title: '✅ Recommended: Standard FFT / Z-Transform',
-                    text: 'For signals that are stable over time with clear, consistent frequencies, the Fast Fourier Transform (FFT) or Z-Transform are highly efficient and effective.',
-                    details: [
-                        { label: 'Why it works', text: 'Signal is stationary (frequency content doesn\'t change over time)' },
-                        { label: 'Assumptions met', text: 'Uniform sampling, linear system, periodic behavior' },
-                        { label: 'Computational cost', text: 'O(N log N) - very efficient' }
-                    ],
-                    tools: 'scipy.fft, numpy.fft, MATLAB FFT',
-                    interpretation: 'Dominant frequencies clearly visible in power spectrum',
+                    title: 'Recommended: Fourier / Z-Transform',
+                    text: 'For signals that are stable over time with clear, consistent frequencies, the Fast Fourier Transform (FFT) or Z-Transform are highly efficient and effective. They perfectly identify the dominant frequencies in the signal.',
                     chart: {
                         type: 'line',
                         data: {
@@ -385,87 +298,41 @@
                             }]
                         },
                         options: {
-                            plugins: { title: { display: true, text: 'Stable Periodic Signal' } }
-                        }
-                    }
-                },
-                irregular: {
-                    title: '⭐ Recommended: Lomb-Scargle Periodogram',
-                    text: 'When sampling is irregular (missing data points, uneven intervals), standard FFT fails. Lomb-Scargle is the gold standard in biology for handling this.',
-                    details: [
-                        { label: 'Biology standard', text: 'Used by MetaCycle (peer-reviewed tool for circadian analysis)' },
-                        { label: 'Key advantage', text: 'Works on unevenly sampled data + provides statistical significance' },
-                        { label: 'When to use', text: 'Field measurements, missed observations, event-driven sampling' }
-                    ],
-                    tools: 'astropy.timeseries.LombScargle, scipy.signal.lombscargle',
-                    interpretation: 'Can detect rhythms even with 30%+ missing data points',
-                    chart: {
-                        type: 'scatter',
-                        data: {
-                            labels: Array.from({ length: 100 }, (_, i) => i),
-                            datasets: [{
-                                label: 'Signal',
-                                data: Array.from({ length: 100 }, (_, i) => {
-                                    if (Math.random() > 0.3) {
-                                        return { x: i, y: Math.sin(i * 0.3) + 0.3 * (Math.random() - 0.5) };
-                                    }
-                                    return null;
-                                }).filter(d => d !== null),
-                                borderColor: '#8b5cf6',
-                                backgroundColor: '#8b5cf6',
-                                pointRadius: 3,
-                            }]
-                        },
-                        options: {
-                            plugins: { title: { display: true, text: 'Irregularly Sampled Data' } }
+                            plugins: { title: { display: true, text: 'Time Domain: Stable Signal' } }
                         }
                     }
                 },
                 nonstationary: {
-                    title: '🌊 Recommended: Wavelet Transform (ESSENTIAL)',
-                    text: 'When frequency content changes over time (cell cycle transitions, aging, adaptation), Fourier analysis fails completely. Wavelets provide time-frequency localization.',
-                    details: [
-                        { label: 'Critical for biology', text: 'Cells change states - metabolism speeds up/slows down dynamically' },
-                        { label: 'What it reveals', text: 'Not just WHAT frequencies exist, but WHEN they occur' },
-                        { label: 'Research backed', text: 'Essential for transient phenomena and damping oscillations' }
-                    ],
-                    tools: 'pywt (PyWavelets), scipy.signal.cwt, MATLAB Wavelet Toolbox',
-                    interpretation: 'Scalogram shows frequency evolution over time - Fourier cannot do this',
+                    title: 'Recommended: Wavelet Analysis',
+                    text: 'When the frequency of a signal changes over time, like in a circadian rhythm that adapts to new light cycles, Wavelet analysis is superior. It captures both frequency and the time at which it occurs.',
                     chart: {
                         type: 'line',
                         data: {
                             labels: Array.from({ length: 100 }, (_, i) => i),
                             datasets: [{
                                 label: 'Signal',
-                                data: Array.from({ length: 100 }, (_, i) => Math.sin(i * (0.1 + i*0.004)) * Math.exp(-i*0.01)),
-                                borderColor: '#0891b2',
+                                data: Array.from({ length: 100 }, (_, i) => Math.sin(i * (0.1 + i*0.004))),
+                                borderColor: '#10b981',
                                 borderWidth: 2,
                                 pointRadius: 0,
                                 tension: 0.1,
                             }]
                         },
                         options: {
-                            plugins: { title: { display: true, text: 'Frequency + Amplitude Change Over Time' } }
+                            plugins: { title: { display: true, text: 'Time Domain: Frequency Changes Over Time' } }
                         }
                     }
                 },
                 transient: {
-                    title: '⚡ Recommended: Wavelet Transform',
-                    text: 'For short, sharp, non-periodic events (stress response, neural spikes, gene bursts), Fourier analysis performs terribly. Wavelets excel at localizing these events in time.',
-                    details: [
-                        { label: 'Why Fourier fails', text: 'FFT assumes signal repeats forever - transient events are NOT periodic' },
-                        { label: 'Wavelet advantage', text: 'Pinpoints exact moment of event occurrence' },
-                        { label: 'Biological examples', text: 'Heat shock response, action potentials, transcription bursts' }
-                    ],
-                    tools: 'pywt, scipy.signal.cwt, per2py (single-cell analysis)',
-                    interpretation: 'Wavelet detects transient at exact time; Fourier smears it across entire window',
+                    title: 'Recommended: Wavelet Analysis',
+                    text: 'For short, sharp, non-periodic events like a neuron firing or a sudden burst of gene expression, Fourier analysis performs poorly as the event is not cyclical. Wavelets excel at identifying and localizing these transient events in time.',
                     chart: {
                         type: 'line',
                         data: {
                             labels: Array.from({ length: 100 }, (_, i) => i),
                             datasets: [{
                                 label: 'Signal',
-                                data: Array.from({ length: 100 }, (_, i) => (i > 45 && i < 55) ? Math.exp(-Math.pow(i - 50, 2) / 4) : 0.05 * (Math.random() - 0.5)),
+                                data: Array.from({ length: 100 }, (_, i) => (i > 45 && i < 55) ? Math.exp(-Math.pow(i - 50, 2) / 4) : 0),
                                 borderColor: '#ef4444',
                                 borderWidth: 2,
                                 pointRadius: 0,
@@ -473,39 +340,7 @@
                             }]
                         },
                         options: {
-                            plugins: { title: { display: true, text: 'Transient Event (t ≈ 50)' } }
-                        }
-                    }
-                },
-                nonlinear: {
-                    title: '🔬 Recommended: Higher-Order Spectral Analysis (HOSA)',
-                    text: 'Biological systems exhibit nonlinear interactions (gene networks, metabolic pathways). Standard Fourier/Z-Transform assume linearity and miss these couplings.',
-                    details: [
-                        { label: 'The problem', text: 'Two frequencies (12h + 8h cycles) can phase-lock to create 24h rhythm' },
-                        { label: 'What HOSA detects', text: 'Bispectrum/Bicoherence reveal quadratic phase coupling' },
-                        { label: 'When critical', text: 'Multi-pathway regulation, cooperative binding, feedback loops' }
-                    ],
-                    tools: 'Custom implementations, statsmodels (partial), MATLAB HOSA Toolbox',
-                    interpretation: 'Bispectrum peak indicates two frequencies are coupled nonlinearly',
-                    chart: {
-                        type: 'line',
-                        data: {
-                            labels: Array.from({ length: 100 }, (_, i) => i),
-                            datasets: [{
-                                label: 'Signal',
-                                data: Array.from({ length: 100 }, (_, i) => {
-                                    const f1 = Math.sin(i * 0.2);
-                                    const f2 = Math.sin(i * 0.3);
-                                    return f1 + f2 + 0.3 * f1 * f2; // Nonlinear coupling
-                                }),
-                                borderColor: '#f59e0b',
-                                borderWidth: 2,
-                                pointRadius: 0,
-                                tension: 0.1,
-                            }]
-                        },
-                        options: {
-                            plugins: { title: { display: true, text: 'Nonlinearly Coupled Oscillations' } }
+                            plugins: { title: { display: true, text: 'Time Domain: Isolated Transient Event' } }
                         }
                     }
                 }
@@ -515,21 +350,6 @@
                 const content = chartData[selectedValue];
                 recommendationTitle.textContent = content.title;
                 recommendationText.textContent = content.text;
-                
-                // Update details
-                const detailsDiv = document.getElementById('recommendation-details');
-                detailsDiv.innerHTML = content.details.map(detail => `
-                    <div class="border-l-3 border-blue-400 pl-3">
-                        <p class="text-xs font-semibold text-gray-700">${detail.label}:</p>
-                        <p class="text-xs text-gray-600">${detail.text}</p>
-                    </div>
-                `).join('');
-                
-                // Update tools
-                document.getElementById('tools-list').textContent = content.tools;
-                
-                // Update interpretation
-                document.querySelector('#chart-interpretation p').textContent = content.interpretation;
 
                 if (explorerChart) {
                     explorerChart.destroy();
@@ -542,10 +362,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { 
-                            y: { beginAtZero: false }, 
-                            x: { display: false } 
-                        },
+                        scales: { y: { beginAtZero: false }, x: { display: false } },
                         plugins: { 
                             legend: { display: false },
                             ...content.chart.options.plugins
@@ -600,33 +417,14 @@
         });
     </script>
 
-    <footer class="mt-16 py-8 border-t border-gray-200 bg-gradient-to-r from-stone-50 to-stone-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-4">
-                <h3 class="text-lg font-semibold text-stone-800 mb-3">📚 Research Foundation & Documentation</h3>
-                <div class="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-                    <a href="../research/Biological Signal Analysis_ Z-Transform & Alternatives.md" 
-                       class="block bg-white hover:bg-purple-50 border-2 border-purple-200 hover:border-purple-400 rounded-lg p-3 transition-all">
-                        <div class="text-purple-600 font-medium">Biological Signal Analysis</div>
-                        <div class="text-xs text-stone-600 mt-1">Z-Transform limitations & alternatives</div>
-                    </a>
-                    <a href="../research/Frequency Domain Analysis in Biology.md" 
-                       class="block bg-white hover:bg-green-50 border-2 border-green-200 hover:border-green-400 rounded-lg p-3 transition-all">
-                        <div class="text-green-600 font-medium">Frequency Domain Analysis</div>
-                        <div class="text-xs text-stone-600 mt-1">Spectral methods for biology</div>
-                    </a>
-                    <a href="../../../../new-prompt-update-execution-model-research-addendum.md" 
-                       class="block bg-white hover:bg-cyan-50 border-2 border-cyan-200 hover:border-cyan-400 rounded-lg p-3 transition-all">
-                        <div class="text-cyan-600 font-medium">Research Addendum ⭐</div>
-                        <div class="text-xs text-stone-600 mt-1">Latest enhancements (Wavelet, HOSA)</div>
-                    </a>
-                </div>
-            </div>
-            <div class="text-center text-sm text-stone-600 border-t border-stone-200 pt-4">
-                <p><strong>BioSignal Analysis Guide</strong> | Version 2.0 (Research-Enhanced) | 
-                <span class="text-purple-600">Updated with Four-Lens Methodology</span></p>
-                <p class="mt-2 text-xs">Based on peer-reviewed research: MetaCycle, Lomb-Scargle periodograms, wavelet analysis for non-stationary signals, and HOSA for nonlinear systems</p>
-            </div>
+    <footer class="mt-16 py-8 border-t border-gray-200">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-600">
+                For a comprehensive review of biological signal analysis methods, see: 
+                <a href="../research/Biological Signal Analysis_ Z-Transform & Alternatives.md" class="text-blue-600 hover:text-blue-800 underline font-medium">
+                    Biological Signal Analysis: Z-Transform & Alternatives
+                </a>
+            </p>
         </div>
     </footer>
 </body>
