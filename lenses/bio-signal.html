@@ -33,7 +33,7 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
 </head>
-<body class="antialiased">
+<body class="antialiased flex flex-col min-h-screen">
 
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
       <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -71,7 +71,7 @@
       </div>
     </header>
 
-    <div class="flex min-h-screen">
+    <div class="flex flex-1">
       <!-- Mobile Sidebar Toggle -->
       <div class="lg:hidden fixed top-20 left-4 z-20">
         <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
@@ -98,12 +98,12 @@
       <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
 
       <!-- Main Content -->
-      <main id="main-content" class="flex-1 p-4 lg:p-8">
+      <main id="main-content" class="flex-1 p-4 lg:p-8 flex flex-col">
 
         <section id="hero" class="content-section active">
             <div class="text-center mb-20">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">Choosing the Right Tool for Biological Signal Analysis</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">An interactive guide to understanding Z-Transforms, their limitations, and modern alternatives for analyzing complex biological data.</p>
+                <p class="text-lg text-gray-600">An interactive guide to understanding Z-Transforms, their limitations, and modern alternatives for analyzing complex biological data.</p>
             </div>
         </section>
 
@@ -212,7 +212,7 @@
         <section id="conclusion" class="content-section">
             <div class="bg-blue-50 border-2 border-blue-100 rounded-lg p-8">
                 <h3 class="text-2xl font-bold text-center mb-4 text-blue-800">Conclusion & Justification for BioXen</h3>
-                <p class="text-center text-blue-900 max-w-3xl mx-auto">
+                <p class="text-center text-blue-900">
                     No single transform is universally optimal for the diverse challenges in biological data analysis. Classical Fourier and Z-Transforms excel for linear, stationary systems like filtered biosensor data, but they struggle with the non-stationarity and transient events common in living systems. This is where methods like Wavelet analysis provide crucial time-frequency localization.
                     <br><br>
                     The necessity of a multi-transform toolkit like the proposed BioXen Fourier VM Library is clear. By integrating Fourier, Z, and Wavelet transforms, such a library empowers researchers to select the most appropriate tool for their specific biological problem, bridging the gap between classical signal processing and the complex, dynamic nature of biology.
@@ -221,6 +221,7 @@
         </section>
 
     </main>
+    </div>
 
     <footer class="bg-gray-100 mt-20">
         <div class="container mx-auto px-6 py-4 text-center text-gray-500">
