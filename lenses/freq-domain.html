@@ -9,6 +9,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        #main-content.sidebar-open {
+            margin-left: 16rem; /* 256px = w-64 */
+        }
+        @media (min-width: 1024px) {
+            #main-content.sidebar-open {
+                margin-left: 0;
+            }
+        }
+    </style>
     <!-- Chosen Palette: Calm Neutrals -->
     <!-- Application Structure Plan: The application is structured as a single-page dashboard with a fixed top navigation bar to switch between four main thematic sections: Introduction, Fourier Transform, Laplace Transform, and Case Studies. This structure was chosen over a linear document format to allow users to non-linearly explore the topics that interest them most, promoting discovery and comparison. The Fourier and Laplace sections use a two-column layout with sub-navigation on the left, enabling users to drill down into specific application areas without losing context. Interactive visualizations are embedded within relevant sections to provide hands-on learning experiences, directly connecting abstract concepts to visual outputs. The user flow is designed to be intuitive: land on the introduction, explore the two main methodologies and their sub-fields, and then see practical applications in the case studies section. This architecture transforms a static literature review into an engaging educational tool. -->
     <!-- Visualization & Content Choices: 
@@ -21,33 +34,79 @@
 </head>
 <body class="antialiased">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-10 border-b border-gray-200">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <span class="font-bold text-xl text-blue-800">BioXen VM Library</span>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#" class="nav-link text-gray-700 font-medium active" data-target="intro">Introduction</a>
-                        <a href="#" class="nav-link text-gray-700 font-medium" data-target="fourier">Fourier Transform</a>
-                        <a href="#" class="nav-link text-gray-700 font-medium" data-target="laplace">Laplace Transform</a>
-                        <a href="#" class="nav-link text-gray-700 font-medium" data-target="cases">Case Studies</a>
-                    </div>
-                </div>
-                <div class="md:hidden">
-                    <select id="mobile-nav" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option value="intro">Introduction</option>
-                        <option value="fourier">Fourier Transform</option>
-                        <option value="laplace">Laplace Transform</option>
-                        <option value="cases">Case Studies</option>
-                    </select>
-                </div>
-            </div>
-        </nav>
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <button id="mobile-menu-btn" class="lg:hidden mr-4 p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <h1 class="text-xl font-bold text-gray-800">Frequency Domain Biology</h1>
+          </div>
+          <div class="hidden md:flex items-center space-x-6">
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bio-signal.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >Biological Signal Analysis</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >BioXen VM Spec</a
+            >
+            <a
+              href="bio-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >Biology Lenses →</a
+            >
+          </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+          <div class="flex flex-col space-y-2 mt-4">
+            <a href="freq-domain.html" class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors">Frequency Domain Biology</a>
+            <a href="bio-signal.html" class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors">Biological Signal Analysis</a>
+            <a href="bioxen-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">BioXen VM Spec</a>
+            <a href="bio-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors">Biology Lenses →</a>
+          </div>
+        </div>
+      </nav>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="flex min-h-screen">
+      <!-- Mobile Sidebar Toggle -->
+      <div class="lg:hidden fixed top-20 left-4 z-20">
+        <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+        <nav class="space-y-2">
+          <a href="#intro" data-target="intro" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Introduction</a>
+          <a href="#fourier" data-target="fourier" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Fourier Transform</a>
+          <a href="#laplace" data-target="laplace" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Laplace Transform</a>
+          <a href="#cases" data-target="cases" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Case Studies</a>
+        </nav>
+      </aside>
+
+      <!-- Overlay for mobile sidebar -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1 p-4 lg:p-8">
         
         <section id="intro" class="content-section active">
             <div class="text-center mb-12">
@@ -219,8 +278,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const mainNavLinks = document.querySelectorAll('.nav-link');
-            const mobileNav = document.getElementById('mobile-nav');
+            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav-link');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
             const contentSections = document.querySelectorAll('.content-section');
 
             const fourierNavLinks = document.querySelectorAll('#fourier-nav .sub-nav-link');
@@ -229,28 +290,41 @@
             const laplaceNavLinks = document.querySelectorAll('#laplace-nav .sub-nav-link');
             const laplaceContentSections = document.querySelectorAll('.laplace-content');
 
+            // Sidebar toggle functionality
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('sidebar-open');
+                mainContent.classList.toggle('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.toggle('hidden');
+            });
+
+            // Close sidebar when clicking overlay
+            document.getElementById('sidebar-overlay').addEventListener('click', () => {
+                sidebar.classList.remove('sidebar-open');
+                mainContent.classList.remove('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.add('hidden');
+            });
+
             function switchMainTab(targetId) {
-                mainNavLinks.forEach(link => {
+                sidebarNavLinks.forEach(link => {
                     link.classList.toggle('active', link.dataset.target === targetId);
                 });
                 contentSections.forEach(section => {
                     section.classList.toggle('active', section.id === targetId);
                 });
-                 if (mobileNav.value !== targetId) {
-                    mobileNav.value = targetId;
-                }
             }
             
-            mainNavLinks.forEach(link => {
+            sidebarNavLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const targetId = e.currentTarget.dataset.target;
                     switchMainTab(targetId);
+                    
+                    // Close sidebar on mobile after navigation
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.remove('sidebar-open');
+                        mainContent.classList.remove('sidebar-open');
+                    }
                 });
-            });
-
-            mobileNav.addEventListener('change', (e) => {
-                switchMainTab(e.target.value);
             });
 
             function setupSubNav(navLinks, contentSections) {
