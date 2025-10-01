@@ -9,6 +9,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        #main-content.sidebar-open {
+            margin-left: 16rem; /* 256px = w-64 */
+        }
+        @media (min-width: 1024px) {
+            #main-content.sidebar-open {
+                margin-left: 0;
+            }
+        }
+    </style>
     <!-- Chosen Palette: Warm Neutrals -->
     <!-- Application Structure Plan: The application is structured as an interactive "Method Selection Guide" rather than a linear report. This design prioritizes user task-flow and comprehension over mimicking the source document's layout. The structure includes: 1) A top navigation for quick access to key themes (Core Concepts, Challenges, Method Explorer, Implementation). 2) A "Core Concepts" section to clarify the Z-Transform's role. 3) An interactive "Challenges" section using a card layout to break down complex limitations. 4) The central "Method Explorer," which allows users to select a biological signal type and receive a tailored recommendation and visualization. This interactive, problem-solution format is chosen to make the dense, technical information more digestible and actionable for researchers and students. -->
     <!-- Visualization & Content Choices: 
@@ -18,30 +31,83 @@
         - Implementation Section: (Goal: Inform/Compare) Cards for software tools and a simple bar chart for computational cost. Justification: Presents practical information in an easily scannable format. Library: Chart.js (Canvas).
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <link rel="stylesheet" href="css/styles.css" />
+
 </head>
 <body class="antialiased">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-blue-700">BioSignal Analysis Guide</h1>
-            <div class="hidden md:flex space-x-8">
-                <a href="#concepts" class="nav-link pb-1">Core Concepts</a>
-                <a href="#challenges" class="nav-link pb-1">Challenges</a>
-                <a href="#explorer" class="nav-link pb-1">Method Explorer</a>
-                <a href="#implementation" class="nav-link pb-1">Implementation</a>
-            </div>
-        </nav>
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <h1 class="text-xl font-bold text-purple-700">BioSignal Analysis Guide</h1>
+          </div>
+          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >BioXen VM Spec</a
+            >
+            <a
+              href="bio-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >Biology Lenses →</a
+            >
+          </div>
+        </div>
+      </nav>
+
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+        <div class="flex flex-col space-y-2 mt-4">
+          <a href="freq-domain.html" class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors">Frequency Domain Biology</a>
+          <a href="bioxen-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">BioXen VM Spec</a>
+          <a href="bio-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors">Biology Lenses →</a>
+        </div>
+      </div>
     </header>
 
-    <main class="container mx-auto px-6 py-12">
+    <div class="flex min-h-screen">
+      <!-- Mobile Sidebar Toggle -->
+      <div class="lg:hidden fixed top-20 left-4 z-20">
+        <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
 
-        <section id="hero" class="text-center mb-20">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">Choosing the Right Tool for Biological Signal Analysis</h2>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto">An interactive guide to understanding Z-Transforms, their limitations, and modern alternatives for analyzing complex biological data.</p>
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+        <nav class="space-y-2">
+          <a href="#hero" data-target="hero" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Introduction</a>
+          <a href="#concepts" data-target="concepts" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Core Concepts</a>
+          <a href="#challenges" data-target="challenges" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Challenges</a>
+          <a href="#explorer" data-target="explorer" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Method Explorer</a>
+          <a href="#implementation" data-target="implementation" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Implementation</a>
+          <a href="#conclusion" data-target="conclusion" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Conclusion</a>
+        </nav>
+      </aside>
+
+      <!-- Overlay for mobile sidebar -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1 p-4 lg:p-8">
+
+        <section id="hero" class="content-section active">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">Choosing the Right Tool for Biological Signal Analysis</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">An interactive guide to understanding Z-Transforms, their limitations, and modern alternatives for analyzing complex biological data.</p>
+            </div>
         </section>
 
-        <section id="concepts" class="mb-20 scroll-mt-20">
+        <section id="concepts" class="content-section">
             <h3 class="text-3xl font-bold text-center mb-2">Core Concepts</h3>
             <p class="text-center text-gray-500 mb-12">The Z-Transform in the Context of Discrete Biological Systems</p>
             <div class="grid md:grid-cols-2 gap-8 items-center">
@@ -65,7 +131,7 @@
             </div>
         </section>
 
-        <section id="challenges" class="mb-20 scroll-mt-20">
+        <section id="challenges" class="content-section">
             <h3 class="text-3xl font-bold text-center mb-2">The Biological Reality</h3>
             <p class="text-center text-gray-500 mb-12">Why Linear Transform Methods Often Fall Short</p>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -88,7 +154,7 @@
             </div>
         </section>
 
-        <section id="explorer" class="mb-20 scroll-mt-20">
+        <section id="explorer" class="content-section">
             <h3 class="text-3xl font-bold text-center mb-2">Interactive Method Explorer</h3>
             <p class="text-center text-gray-500 mb-8">Select a biological signal type to see the recommended analysis method.</p>
             <div class="card max-w-4xl mx-auto">
@@ -112,7 +178,7 @@
             </div>
         </section>
 
-        <section id="implementation" class="mb-20 scroll-mt-20">
+        <section id="implementation" class="content-section">
             <h3 class="text-3xl font-bold text-center mb-2">Computational Implementation</h3>
             <p class="text-center text-gray-500 mb-12">Tools and Performance Considerations</p>
             <div class="grid md:grid-cols-2 gap-8">
@@ -143,13 +209,15 @@
             </div>
         </section>
         
-        <section id="conclusion" class="bg-blue-50 border-2 border-blue-100 rounded-lg p-8">
-             <h3 class="text-2xl font-bold text-center mb-4 text-blue-800">Conclusion & Justification for BioXen</h3>
-             <p class="text-center text-blue-900 max-w-3xl mx-auto">
-                 No single transform is universally optimal for the diverse challenges in biological data analysis. Classical Fourier and Z-Transforms excel for linear, stationary systems like filtered biosensor data, but they struggle with the non-stationarity and transient events common in living systems. This is where methods like Wavelet analysis provide crucial time-frequency localization.
-                 <br><br>
-                 The necessity of a multi-transform toolkit like the proposed BioXen Fourier VM Library is clear. By integrating Fourier, Z, and Wavelet transforms, such a library empowers researchers to select the most appropriate tool for their specific biological problem, bridging the gap between classical signal processing and the complex, dynamic nature of biology.
-             </p>
+        <section id="conclusion" class="content-section">
+            <div class="bg-blue-50 border-2 border-blue-100 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-center mb-4 text-blue-800">Conclusion & Justification for BioXen</h3>
+                <p class="text-center text-blue-900 max-w-3xl mx-auto">
+                    No single transform is universally optimal for the diverse challenges in biological data analysis. Classical Fourier and Z-Transforms excel for linear, stationary systems like filtered biosensor data, but they struggle with the non-stationarity and transient events common in living systems. This is where methods like Wavelet analysis provide crucial time-frequency localization.
+                    <br><br>
+                    The necessity of a multi-transform toolkit like the proposed BioXen Fourier VM Library is clear. By integrating Fourier, Z, and Wavelet transforms, such a library empowers researchers to select the most appropriate tool for their specific biological problem, bridging the gap between classical signal processing and the complex, dynamic nature of biology.
+                </p>
+            </div>
         </section>
 
     </main>
@@ -161,12 +229,55 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav-link');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const contentSections = document.querySelectorAll('.content-section');
+
             const explorerSelect = document.getElementById('signal-type');
             const recommendationTitle = document.getElementById('recommendation-title');
             const recommendationText = document.getElementById('recommendation-text');
             let explorerChart;
             let complexityChart;
+
+            // Sidebar toggle functionality
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('sidebar-open');
+                mainContent.classList.toggle('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.toggle('hidden');
+            });
+
+            // Close sidebar when clicking overlay
+            document.getElementById('sidebar-overlay').addEventListener('click', () => {
+                sidebar.classList.remove('sidebar-open');
+                mainContent.classList.remove('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.add('hidden');
+            });
+
+            function switchMainTab(targetId) {
+                sidebarNavLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.target === targetId);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+            }
+            
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.dataset.target;
+                    switchMainTab(targetId);
+                    
+                    // Close sidebar on mobile after navigation
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.remove('sidebar-open');
+                        mainContent.classList.remove('sidebar-open');
+                    }
+                });
+            });
 
             const chartData = {
                 stationary: {
@@ -301,23 +412,6 @@
                         tooltip: { enabled: false }
                     }
                 }
-            });
-
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('section[id]');
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
-                        });
-                    }
-                });
-            }, { rootMargin: "-50% 0px -50% 0px" });
-
-            sections.forEach(section => {
-                observer.observe(section);
             });
         });
     </script>
