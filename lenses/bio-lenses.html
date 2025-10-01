@@ -9,6 +9,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        #main-content.sidebar-open {
+            margin-left: 16rem; /* 256px = w-64 */
+        }
+        @media (min-width: 1024px) {
+            #main-content.sidebar-open {
+                margin-left: 0;
+            }
+        }
+    </style>
     <!-- Chosen Palette: Calm Neutrals -->
     <!-- Application Structure Plan: The application is structured as a single-page, tabbed interface to facilitate non-linear exploration. The core content is divided into sections for each of the three transforms (Fourier, Laplace, Z-Transform), followed by sections for Synthesis, Practical Challenges, and a final Critical Conclusion. This thematic structure, rather than a linear report format, allows users to easily compare the transforms or dive deep into a specific area of interest. The user flow is guided by a persistent top navigation bar. Interactive elements like charts and expandable sections are used within each tab to break down complex information and maintain user engagement, directly addressing the user's need to understand both the theory and practical application of each method. -->
     <!-- Visualization & Content Choices: 
@@ -20,25 +33,78 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 <link rel="stylesheet" href="css/styles.css" />    
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body class="antialiased flex flex-col min-h-screen">
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <h1 class="text-xl font-bold text-blue-700">Biology Lenses</h1>
+          </div>
+          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bio-signal.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >Biological Signal Analysis</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >BioXen VM Spec</a
+            >
+            <a
+              href="bio-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >Biology Lenses →</a
+            >
+          </div>
+        </div>
+      </nav>
 
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-teal-700">The Three Lenses of Biological Systems</h1>
-            <p class="mt-2 text-lg text-stone-600">An Interactive Exploration of Fourier, Laplace, and Z-Transforms in Bioinformatics</p>
-        </header>
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+        <div class="flex flex-col space-y-2 mt-4">
+          <a href="freq-domain.html" class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors">Frequency Domain Biology</a>
+          <a href="bio-signal.html" class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors">Biological Signal Analysis</a>
+          <a href="bioxen-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">BioXen VM Spec</a>
+          <a href="bio-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors">Biology Lenses →</a>
+        </div>
+      </div>
+    </header>
 
-        <nav class="flex flex-wrap justify-center border-b border-stone-200 mb-8 space-x-4 sm:space-x-8">
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600 active" data-target="intro">Overview</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="fourier">Fourier Lens</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="laplace">Laplace Lens</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="z-transform">Z-Transform Lens</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="synthesis">Synthesis</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="conclusion">Critical Questions</button>
+    <div class="flex flex-1">
+      <!-- Mobile Sidebar Toggle -->
+      <div class="lg:hidden fixed top-20 left-4 z-20">
+        <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+        <nav class="space-y-2">
+          <a href="#intro" data-target="intro" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Overview</a>
+          <a href="#fourier" data-target="fourier" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Fourier Lens</a>
+          <a href="#laplace" data-target="laplace" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Laplace Lens</a>
+          <a href="#z-transform" data-target="z-transform" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Z-Transform Lens</a>
+          <a href="#synthesis" data-target="synthesis" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Synthesis</a>
+          <a href="#conclusion" data-target="conclusion" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Critical Questions</a>
         </nav>
+      </aside>
 
-        <main>
+      <!-- Overlay for mobile sidebar -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1 p-4 lg:p-8 flex flex-col">
             <section id="intro" class="content-section active">
                 <div class="max-w-4xl mx-auto">
                     <h2 class="text-2xl font-semibold text-teal-700 mb-4">Introduction: A Unified Framework?</h2>
@@ -229,29 +295,61 @@
                 </div>
             </section>
         </main>
-
     </div>
+
+    <footer class="mt-16 py-8 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-600">
+                For comprehensive research on frequency domain analysis in biology, see: 
+                <a href="../research/Biology Frequency Domain Analysis Review.md" class="text-blue-600 hover:text-blue-800 underline font-medium">
+                    Biology Frequency Domain Analysis Review
+                </a>
+            </p>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const navButtons = document.querySelectorAll('.nav-btn');
-            const contentSections = document.querySelectorAll('.content-section');
+            // Navigation functionality
+            const navLinks = document.querySelectorAll('.sidebar-nav-link');
+            const sections = document.querySelectorAll('.content-section');
 
-            navButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetId = button.dataset.target;
-
-                    navButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-
-                    contentSections.forEach(section => {
-                        if (section.id === targetId) {
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update link states
+                    navLinks.forEach(lnk => lnk.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update section visibility
+                    sections.forEach(section => {
+                        if (section.id === target) {
                             section.classList.add('active');
                         } else {
                             section.classList.remove('active');
                         }
                     });
                 });
+            });
+
+            // Mobile sidebar toggle functionality
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('sidebar-open');
+                mainContent.classList.toggle('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.toggle('hidden');
+            });
+
+            // Close sidebar when clicking overlay
+            document.getElementById('sidebar-overlay').addEventListener('click', () => {
+                sidebar.classList.remove('sidebar-open');
+                mainContent.classList.remove('sidebar-open');
+                document.getElementById('sidebar-overlay').classList.add('hidden');
             });
 
             let fourierChart = null;
