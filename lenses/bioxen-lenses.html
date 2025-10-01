@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioXen Fourier VM: Mathematical Foundations for Biological Virtualization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <header class="text-center mb-8">
+            <div class="inline-block bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-semibold mb-3">
+                Technical Specification
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-700">BioXen Fourier VM Library</h1>
+            <p class="mt-2 text-lg text-stone-600">Mathematical Foundations for Biological System Virtualization</p>
+            <p class="mt-1 text-sm text-stone-500">Execution Model Design Document v1.0</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center border-b border-stone-200 mb-8 space-x-2 sm:space-x-6">
+            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600 active" data-target="intro">Overview</button>
+            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="fourier">Fourier Engine</button>
+            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="laplace">Laplace Controller</button>
+            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="z-transform">Z-Transform Filter</button>
+            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="implementation">Implementation</button>
+            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="roadmap">Roadmap</button>
+        </nav>
+
+        <main>
+            <section id="intro" class="content-section active">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-5 mb-6 rounded-r-lg">
+                        <h3 class="font-semibold text-blue-900 mb-2">🎯 Document Purpose</h3>
+                        <p class="text-blue-800 text-sm leading-relaxed">
+                            This document establishes the mathematical foundations for the <strong>BioXen Fourier VM Library</strong> execution model. 
+                            It specifies how Fourier, Laplace, and Z-transforms provide the computational substrate for virtualizing biological systems 
+                            with temporal dynamics, feedback control, and discrete-time monitoring.
+                        </p>
+                    </div>
+
+                    <h2 class="text-2xl font-semibold text-teal-700 mb-4">The Three-Transform Architecture</h2>
+                    <p class="text-stone-700 leading-relaxed mb-4">
+                        Biological cells are inherently <strong>dynamical systems</strong>—characterized by temporal oscillations (circadian rhythms, metabolic cycles), 
+                        transient responses to stimuli, and discrete measurement events. The BioXen architecture treats cells as virtual machines operating in a 
+                        time-varying environment controlled by the hypervisor's astronomical time simulator.
+                    </p>
+                    <p class="text-stone-700 leading-relaxed mb-4">
+                        Rather than reinventing temporal modeling primitives, we leverage <strong>signal processing theory</strong>—a mature mathematical 
+                        framework with decades of research in control systems, digital filters, and frequency analysis. The "three lenses" provide:
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+                            <h3 class="font-semibold text-purple-900 mb-2">🌊 Fourier Transform</h3>
+                            <p class="text-sm text-purple-800">Frequency-domain analysis of periodic biological processes</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+                            <h3 class="font-semibold text-orange-900 mb-2">⚙️ Laplace Transform</h3>
+                            <p class="text-sm text-orange-800">System modeling and stability analysis for feedback control</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                            <h3 class="font-semibold text-green-900 mb-2">📊 Z-Transform</h3>
+                            <p class="text-sm text-green-800">Discrete-time operations for sampled VM measurements</p>
+                        </div>
+                    </div>
+
+                    <div class="code-block mb-6">
+                        <div class="code-comment"># Example: BioXen VM lifecycle with temporal analysis</div>
+                        <div><span class="code-keyword">from</span> bioxen_fourier_vm_lib.api <span class="code-keyword">import</span> create_bio_vm</div>
+                        <div><span class="code-keyword">from</span> bioxen_fourier_vm_lib.hypervisor <span class="code-keyword">import</span> BioXenHypervisor</div>
+                        <div><span class="code-keyword">from</span> bioxen_fourier_vm_lib.analysis <span class="code-keyword">import</span> FourierAnalyzer</div>
+                        <div class="mt-2"><span class="code-comment"># Create VM with circadian-aware hypervisor</span></div>
+                        <div>vm = <span class="code-function">create_bio_vm</span>(<span class="code-string">'cell_001'</span>, <span class="code-string">'syn3a'</span>, <span class="code-string">'basic'</span>)</div>
+                        <div>hypervisor = <span class="code-function">BioXenHypervisor</span>()</div>
+                        <div class="mt-2"><span class="code-comment"># Get environmental forcing function</span></div>
+                        <div>env_state = hypervisor.<span class="code-function">get_environmental_state</span>()</div>
+                        <div><span class="code-function">print</span>(<span class="code-string">f"Light intensity: {env_state.light_intensity}"</span>)</div>
+                        <div class="mt-2"><span class="code-comment"># Analyze metabolic oscillations via Fourier</span></div>
+                        <div>analyzer = <span class="code-function">FourierAnalyzer</span>()</div>
+                        <div>spectrum = analyzer.<span class="code-function">compute_spectrum</span>(vm.metabolite_timeseries)</div>
+                    </div>
+
+                    <p class="text-stone-700 leading-relaxed">
+                        This document explores each transform's role in the execution model, demonstrates their practical implementation, 
+                        and addresses the technical challenges of applying continuous-time mathematics to stochastic biological systems.
+                    </p>
+                </div>
+            </section>
+
+            <section id="fourier" class="content-section">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-2xl font-semibold text-teal-700 mb-2">Fourier Transform: Temporal Rhythm Analysis</h2>
+                    <p class="text-stone-600 mb-6">
+                        The Fourier engine decomposes VM time-series data (gene expression, metabolite levels, resource consumption) 
+                        into frequency components, enabling detection of periodic patterns synchronized with the hypervisor's astronomical cycles.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h3 class="text-lg font-semibold text-center mb-4">Interactive Demo: Metabolic Oscillation Detection</h3>
+                    <div class="chart-container">
+                        <canvas id="fourierChart"></canvas>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button id="analyzeFourierBtn" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors">
+                            Run FFT Analysis
+                        </button>
+                    </div>
+                    <p class="text-sm text-stone-500 text-center mt-3">
+                        Simulates FFT of VM ATP consumption over 24-hour cycle, revealing circadian frequency peak
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-3 text-teal-800">BioXen Implementation Modules</h3>
+                        <ul class="space-y-3 text-stone-700">
+                            <li>
+                                <strong class="text-teal-700">Circadian Synchronization:</strong>
+                                <p class="text-sm mt-1">FFT analysis of VM metabolic states to detect phase alignment with hypervisor solar cycles (24h period). 
+                                Enables identification of VMs with desynchronized clocks.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">Anomaly Detection:</strong>
+                                <p class="text-sm mt-1">Spectral density analysis of resource consumption (ATP, ribosomes) to flag abnormal frequency patterns 
+                                indicating VM malfunction or contamination.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">Expression Dynamics:</strong>
+                                <p class="text-sm mt-1">Periodogram estimation for gene expression time-series from VM sensors, identifying oscillatory 
+                                genes for cell cycle and stress response studies.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-3 text-teal-800">Technical Challenges</h3>
+                        <ul class="space-y-3 text-stone-700">
+                            <li>
+                                <strong class="text-orange-700">Non-Stationarity:</strong>
+                                <p class="text-sm mt-1">VM frequencies drift over time due to cellular aging and environmental adaptation. 
+                                <em>Solution:</em> Short-time Fourier Transform (STFT) or wavelet analysis for time-localized frequency content.</p>
+                            </li>
+                            <li>
+                                <strong class="text-orange-700">Measurement Noise:</strong>
+                                <p class="text-sm mt-1">Single-cell sensors have high technical and biological noise (Poisson counting statistics). 
+                                <em>Solution:</em> Ensemble averaging across VM replicas or Welch's method for periodogram smoothing.</p>
+                            </li>
+                            <li>
+                                <strong class="text-orange-700">Irregular Sampling:</strong>
+                                <p class="text-sm mt-1">VMs may report at uneven intervals due to computational load or event-driven sensing. 
+                                <em>Solution:</em> Lomb-Scargle periodogram for unevenly sampled data or cubic spline interpolation.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto mt-6">
+                    <div class="code-block">
+                        <div class="code-comment"># Fourier module API design</div>
+                        <div><span class="code-keyword">class</span> <span class="code-function">FourierAnalyzer</span>:</div>
+                        <div class="ml-4"><span class="code-keyword">def</span> <span class="code-function">compute_spectrum</span>(self, timeseries, sampling_rate):</div>
+                        <div class="ml-8"><span class="code-string">"""Compute power spectral density via FFT"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                        <div class="ml-4 mt-2"><span class="code-keyword">def</span> <span class="code-function">detect_periodicities</span>(self, spectrum, threshold=0.05):</div>
+                        <div class="ml-8"><span class="code-string">"""Identify significant frequency peaks"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                        <div class="ml-4 mt-2"><span class="code-keyword">def</span> <span class="code-function">phase_coherence</span>(self, vm1_data, vm2_data):</div>
+                        <div class="ml-8"><span class="code-string">"""Measure phase synchronization between VMs"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="laplace" class="content-section">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-2xl font-semibold text-teal-700 mb-2">Laplace Transform: System Control & Stability</h2>
+                    <p class="text-stone-600 mb-6">
+                        The Laplace controller models VM response dynamics as linear time-invariant (LTI) systems. 
+                        Transfer functions describe how inputs (nutrient pulses, light shifts) propagate to outputs (protein levels, growth rate), 
+                        enabling predictive control and stability analysis.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto mb-8">
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-3 text-teal-800">BioXen Control Applications</h3>
+                        <ul class="space-y-3 text-stone-700">
+                            <li>
+                                <strong class="text-teal-700">Resource Allocation Control:</strong>
+                                <p class="text-sm mt-1">Design PID controllers in Laplace domain to maintain target ATP levels despite fluctuating demand. 
+                                Pole placement ensures stable response without oscillations.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">Homeostasis Feedback Loops:</strong>
+                                <p class="text-sm mt-1">Model pH regulation, temperature control, and osmotic pressure as feedback systems. 
+                                Root-locus analysis determines stability margins for hypervisor perturbations.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">Gene Network Dynamics:</strong>
+                                <p class="text-sm mt-1">Represent transcriptional cascades as transfer functions G(s) = output/input. 
+                                Predict transient response times to transcription factor pulses.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">System Identification:</strong>
+                                <p class="text-sm mt-1">Experimentally measure VM transfer functions by applying step/impulse inputs and 
+                                fitting Laplace models to output data.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-4 text-teal-800 text-center">Conceptual Model: VM Feedback Control</h3>
+                        <div class="flex flex-col items-center space-y-3">
+                            <div class="flex items-center justify-center space-x-2">
+                                <div class="text-center p-3 bg-blue-100 rounded-lg border-2 border-blue-300">
+                                    <p class="font-semibold text-sm">Input u(t)</p>
+                                    <p class="text-xs text-blue-800">Resource allocation</p>
+                                </div>
+                                <div class="text-3xl font-thin text-stone-400">→</div>
+                                <div class="text-center p-3 border-2 border-dashed border-teal-500 rounded-lg bg-teal-50">
+                                    <p class="font-semibold text-sm">G(s)</p>
+                                    <p class="text-xs text-stone-600">VM Transfer Function</p>
+                                </div>
+                                <div class="text-3xl font-thin text-stone-400">→</div>
+                                <div class="text-center p-3 bg-green-100 rounded-lg border-2 border-green-300">
+                                    <p class="font-semibold text-sm">Output y(t)</p>
+                                    <p class="text-xs text-green-800">Protein production</p>
+                                </div>
+                            </div>
+                            <div class="text-2xl text-stone-400">↓</div>
+                            <div class="text-center p-3 bg-purple-100 rounded-lg border-2 border-purple-300">
+                                <p class="font-semibold text-sm">Sensor + Controller</p>
+                                <p class="text-xs text-purple-800">Feedback: e(t) = r(t) - y(t)</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-stone-600 mt-4 text-center leading-relaxed">
+                            Laplace domain: Y(s) = G(s)U(s), where G(s) = b/(s + a) for first-order systems. 
+                            Controller design ensures stability (poles in left half-plane).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div class="code-block">
+                        <div class="code-comment"># Laplace controller module API</div>
+                        <div><span class="code-keyword">class</span> <span class="code-function">LaplaceController</span>:</div>
+                        <div class="ml-4"><span class="code-keyword">def</span> <span class="code-function">identify_transfer_function</span>(self, input_signal, output_signal):</div>
+                        <div class="ml-8"><span class="code-string">"""Fit G(s) model from step response data"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                        <div class="ml-4 mt-2"><span class="code-keyword">def</span> <span class="code-function">design_pid_controller</span>(self, plant_tf, target_poles):</div>
+                        <div class="ml-8"><span class="code-string">"""Synthesize PID gains for desired closed-loop dynamics"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                        <div class="ml-4 mt-2"><span class="code-keyword">def</span> <span class="code-function">stability_analysis</span>(self, closed_loop_tf):</div>
+                        <div class="ml-8"><span class="code-string">"""Check Routh-Hurwitz criterion, compute gain margins"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto mt-6 bg-orange-50 border-l-4 border-orange-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-orange-900 mb-2">⚠️ Linearization Requirement</h4>
+                    <p class="text-sm text-orange-800 leading-relaxed">
+                        Laplace assumes LTI systems, but biological processes are nonlinear (Michaelis-Menten kinetics, Hill functions). 
+                        <strong>Strategy:</strong> Linearize around operating points or use gain-scheduled controllers that switch between 
+                        multiple linear models across the operating range.
+                    </p>
+                </div>
+            </section>
+            
+            <section id="z-transform" class="content-section">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-2xl font-semibold text-teal-700 mb-2">Z-Transform: Discrete-Time Signal Processing</h2>
+                    <p class="text-stone-600 mb-6">
+                        VM measurements are inherently discrete—sampled at regular intervals (e.g., every 60 seconds). 
+                        The Z-transform filter module processes these sampled signals, designs digital controllers, 
+                        and implements discrete-time state estimation (e.g., Kalman filters).
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto mb-8">
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-3 text-teal-800">BioXen Discrete-Time Operations</h3>
+                        <ul class="space-y-3 text-stone-700">
+                            <li>
+                                <strong class="text-teal-700">Digital Filtering:</strong>
+                                <p class="text-sm mt-1">Design IIR/FIR filters in Z-domain to remove sensor noise from VM measurements 
+                                (temperature, pH, metabolite concentrations). Butterworth/Chebyshev filter synthesis.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">Discrete Control Laws:</strong>
+                                <p class="text-sm mt-1">Implement digital PID controllers updated at each sampling interval. 
+                                Z-transform enables direct design from continuous Laplace controllers via bilinear transform.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">State Estimation:</strong>
+                                <p class="text-sm mt-1">Discrete Kalman filter to estimate hidden VM states (internal metabolite pools) 
+                                from noisy, partial observations. Operates in Z-domain with state-space models.</p>
+                            </li>
+                            <li>
+                                <strong class="text-teal-700">Sequence Analysis:</strong>
+                                <p class="text-sm mt-1">Model discrete event sequences (gene activation cascades, spike trains) 
+                                using Z-transform representation. Connects to HMM theory for state inference.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-4 text-teal-800 text-center">Visualization: Continuous vs. Sampled</h3>
+                        <div class="chart-container h-64">
+                            <canvas id="discreteChart"></canvas>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button id="toggleDiscreteBtn" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors">
+                                Toggle Sampling Points
+                            </button>
+                        </div>
+                        <p class="text-sm text-stone-600 mt-4 text-center leading-relaxed">
+                            Z-transform operates on discrete samples (green dots) from continuous biological process (gray line). 
+                            Sampling rate must satisfy Nyquist criterion: f_sample > 2·f_max.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div class="code-block mb-6">
+                        <div class="code-comment"># Z-transform filter module API</div>
+                        <div><span class="code-keyword">class</span> <span class="code-function">ZTransformFilter</span>:</div>
+                        <div class="ml-4"><span class="code-keyword">def</span> <span class="code-function">design_lowpass_filter</span>(self, cutoff_freq, sampling_rate, order=4):</div>
+                        <div class="ml-8"><span class="code-string">"""Design digital Butterworth filter in Z-domain"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                        <div class="ml-4 mt-2"><span class="code-keyword">def</span> <span class="code-function">discretize_controller</span>(self, continuous_tf, sampling_rate):</div>
+                        <div class="ml-8"><span class="code-string">"""Convert Laplace controller to Z-domain via tustin/bilinear"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                        <div class="ml-4 mt-2"><span class="code-keyword">def</span> <span class="code-function">kalman_filter</span>(self, state_model, observations):</div>
+                        <div class="ml-8"><span class="code-string">"""Discrete-time Kalman filter for state estimation"""</span></div>
+                        <div class="ml-8"><span class="code-keyword">pass</span></div>
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-blue-900 mb-2">💡 Connection to HMMs</h4>
+                        <p class="text-sm text-blue-800 leading-relaxed">
+                            Hidden Markov Models used in genomics (gene finding, protein structure prediction) are discrete-time stochastic systems. 
+                            While HMMs are primarily probabilistic, their temporal dynamics can be analyzed via Z-transform for understanding 
+                            state transition frequencies and system stability.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="implementation" class="content-section">
+                <div class="max-w-4xl mx-auto text-center mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-700 mb-2">Implementation Architecture</h2>
+                    <p class="text-stone-600 mb-6">
+                        The three-transform framework maps to distinct Python modules within the BioXen library, 
+                        each providing specialized signal processing capabilities for VM temporal analysis.
+                    </p>
+                </div>
+
+                <div class="max-w-5xl mx-auto overflow-x-auto mb-8">
+                    <table class="w-full text-left border-collapse bg-white rounded-lg overflow-hidden shadow">
+                        <thead>
+                            <tr class="bg-teal-600 text-white">
+                                <th class="py-3 px-4 font-semibold">Transform</th>
+                                <th class="py-3 px-4 font-semibold">Module Path</th>
+                                <th class="py-3 px-4 font-semibold">Key Classes</th>
+                                <th class="py-3 px-4 font-semibold">Primary Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-stone-200 hover:bg-stone-50">
+                                <td class="py-3 px-4 font-semibold text-purple-700">Fourier</td>
+                                <td class="py-3 px-4 text-sm font-mono">analysis.fourier</td>
+                                <td class="py-3 px-4 text-sm">FourierAnalyzer<br>SpectralDensity<br>PhaseCoherence</td>
