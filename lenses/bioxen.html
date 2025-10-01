@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="index.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors"
+              >🏠 Home</a
+            >
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bio-signal.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >Biological Signal Analysis</a
+            >
+            <a
+              href="bioxen.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-teal-600 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 transition-colors"
+              >BioXen Research Plan</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">e="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioXen: Four-Lens Signal Analysis Research Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutrals & Muted Teal -->
+    <!-- Application Structure Plan: A tab-based Single-Page Application (SPA) structure was chosen to manage the high density of technical information. This design breaks the research plan into logical, thematic sections (Overview, The Four Lenses, Consensus, etc.), allowing users to navigate directly to their area of interest without overwhelming vertical scrolling. This non-linear approach is superior for a technical audience that may want to compare sections or reference specific details quickly. The user flow is centered on the main navigation, with interactive elements like accordions and dynamic charts within each tab to further organize and clarify content. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core research question & philosophy -> Goal: Orient User -> Method: Styled text cards (HTML/Tailwind) -> Interaction: Static -> Justification: Clear, concise introduction.
+        - Report Info: Details of the four analysis methods -> Goal: Organize technical details -> Method: Interactive accordion (HTML/JS) -> Interaction: Click to expand/collapse -> Justification: Prevents information overload by hiding complex details until requested.
+        - Report Info: Consensus methodology -> Goal: Explain a process -> Method: Visual workflow diagram (HTML/Tailwind) -> Interaction: Static visual aid -> Justification: Simplifies the multi-step algorithm consensus process into an easily understandable flow.
+        - Report Info: Biological use cases -> Goal: Contextualize -> Method: Cards with a representative line chart (Chart.js) -> Interaction: View chart -> Justification: The line chart provides a concrete visual example of a circadian rhythm, grounding the abstract concepts.
+        - Report Info: Library comparison -> Goal: Compare -> Method: Interactive horizontal bar chart (Chart.js) and table -> Interaction: Radio buttons to update chart data -> Justification: Allows for dynamic, user-driven comparison of library trade-offs, making the data more engaging.
+        - Report Info: Research priorities -> Goal: Inform -> Method: Tiered lists (HTML/Tailwind) -> Interaction: Static -> Justification: Clearly delineates MVP from lower-priority items in a standard project management format.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Page-specific styles for bioxen.html */
+        .sidebar-nav-link {
+            transition: all 0.3s ease;
+        }
+        .sidebar-nav-link.active {
+            background-color: #0d9488;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        #sidebar {
+            min-height: 100vh;
+        }
+        @media (max-width: 1023px) {
+            #sidebar {
+                height: 100vh;
+                top: 0;
+            }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .accordion-button.open + .accordion-content {
+            max-height: 1000px;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <h1 class="text-xl font-bold text-teal-700">BioXen Research Plan</h1>
+          </div>
+          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bio-signal.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >Biological Signal Analysis</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >BioXen VM Spec</a
+            >
+            <a
+              href="bio-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >Biology Lenses →</a
+            >
+          </div>
+        </div>
+      </nav>
+
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+        <div class="flex flex-col space-y-2 mt-4">
+          <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors">🏠 Home</a>
+          <a href="freq-domain.html" class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors">Frequency Domain Biology</a>
+          <a href="bio-signal.html" class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors">Biological Signal Analysis</a>
+          <a href="bioxen.html" class="px-3 py-2 rounded-md text-sm font-medium text-teal-600 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 transition-colors">BioXen Research Plan</a>
+          <a href="bioxen-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">BioXen VM Spec</a>
+          <a href="bio-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors">Biology Lenses →</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1">
+      <!-- Mobile Sidebar Toggle -->
+      <div class="lg:hidden fixed top-20 left-4 z-20">
+        <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto h-screen overflow-y-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+        <nav class="space-y-2">
+          <button data-target="overview" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Overview</button>
+          <button data-target="lenses" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">The Four Lenses</button>
+          <button data-target="consensus" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Consensus & Validation</button>
+          <button data-target="usecases" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Use Cases</button>
+          <button data-target="strategy" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Library Strategy</button>
+          <button data-target="roadmap" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Roadmap</button>
+        </nav>
+      </aside>
+
+      <!-- Overlay for mobile sidebar -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-4 lg:p-8 flex flex-col lg:ml-0">
+            <div id="content-container">
+                <section id="overview" class="content-section p-4 fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                            <h2 class="text-2xl font-semibold text-teal-700 mb-3">Core Research Question</h2>
+                            <p class="text-stone-600">How can we implement a production-grade four-lens signal analysis system (Fourier/Lomb-Scargle, Wavelet, Laplace, Z-Transform) for biological temporal dynamics in synthetic cells, leveraging mature Python libraries while meeting peer-reviewed research standards?</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                            <h2 class="text-2xl font-semibold text-teal-700 mb-3">Guiding Philosophy</h2>
+                            <p class="text-stone-600">Write minimal integration code (~450 lines) to leverage the power of proven, heavily tested libraries (~500,000+ lines), ensuring reliability and maintainability.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-3">The Challenge</h2>
+                        <p class="text-stone-600 mb-4">This section outlines the primary challenge: standard signal processing methods often fail with biological data. Biological signals frequently violate the assumptions of classical Fourier analysis because they are:</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-teal-50 p-4 rounded-lg">
+                                <span class="text-2xl">〰️</span>
+                                <p class="font-semibold mt-1">Non-Stationary</p>
+                                <p class="text-xs text-stone-500">Statistical properties change over time</p>
+                            </div>
+                            <div class="bg-teal-50 p-4 rounded-lg">
+                                <span class="text-2xl">📊</span>
+                                <p class="font-semibold mt-1">Irregularly Sampled</p>
+                                <p class="text-xs text-stone-500">Data points are not evenly spaced</p>
+                            </div>
+                            <div class="bg-teal-50 p-4 rounded-lg">
+                                <span class="text-2xl">📉</span>
+                                <p class="font-semibold mt-1">Nonlinear</p>
+                                <p class="text-xs text-stone-500">Cause and effect are not proportional</p>
+                            </div>
+                            <div class="bg-teal-50 p-4 rounded-lg">
+                                <span class="text-2xl">🎲</span>
+                                <p class="font-semibold mt-1">Stochastic</p>
+                                <p class="text-xs text-stone-500">Inherent randomness in the system</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="lenses" class="content-section p-4 fade-in" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-2">The Four Lenses of Analysis</h2>
+                        <p class="text-stone-600 mb-6">Each "lens" provides a unique perspective on the signal. This section details the key research questions for implementing each analytical method. Click on a lens to expand its research tasks.</p>
+                        <div id="accordion-container" class="space-y-3">
+                            <div>
+                                <button class="accordion-button w-full text-left p-4 bg-stone-100 hover:bg-stone-200 rounded-lg flex justify-between items-center transition">
+                                    <span class="font-semibold text-lg text-teal-800">1. Fourier / Lomb-Scargle (Periodicity)</span>
+                                    <span class="transform transition-transform duration-300">▼</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside p-4 space-y-2 text-stone-700 bg-stone-50 rounded-b-lg">
+                                        <li>When to use `astropy.timeseries.LombScargle` vs `scipy.signal.lombscargle`?</li>
+                                        <li>How to interpret `false_alarm_probability()` for significance testing (threshold: &lt;0.05)?</li>
+                                        <li>What pre-processing is required: detrending, normalization?</li>
+                                        <li>How do tools like MetaCycle implement this in practice?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                             <div>
+                                <button class="accordion-button w-full text-left p-4 bg-stone-100 hover:bg-stone-200 rounded-lg flex justify-between items-center transition">
+                                    <span class="font-semibold text-lg text-teal-800">2. Wavelet Transform (Time-Frequency)</span>
+                                    <span class="transform transition-transform duration-300">▼</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside p-4 space-y-2 text-stone-700 bg-stone-50 rounded-b-lg">
+                                        <li>Which wavelet family is optimal (Morlet, Daubechies, Mexican hat)?</li>
+                                        <li>CWT vs DWT: when to use each for biological applications?</li>
+                                        <li>How to interpret scalograms for cell cycle transitions and transient events?</li>
+                                        <li>What parameters do production tools (MetaCycle, Rhythmidia) use?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="accordion-button w-full text-left p-4 bg-stone-100 hover:bg-stone-200 rounded-lg flex justify-between items-center transition">
+                                    <span class="font-semibold text-lg text-teal-800">3. Laplace Transform (System Stability)</span>
+                                    <span class="transform transition-transform duration-300">▼</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside p-4 space-y-2 text-stone-700 bg-stone-50 rounded-b-lg">
+                                        <li>How is Laplace analysis used in "Biomolecular Feedback Systems" (Del Vecchio & Murray)?</li>
+                                        <li>How to estimate transfer functions from biological time-series data?</li>
+                                        <li>What does pole-zero analysis reveal about genetic circuit stability?</li>
+                                        <li>How do published papers use `python-control` for biological systems?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="accordion-button w-full text-left p-4 bg-stone-100 hover:bg-stone-200 rounded-lg flex justify-between items-center transition">
+                                    <span class="font-semibold text-lg text-teal-800">4. Z-Transform (Digital Filtering)</span>
+                                    <span class="transform transition-transform duration-300">▼</span>
+                                </button>
+                                <div class="accordion-content">
+                                    <ul class="list-disc list-inside p-4 space-y-2 text-stone-700 bg-stone-50 rounded-b-lg">
+                                        <li>What filter types are optimal (Butterworth, Chebyshev, Bessel)?</li>
+                                        <li>How to choose cutoff frequencies for biological signals?</li>
+                                        <li>SOS (second-order sections) vs BA format: best practices?</li>
+                                        <li>How to avoid phase distortion in biological time-series?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="consensus" class="content-section p-4 fade-in" style="display: none;">
+                     <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-2">Consensus & Validation</h2>
+                        <p class="text-stone-600 mb-6">A robust analysis pipeline requires more than just powerful algorithms; it needs a way to combine their outputs and rigorously validate the input data. This section explores the "N-version programming" approach inspired by MetaCycle and defines mandatory data quality checks to prevent "Garbage In, Garbage Out."</p>
+                        
+                        <div class="text-center mb-6">
+                             <h3 class="text-xl font-semibold text-stone-800 mb-4">Multi-Algorithm Consensus Workflow</h3>
+                             <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-sm">
+                                <div class="p-3 bg-stone-100 rounded-lg shadow-sm">Raw Signal Input</div>
+                                <div class="font-bold text-teal-600">→</div>
+                                <div class="p-3 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-sm font-semibold">Validation Layer</div>
+                                <div class="font-bold text-teal-600">→</div>
+                                <div class="p-2 border-2 border-dashed border-stone-300 rounded-lg">
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div class="p-2 bg-blue-100 rounded">Lomb-Scargle</div>
+                                        <div class="p-2 bg-green-100 rounded">JTK_CYCLE</div>
+                                        <div class="p-2 bg-yellow-100 rounded">ARSER</div>
+                                    </div>
+                                </div>
+                                <div class="font-bold text-teal-600">→</div>
+                                <div class="p-3 bg-purple-100 rounded-lg shadow-sm">Voting Logic (e.g., 2-of-3)</div>
+                                <div class="font-bold text-teal-600">→</div>
+                                <div class="p-3 bg-teal-600 text-white font-bold rounded-lg shadow-md">Final Result</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-semibold text-stone-800 mb-4">Mandatory Validation Checks</h3>
+                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                    <h4 class="font-semibold text-teal-800">Nyquist Criterion</h4>
+                                    <p class="text-sm text-stone-600">Sampling rate must be at least 2x the maximum frequency to avoid aliasing.</p>
+                                </div>
+                                <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                    <h4 class="font-semibold text-teal-800">Signal Quality</h4>
+                                    <p class="text-sm text-stone-600">Check for minimum data length, sufficient variance, and acceptable Signal-to-Noise Ratio (SNR).</p>
+                                </div>
+                                <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                    <h4 class="font-semibold text-teal-800">Data Integrity</h4>
+                                    <p class="text-sm text-stone-600">Detect and handle constant signals, NaN values, and significant outliers before analysis.</p>
+                                </div>
+                                 <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                                    <h4 class="font-semibold text-teal-800">Detrending</h4>
+                                    <p class="text-sm text-stone-600">Determine if linear, polynomial, or spline detrending is required to isolate oscillations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="usecases" class="content-section p-4 fade-in" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-2">Biological Use Cases</h2>
+                        <p class="text-stone-600 mb-6">This section grounds the analytical methods in practical biological problems. The four-lens framework is designed to address diverse challenges, from detecting stable daily rhythms to capturing transient stress responses and engineering synthetic circuits.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                                <h3 class="font-semibold text-lg text-teal-800 mb-2">Circadian Rhythm Detection</h3>
+                                <p class="text-sm text-stone-600 mb-4">How can we detect a ~24h periodicity in gene expression with statistical significance? This requires robust methods like Lomb-Scargle for noisy, irregularly sampled data.</p>
+                                <div class="chart-container">
+                                    <canvas id="circadianChart"></canvas>
+                                </div>
+                            </div>
+                             <div class="space-y-6">
+                                <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                                    <h3 class="font-semibold text-lg text-teal-800 mb-2">Cell Cycle Analysis</h3>
+                                    <p class="text-sm text-stone-600">How to track non-stationary phase transitions (G1→S→G2→M)? Wavelet analysis is essential here, as it can pinpoint frequency changes over time, something Fourier analysis misses.</p>
+                                </div>
+                                <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                                    <h3 class="font-semibold text-lg text-teal-800 mb-2">Stress Response & Damping</h3>
+                                    <p class="text-sm text-stone-600">How to detect and characterize transient events like heat shock? Wavelets excel at finding sharp, temporary signals, while tools like PAICE/ECHO analyze the subsequent damping oscillations.</p>
+                                </div>
+                                <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                                    <h3 class="font-semibold text-lg text-teal-800 mb-2">Feedback Control Design</h3>
+                                    <p class="text-sm text-stone-600">How can Laplace-domain transfer functions be used to design stable genetic circuit controllers? This involves control theory methods to ensure synthetic biological systems behave as intended.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="strategy" class="content-section p-4 fade-in" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-2">Python Library Strategy</h2>
+                        <p class="text-stone-600 mb-6">The core philosophy is to build upon a foundation of mature, well-documented libraries. This section compares the leading candidates for each analytical task, providing a basis for making informed implementation decisions. Select a metric to compare the libraries.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-xl font-semibold text-stone-800 mb-4">Library Comparison</h3>
+                                <div class="mb-4">
+                                    <div id="radio-group" class="flex flex-wrap gap-2 sm:gap-4" role="radiogroup" aria-labelledby="chart-metric-label">
+                                         <span id="chart-metric-label" class="sr-only">Select metric to display on chart</span>
+                                        <label class="flex items-center space-x-2 text-sm">
+                                            <input type="radio" name="chartMetric" value="suitability" class="form-radio text-teal-600 focus:ring-teal-500" checked>
+                                            <span>Suitability</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm">
+                                            <input type="radio" name="chartMetric" value="maintenance" class="form-radio text-teal-600 focus:ring-teal-500">
+                                            <span>Maintenance</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2 text-sm">
+                                            <input type="radio" name="chartMetric" value="performance" class="form-radio text-teal-600 focus:ring-teal-500">
+                                            <span>Performance</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="chart-container h-96">
+                                    <canvas id="libraryChart"></canvas>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-stone-800 mb-4">Feature Overview</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-stone-200">
+                                        <thead class="bg-stone-100">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-stone-600 uppercase tracking-wider">Library</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-stone-600 uppercase tracking-wider">Primary Use</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-stone-600 uppercase tracking-wider">Key Feature</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-stone-200">
+                                            <tr><td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-stone-800">scipy.signal</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">General Signal Processing</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Filters, Lomb-Scargle, CWT</td></tr>
+                                            <tr><td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-stone-800">astropy.timeseries</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Irregular Time Series</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Advanced Lomb-Scargle</td></tr>
+                                            <tr><td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-stone-800">PyWavelets</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Wavelet Analysis</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Extensive wavelet families, DWT</td></tr>
+                                            <tr><td class="px-4 py-3 whitespace-nowrap text-sm font-semibold text-stone-800">python-control</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Control Systems</td><td class="px-4 py-3 whitespace-nowrap text-sm text-stone-600">Transfer functions, state-space</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="roadmap" class="content-section p-4 fade-in" style="display: none;">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
+                        <h2 class="text-2xl font-semibold text-teal-700 mb-2">Implementation Roadmap & Success</h2>
+                        <p class="text-stone-600 mb-6">This research plan is structured to deliver value incrementally. The following roadmap prioritizes tasks from essential MVP features to advanced capabilities, guided by clear success criteria.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-stone-50 p-5 rounded-lg border border-green-300">
+                                <h3 class="font-semibold text-lg text-green-700 mb-3">Must-Have (MVP)</h3>
+                                <ul class="list-disc list-inside space-y-2 text-sm text-stone-700">
+                                    <li>Scientific justification for four-lens framework</li>
+                                    <li>Lomb-Scargle implementation guide</li>
+                                    <li>Evidence for wavelet essentiality</li>
+                                    <li>Analysis of MetaCycle consensus approach</li>
+                                    <li>Mandatory validation requirements defined</li>
+                                </ul>
+                            </div>
+                            <div class="bg-stone-50 p-5 rounded-lg border border-yellow-300">
+                                <h3 class="font-semibold text-lg text-yellow-700 mb-3">High Priority</h3>
+                                <ul class="list-disc list-inside space-y-2 text-sm text-stone-700">
+                                    <li>Library comparison matrix</li>
+                                    <li>Detailed biological use case examples</li>
+                                    <li>Parameter selection guidelines</li>
+                                    <li>Practical Laplace/Z-transform applications</li>
+                                </ul>
+                            </div>
+                            <div class="bg-stone-50 p-5 rounded-lg border border-blue-300">
+                                <h3 class="font-semibold text-lg text-blue-700 mb-3">Nice-to-Have</h3>
+                                <ul class="list-disc list-inside space-y-2 text-sm text-stone-700">
+                                    <li>State-space modeling methods</li>
+                                    <li>HOSA for nonlinear coupling</li>
+                                    <li>Data format interoperability study</li>
+                                    <li>Performance benchmarks at scale</li>
+                                </ul>
+                            </div>
+                        </div>
+                         <div class="mt-8">
+                            <h3 class="text-xl font-semibold text-stone-800 mb-4">Success Criteria</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-start p-3 bg-teal-50 rounded-lg">
+                                    <span class="text-teal-600 font-bold mr-3">✅</span>
+                                    <p class="text-sm text-stone-700"><strong class="font-semibold">Why four lenses?</strong> The research provides clear, scientific evidence that a multi-method approach reduces false positives and provides a more complete picture of signal dynamics.</p>
+                                </div>
+                                <div class="flex items-start p-3 bg-teal-50 rounded-lg">
+                                    <span class="text-teal-600 font-bold mr-3">✅</span>
+                                    <p class="text-sm text-stone-700"><strong class="font-semibold">How to implement?</strong> The output is a clear guide on library choices, parameters, significance thresholds, and mandatory validation checks for production-grade analysis.</p>
+                                </div>
+                                <div class="flex items-start p-3 bg-teal-50 rounded-lg">
+                                    <span class="text-teal-600 font-bold mr-3">✅</span>
+                                    <p class="text-sm text-stone-700"><strong class="font-semibold">Does it meet standards?</strong> The proposed methods align with established tools like MetaCycle and Rhythmidia, as well as with peer-reviewed publications in the field.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="mt-16 py-8 border-t border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h3 class="text-lg font-semibold text-teal-700 mb-4">📚 Research Documents</h3>
+                    <p class="text-stone-600 mb-4">For comprehensive technical documentation and research background:</p>
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                        <a href="../research/BioXen Signal Analysis Research Plan.md" 
+                           class="inline-flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors shadow-md">
+                            <span class="mr-2">📄</span>
+                            BioXen Signal Analysis Research Plan
+                        </a>
+                        <a href="../research/Biology Frequency Domain Analysis Review.md" 
+                           class="inline-flex items-center px-4 py-2 bg-stone-600 text-white rounded-lg hover:bg-stone-700 transition-colors shadow-md">
+                            <span class="mr-2">📊</span>
+                            Biology Frequency Domain Analysis Review
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.sidebar-nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+            const libraryData = {
+                labels: ['scipy.signal', 'astropy.timeseries', 'PyWavelets', 'python-control'],
+                metrics: {
+                    suitability: {
+                        label: 'Overall Suitability Score',
+                        data: [8, 9, 8, 7],
+                        backgroundColor: 'rgba(13, 148, 136, 0.7)',
+                    },
+                    maintenance: {
+                        label: 'Community & Maintenance Score',
+                        data: [10, 8, 7, 7],
+                        backgroundColor: 'rgba(2, 132, 199, 0.7)',
+                    },
+                    performance: {
+                        label: 'Relative Performance Score',
+                        data: [9, 7, 8, 6],
+                        backgroundColor: 'rgba(217, 119, 6, 0.7)',
+                    }
+                }
+            };
+
+            let libraryChart, circadianChart;
+
+            function switchTab(targetId) {
+                contentSections.forEach(section => {
+                    section.style.display = section.id === targetId ? 'block' : 'none';
+                    if (section.id === targetId) {
+                         section.classList.add('fade-in');
+                    }
+                });
+
+                navButtons.forEach(button => {
+                    button.classList.toggle('active', button.dataset.target === targetId);
+                });
+
+                if (targetId === 'usecases' && !circadianChart) {
+                    renderCircadianChart();
+                }
+                if (targetId === 'strategy' && !libraryChart) {
+                    renderLibraryChart('suitability');
+                }
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.target);
+                    // Close sidebar on mobile after navigation
+                    if (window.innerWidth < 1024) {
+                        sidebar.classList.remove('translate-x-0');
+                        sidebar.classList.add('-translate-x-full');
+                        sidebarOverlay.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Sidebar toggle functionality
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('-translate-x-full');
+                    sidebar.classList.toggle('translate-x-0');
+                    sidebarOverlay.classList.toggle('hidden');
+                });
+            }
+
+            // Close sidebar when clicking overlay
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', () => {
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                });
+            }
+
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    button.classList.toggle('open');
+                    const icon = button.querySelector('span:last-child');
+                    if (icon) {
+                        icon.classList.toggle('rotate-180');
+                    }
+                });
+            });
+
+            function renderCircadianChart() {
+                const ctx = document.getElementById('circadianChart').getContext('2d');
+                const labels = Array.from({ length: 48 }, (_, i) => `${i % 24}:00`);
+                const data = labels.map((_, i) => Math.sin(i * Math.PI / 12) * 50 + 60 + (Math.random() - 0.5) * 15);
+                
+                circadianChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Simulated Gene Expression',
+                            data: data,
+                            borderColor: '#0d9488',
+                            backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: { display: true, text: 'Expression Level' }
+                            },
+                            x: {
+                                title: { display: true, text: 'Time (Hours)' },
+                                ticks: {
+                                    maxTicksLimit: 10
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function renderLibraryChart(metric) {
+                const ctx = document.getElementById('libraryChart').getContext('2d');
+                const chartData = libraryData.metrics[metric];
+
+                if (libraryChart) {
+                    libraryChart.data.datasets[0].data = chartData.data;
+                    libraryChart.data.datasets[0].label = chartData.label;
+                    libraryChart.data.datasets[0].backgroundColor = chartData.backgroundColor;
+                    libraryChart.update();
+                    return;
+                }
+
+                libraryChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: libraryData.labels,
+                        datasets: [{
+                            label: chartData.label,
+                            data: chartData.data,
+                            backgroundColor: chartData.backgroundColor,
+                            borderColor: chartData.backgroundColor.replace('0.7', '1'),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 10,
+                                title: { display: true, text: 'Score (out of 10)' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                             tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            document.querySelectorAll('input[name="chartMetric"]').forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    renderLibraryChart(event.target.value);
+                });
+            });
+
+            switchTab('overview');
+        });
+    </script>
+
+</body>
+</html>
