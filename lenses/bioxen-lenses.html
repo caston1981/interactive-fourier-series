@@ -375,3 +375,328 @@
                                 <td class="py-3 px-4 font-semibold text-purple-700">Fourier</td>
                                 <td class="py-3 px-4 text-sm font-mono">analysis.fourier</td>
                                 <td class="py-3 px-4 text-sm">FourierAnalyzer<br>SpectralDensity<br>PhaseCoherence</td>
+                                <td class="py-3 px-4 text-sm">Frequency analysis of VM time-series data</td>
+                            </tr>
+                            <tr class="border-b border-stone-200 hover:bg-stone-50">
+                                <td class="py-3 px-4 font-semibold text-orange-700">Laplace</td>
+                                <td class="py-3 px-4 text-sm font-mono">control.laplace</td>
+                                <td class="py-3 px-4 text-sm">LaplaceController<br>TransferFunction<br>StabilityAnalyzer</td>
+                                <td class="py-3 px-4 text-sm">System modeling and feedback control design</td>
+                            </tr>
+                            <tr class="border-b border-stone-200 hover:bg-stone-50">
+                                <td class="py-3 px-4 font-semibold text-green-700">Z-Transform</td>
+                                <td class="py-3 px-4 text-sm font-mono">filters.ztransform</td>
+                                <td class="py-3 px-4 text-sm">ZTransformFilter<br>KalmanFilter<br>DigitalController</td>
+                                <td class="py-3 px-4 text-sm">Discrete-time filtering and state estimation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-3 text-teal-800">Dependencies & Libraries</h3>
+                        <ul class="space-y-2 text-stone-700">
+                            <li><strong>NumPy/SciPy:</strong> Core numerical computing and signal processing</li>
+                            <li><strong>Control Systems Library:</strong> Transfer function manipulation and analysis</li>
+                            <li><strong>Matplotlib:</strong> Visualization of frequency responses and pole-zero plots</li>
+                            <li><strong>scikit-learn:</strong> System identification and parameter fitting</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <h3 class="font-semibold text-lg mb-3 text-teal-800">Performance Considerations</h3>
+                        <ul class="space-y-2 text-stone-700">
+                            <li><strong>FFT Efficiency:</strong> O(N log N) algorithms for large time-series</li>
+                            <li><strong>Real-time Processing:</strong> Streaming FFT for continuous VM monitoring</li>
+                            <li><strong>Memory Usage:</strong> Windowed processing to handle long time-series</li>
+                            <li><strong>Precision:</strong> 64-bit floating point for stability calculations</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="roadmap" class="content-section">
+                <div class="max-w-4xl mx-auto text-center mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-700 mb-2">Development Roadmap & Milestones</h2>
+                    <p class="text-stone-600 mb-6">
+                        Implementation priorities and technical challenges for deploying the three-transform framework 
+                        in production BioXen environments.
+                    </p>
+                </div>
+
+                <div class="space-y-6 max-w-5xl mx-auto">
+                    <div class="bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-500 p-6 rounded-r-lg">
+                        <h3 class="text-lg font-semibold text-green-900 mb-3">Phase 1: Core Fourier Analysis (Q1 2025)</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-green-800 mb-2">Deliverables</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• FFT-based metabolic oscillation detection</li>
+                                    <li>• Circadian rhythm synchronization analysis</li>
+                                    <li>• Real-time spectral monitoring dashboard</li>
+                                    <li>• Integration with hypervisor environmental data</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-green-800 mb-2">Success Metrics</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>• 95% accuracy in detecting 24h metabolic cycles</li>
+                                    <li>• <100ms latency for real-time analysis</li>
+                                    <li>• Support for 1000+ concurrent VM monitoring</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 border-l-4 border-orange-500 p-6 rounded-r-lg">
+                        <h3 class="text-lg font-semibold text-orange-900 mb-3">Phase 2: Laplace Control Systems (Q2 2025)</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-orange-800 mb-2">Deliverables</h4>
+                                <ul class="text-sm text-orange-700 space-y-1">
+                                    <li>• Transfer function identification from VM data</li>
+                                    <li>• PID controller synthesis for resource allocation</li>
+                                    <li>• Stability analysis and margin computation</li>
+                                    <li>• Homeostasis feedback loop implementation</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-800 mb-2">Technical Challenges</h4>
+                                <ul class="text-sm text-orange-700 space-y-1">
+                                    <li>• Nonlinear system linearization strategies</li>
+                                    <li>• Parameter identification from noisy data</li>
+                                    <li>• Real-time controller adaptation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                        <h3 class="text-lg font-semibold text-blue-900 mb-3">Phase 3: Z-Transform Integration (Q3 2025)</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-2">Deliverables</h4>
+                                <ul class="text-sm text-blue-700 space-y-1">
+                                    <li>• Digital filter design for sensor noise reduction</li>
+                                    <li>• Discrete-time controller implementation</li>
+                                    <li>• Kalman filter for state estimation</li>
+                                    <li>• Integration with existing VM monitoring systems</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-2">Research Opportunities</h4>
+                                <ul class="text-sm text-blue-700 space-y-1">
+                                    <li>• HMM integration for genomic sequence analysis</li>
+                                    <li>• Adaptive sampling rate optimization</li>
+                                    <li>• Multi-scale temporal analysis</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 border-l-4 border-purple-500 p-6 rounded-r-lg">
+                        <h3 class="text-lg font-semibold text-purple-900 mb-3">Phase 4: Advanced Features (Q4 2025)</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-purple-800 mb-2">Advanced Capabilities</h4>
+                                <ul class="text-sm text-purple-700 space-y-1">
+                                    <li>• Wavelet transforms for multi-resolution analysis</li>
+                                    <li>• Nonlinear system identification techniques</li>
+                                    <li>• Machine learning integration for pattern recognition</li>
+                                    <li>• Cross-VM correlation and synchronization analysis</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-800 mb-2">Scalability Goals</h4>
+                                <ul class="text-sm text-purple-700 space-y-1">
+                                    <li>• Support for 10,000+ concurrent VMs</li>
+                                    <li>• Sub-millisecond analysis latency</li>
+                                    <li>• Distributed processing architecture</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto mt-8 bg-stone-50 border border-stone-200 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold text-stone-800 mb-4">Key Technical Challenges</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl mb-2">🔬</div>
+                            <h4 class="font-semibold text-stone-700 mb-2">Biological Complexity</h4>
+                            <p class="text-sm text-stone-600">Bridging deterministic signal processing with stochastic molecular biology</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl mb-2">⚡</div>
+                            <h4 class="font-semibold text-stone-700 mb-2">Performance Requirements</h4>
+                            <p class="text-sm text-stone-600">Real-time analysis of high-frequency VM sensor data streams</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl mb-2">🔗</div>
+                            <h4 class="font-semibold text-stone-700 mb-2">System Integration</h4>
+                            <p class="text-sm text-stone-600">Seamless integration with existing BioXen hypervisor and VM infrastructure</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Navigation functionality
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const sections = document.querySelectorAll('.content-section');
+
+                navButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const target = this.getAttribute('data-target');
+                        
+                        // Update button states
+                        navButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update section visibility
+                        sections.forEach(section => {
+                            if (section.id === target) {
+                                section.classList.add('active');
+                            } else {
+                                section.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+
+                // Fourier Analysis Chart
+                const fourierCtx = document.getElementById('fourierChart').getContext('2d');
+                let fourierChart = new Chart(fourierCtx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                        datasets: [{
+                            label: 'ATP Consumption (μmol/min)',
+                            data: [2.1, 2.0, 1.9, 1.8, 1.7, 1.6, 1.8, 2.2, 2.8, 3.5, 4.2, 4.8, 
+                                   5.1, 5.0, 4.6, 4.0, 3.2, 2.5, 2.1, 1.9, 1.8, 1.8, 1.9, 2.0],
+                            borderColor: '#7c3aed',
+                            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                title: { display: true, text: 'ATP Consumption' },
+                                grid: { color: '#f3f4f6' }
+                            },
+                            x: {
+                                title: { display: true, text: 'Time (hours)' },
+                                grid: { color: '#f3f4f6' }
+                            }
+                        }
+                    }
+                });
+
+                // Analyze Fourier button
+                document.getElementById('analyzeFourierBtn').addEventListener('click', function() {
+                    // Simulate FFT analysis by adding frequency domain data
+                    const frequencyData = [0, 0.1, 0.3, 0.8, 2.1, 0.6, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005];
+                    const frequencies = Array.from({length: 12}, (_, i) => `${(i * 0.1).toFixed(1)} Hz`);
+                    
+                    if (fourierChart.data.datasets.length === 1) {
+                        fourierChart.data.datasets.push({
+                            label: 'Power Spectrum',
+                            data: frequencyData,
+                            borderColor: '#dc2626',
+                            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                            yAxisID: 'y1',
+                            type: 'bar'
+                        });
+                        fourierChart.options.scales.y1 = {
+                            position: 'right',
+                            title: { display: true, text: 'Power' },
+                            grid: { drawOnChartArea: false }
+                        };
+                    }
+                    fourierChart.update();
+                });
+
+                // Discrete sampling chart
+                const discreteCtx = document.getElementById('discreteChart').getContext('2d');
+                let showSamples = false;
+                
+                const continuousData = [];
+                for (let i = 0; i <= 100; i++) {
+                    const t = i * 0.1;
+                    const value = Math.sin(t) + 0.5 * Math.sin(3 * t) + 0.3 * Math.random();
+                    continuousData.push({x: t, y: value});
+                }
+                
+                const sampledData = continuousData.filter((_, i) => i % 10 === 0);
+                
+                let discreteChart = new Chart(discreteCtx, {
+                    data: {
+                        datasets: [{
+                            label: 'Continuous Process',
+                            data: continuousData,
+                            borderColor: '#6b7280',
+                            backgroundColor: 'transparent',
+                            showLine: true,
+                            pointRadius: 0,
+                            tension: 0.4
+                        }, {
+                            label: 'Sampled Points',
+                            data: sampledData,
+                            borderColor: '#059669',
+                            backgroundColor: '#059669',
+                            showLine: false,
+                            pointRadius: 6,
+                            hidden: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Time' },
+                                grid: { color: '#f3f4f6' }
+                            },
+                            y: {
+                                title: { display: true, text: 'Signal Amplitude' },
+                                grid: { color: '#f3f4f6' }
+                            }
+                        }
+                    }
+                });
+
+                // Toggle discrete samples
+                document.getElementById('toggleDiscreteBtn').addEventListener('click', function() {
+                    showSamples = !showSamples;
+                    discreteChart.data.datasets[1].hidden = !showSamples;
+                    discreteChart.update();
+                    this.textContent = showSamples ? 'Hide Sampling Points' : 'Show Sampling Points';
+                });
+            });
+        </script>
+    </div>
+
+    <footer class="mt-16 py-8 border-t border-stone-200">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-stone-600">
+                For comprehensive research on frequency domain analysis in biology, see: 
+                <a href="../research/Biology Frequency Domain Analysis Review.md" class="text-teal-600 hover:text-teal-800 underline font-medium">
+                    Biology Frequency Domain Analysis Review
+                </a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequency Domain Analysis in Biology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a single-page dashboard with a fixed top navigation bar to switch between four main thematic sections: Introduction, Fourier Transform, Laplace Transform, and Case Studies. This structure was chosen over a linear document format to allow users to non-linearly explore the topics that interest them most, promoting discovery and comparison. The Fourier and Laplace sections use a two-column layout with sub-navigation on the left, enabling users to drill down into specific application areas without losing context. Interactive visualizations are embedded within relevant sections to provide hands-on learning experiences, directly connecting abstract concepts to visual outputs. The user flow is designed to be intuitive: land on the introduction, explore the two main methodologies and their sub-fields, and then see practical applications in the case studies section. This architecture transforms a static literature review into an engaging educational tool. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Core concept of Fourier Transform (identifying frequencies in time-series data). Goal: Education. Viz/Presentation: Two synchronized charts—a line chart for a time-domain sine wave and a bar chart for its frequency-domain power spectrum. Interaction: A slider adjusts the input sine wave's frequency, and both charts update in real-time to show the direct relationship. Justification: This provides an intuitive, hands-on understanding of the FT's primary function in biology (detecting rhythms). Library: Chart.js (Canvas).
+        2. Report Info: Compartmental modeling in Pharmacokinetics (PK/PD) using Laplace transforms. Goal: Demonstrate System Modeling. Viz/Presentation: A diagram of a two-compartment model created using styled HTML divs and flexbox, alongside its mathematical transfer function. Interaction: The diagram is a static visual aid that directly corresponds to the text, simplifying a complex modeling concept. Justification: This visual representation makes the abstract idea of transfer functions more concrete by linking it to a physical system diagram. Method: HTML/CSS with Tailwind.
+        3. Report Info: Curated list of exemplary research papers. Goal: Organize and Showcase. Viz/Presentation: A responsive grid of interactive cards. Interaction: Each card contains a paper's summary, and buttons link directly to the DOI and source code. Hover effects provide visual feedback. Justification: This organizes the case studies into a clean, scannable format that is far more user-friendly and actionable than a simple list. Method: HTML/CSS with Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-10 border-b border-gray-200">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-blue-800">BioXen VM Library</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="nav-link text-gray-700 font-medium active" data-target="intro">Introduction</a>
+                        <a href="#" class="nav-link text-gray-700 font-medium" data-target="fourier">Fourier Transform</a>
+                        <a href="#" class="nav-link text-gray-700 font-medium" data-target="laplace">Laplace Transform</a>
+                        <a href="#" class="nav-link text-gray-700 font-medium" data-target="cases">Case Studies</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                        <option value="intro">Introduction</option>
+                        <option value="fourier">Fourier Transform</option>
+                        <option value="laplace">Laplace Transform</option>
+                        <option value="cases">Case Studies</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="intro" class="content-section active">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">Frequency Domain Analysis in Biology</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Unveiling the Rhythms and Dynamics of Life</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Why Frequencies Matter in Biological Systems</h2>
+                <p class="text-gray-700 leading-relaxed">
+                    Biological systems are inherently dynamic, characterized by a complex symphony of oscillations, cycles, and transient responses. From the circadian rhythms governing our sleep-wake cycles to the rapid firing of neurons in the brain, these dynamics carry critical information. Time-domain analysis, which looks at how signals change over time, provides one perspective, but it can often hide underlying patterns. Frequency-domain analysis, using tools like the Fourier and Laplace transforms, offers a powerful alternative lens. It allows us to deconstruct complex signals into their constituent frequencies, revealing hidden periodicities, and to model systems based on their response to different inputs. This approach is fundamental to understanding everything from gene expression cycles and metabolic oscillations to the stability of engineered genetic circuits and the pharmacokinetics of a new drug. This explorer provides an overview of how these mathematical tools are applied to solve real-world biological problems.
+                </p>
+            </div>
+        </section>
+
+        <section id="fourier" class="content-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Fourier Transform Applications</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Deconstructing Biological Rhythms into Simple Frequencies</p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <aside class="w-full md:w-1/4">
+                    <nav id="fourier-nav" class="space-y-2">
+                        <a href="#" class="block font-medium p-3 rounded-lg sub-nav-link active" data-subtarget="fourier-overview">Interactive Demo</a>
+                        <a href="#" class="block font-medium p-3 rounded-lg sub-nav-link" data-subtarget="fourier-omics">Time-Series Omics</a>
+                        <a href="#" class="block font-medium p-3 rounded-lg sub-nav-link" data-subtarget="fourier-neural">Structural & Neural</a>
+                        <a href="#" class="block font-medium p-3 rounded-lg sub-nav-link" data-subtarget="fourier-metabolic">Metabolic Oscillations</a>
+                    </nav>
+                </aside>
+                <div class="w-full md:w-3/4">
+                    <div id="fourier-overview" class="fourier-content bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">From Time to Frequency: An Interactive View</h3>
+                        <p class="mb-6 text-gray-600">The Fourier Transform converts a signal from the time domain (how it changes over time) to the frequency domain (which frequencies are present in it). Use the slider below to change the frequency of a simple sine wave, representing a biological rhythm. Observe how the peak in the Power Spectrum chart moves, showing the dominant frequency detected by the transform.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="text-center font-semibold mb-2">Time Domain Signal</h4>
+                                <div class="chart-container h-64"><canvas id="timeDomainChart"></canvas></div>
+                            </div>
+                            <div>
+                                <h4 class="text-center font-semibold mb-2">Frequency Domain (Power Spectrum)</h4>
+                                <div class="chart-container h-64"><canvas id="frequencyDomainChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <label for="frequency-slider" class="block mb-2 text-sm font-medium text-gray-900">Adjust Signal Frequency (Hz): <span id="freq-value" class="font-bold text-blue-600">5</span></label>
+                            <input id="frequency-slider" type="range" min="1" max="20" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                    <div id="fourier-omics" class="fourier-content hidden bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Time-Series Omics</h3>
+                        <p class="mb-4 text-gray-600">A key application of Fourier analysis is identifying periodically expressed genes in circadian transcriptomics. Algorithms analyze gene expression levels measured over time to find those that oscillate with a ~24-hour period. Seminal works like Refinetti's "Circadian Physiology" established the foundations for studying these rhythms.</p>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-700">Key Tools & Methods:</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            <li><code class="bg-gray-100 p-1 rounded-md">ARSER</code>: Uses autoregressive spectral estimation to detect circadian rhythms.</li>
+                            <li><code class="bg-gray-100 p-1 rounded-md">JTK_CYCLE</code>: A non-parametric method that compares time-series data to a series of reference curves (e.g., cosine waves).</li>
+                            <li><code class="bg-gray-100 p-1 rounded-md">MetaCycle</code>: Integrates results from multiple algorithms to improve detection accuracy.</li>
+                            <li><code class="bg-gray-100 p-1 rounded-md">Lomb-Scargle Periodogram</code>: Particularly useful for analyzing unevenly sampled biological data, a common experimental challenge.</li>
+                        </ul>
+                    </div>
+                    <div id="fourier-neural" class="fourier-content hidden bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Structural Biology & Neural Analysis</h3>
+                        <p class="mb-4 text-gray-600">In structural biology, the Fourier transform is the mathematical bedrock of X-ray crystallography. The diffraction pattern produced when X-rays pass through a crystal is essentially the Fourier transform of the molecule's electron density. An inverse Fourier transform is used to reconstruct the 3D molecular structure.</p>
+                         <p class="text-gray-600">In neuroscience, spectral analysis of EEG data reveals neural oscillations (e.g., alpha, beta, gamma waves), which are linked to different cognitive states. As discussed in Buzsáki's "Rhythms of the Brain," these oscillations are fundamental to information processing in the brain.</p>
+                    </div>
+                    <div id="fourier-metabolic" class="fourier-content hidden bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Metabolic Oscillations</h3>
+                        <p class="mb-4 text-gray-600">Many metabolic pathways exhibit oscillatory behavior. Frequency analysis helps characterize these rhythms, such as high-frequency glycolytic oscillations or slower calcium oscillations, which are crucial for cellular signaling. Fourier methods are also applied to study the dynamics of the cell cycle, identifying the periodic activation and degradation of proteins that drive cell division.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="laplace" class="content-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Laplace Transform Applications</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Modeling System Dynamics and Control</p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <aside class="w-full md:w-1/4">
+                     <nav id="laplace-nav" class="space-y-2">
+                        <a href="#" class="block font-medium p-3 rounded-lg sub-nav-link active" data-subtarget="laplace-pkpd">PK/PD Modeling</a>
+                        <a href="#" class="block font-medium p-3 rounded-lg sub-nav-link" data-subtarget="laplace-systems">Systems & Synthetic Biology</a>
+                    </nav>
+                </aside>
+                <div class="w-full md:w-3/4">
+                    <div id="laplace-pkpd" class="laplace-content bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Pharmacokinetics & Pharmacodynamics (PK/PD)</h3>
+                        <p class="mb-4 text-gray-600">The Laplace transform is essential for solving the linear differential equations that describe drug absorption, distribution, metabolism, and excretion (ADME). It simplifies complex models by converting differential equations into algebraic equations in the "Laplace domain."</p>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-700">Compartmental Models & Transfer Functions:</h4>
+                        <p class="mb-4 text-gray-600">Systems are modeled as interconnected compartments (e.g., blood, tissue). The transfer function, H(s), describes the relationship between the drug input (e.g., an IV bolus) and the output (drug concentration in a compartment) in the Laplace domain. This is a cornerstone of classical control theory applied to biology.</p>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <div class="flex items-center space-x-4">
+                               <div class="flex-shrink-0">
+                                   <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center font-bold text-blue-700">C1</div>
+                               </div>
+                               <div class="text-2xl font-mono text-blue-700">&rarr;</div>
+                               <div class="flex-shrink-0">
+                                   <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center font-bold text-blue-700">C2</div>
+                               </div>
+                               <div class="ml-6 flex-grow">
+                                   <p class="font-mono text-lg">H(s) = C₂(s) / U(s)</p>
+                                   <p class="text-sm text-gray-600">A simple transfer function for a two-compartment model.</p>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div id="laplace-systems" class="laplace-content hidden bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-800">Systems & Synthetic Biology</h3>
+                        <p class="mb-4 text-gray-600">In systems and synthetic biology, the Laplace transform is used to analyze the stability and performance of gene regulatory networks and engineered circuits. By treating biomolecular systems as linear time-invariant (LTI) systems, we can apply powerful tools from control theory, as detailed in Del Vecchio & Murray's "Biomolecular Feedback Systems".</p>
+                        <h4 class="font-semibold text-lg mb-2 text-gray-700">Key Applications:</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            <li><b>Stability Analysis:</b> The poles of a system's transfer function determine its stability. If all poles are in the left half of the complex plane, the system is stable. This is crucial for ensuring engineered genetic circuits don't exhibit runaway behavior.</li>
+                            <li><b>Feedback Control:</b> Designing controllers (e.g., feedback loops in genetic circuits) to achieve desired behavior, like maintaining a constant protein concentration.</li>
+                             <li><b>Optogenetic Control:</b> Modeling and controlling cellular processes using light. Transfer functions can describe how a cell's output (e.g., gene expression) responds to a light input.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cases" class="content-section">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Case Studies</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Real-world problems solved with frequency-domain methods.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden">
+                    <div class="p-6 flex-grow">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">MetaCycle: An integrated R package to evaluate periodicity in large-scale data</h3>
+                        <p class="text-sm text-gray-600 mb-4 flex-grow">This paper introduces the MetaCycle R package, which combines ARSER, JTK_CYCLE, and Lomb-Scargle to provide a robust pipeline for detecting rhythms in transcriptomic or metabolomic data. It addresses the challenge of false positives from individual algorithms.</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 flex justify-between items-center text-sm">
+                        <span class="font-semibold text-gray-700">Bioinformatics (2017)</span>
+                        <div class="flex space-x-2">
+                            <a href="https://doi.org/10.1093/bioinformatics/btx245" target="_blank" class="px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-semibold card-link">DOI</a>
+                            <a href="https://github.com/gangwug/MetaCycle" target="_blank" class="px-3 py-1 bg-gray-700 text-white rounded-full text-xs font-semibold card-link">Code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden">
+                    <div class="p-6 flex-grow">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">A transfer function approach to modeling drug absorption and disposition</h3>
+                        <p class="text-sm text-gray-600 mb-4 flex-grow">This work demonstrates how transfer functions derived from Laplace transforms can effectively model complex drug absorption kinetics. It provides a framework for deconvolving absorption profiles from plasma concentration data, improving PK model accuracy for oral drug delivery.</p>
+                    </div>
+                     <div class="bg-gray-50 p-4 flex justify-between items-center text-sm">
+                        <span class="font-semibold text-gray-700">PLOS Comp. Bio. (2019)</span>
+                        <div class="flex space-x-2">
+                           <a href="https://doi.org/10.1371/journal.pcbi.1006786" target="_blank" class="px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-semibold card-link">DOI</a>
+                           <a href="#" class="px-3 py-1 bg-gray-400 text-white rounded-full text-xs font-semibold cursor-not-allowed" title="Code not available">Code</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 flex flex-col overflow-hidden">
+                    <div class="p-6 flex-grow">
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Dynamic control of gene expression with light-switchable nanobodies</h3>
+                        <p class="text-sm text-gray-600 mb-4 flex-grow">Researchers designed an optogenetic system to control gene expression. They used control theory and transfer function models to characterize the system's response to light pulses, enabling precise dynamic control of protein production in living cells. This showcases Laplace methods in synthetic biology design.</p>
+                    </div>
+                     <div class="bg-gray-50 p-4 flex justify-between items-center text-sm">
+                        <span class="font-semibold text-gray-700">Nature Methods (2018)</span>
+                        <div class="flex space-x-2">
+                           <a href="https://doi.org/10.1038/s41592-018-0153-5" target="_blank" class="px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-semibold card-link">DOI</a>
+                           <a href="https://github.com/mde-lab/LlamaTags" target="_blank" class="px-3 py-1 bg-gray-700 text-white rounded-full text-xs font-semibold card-link">Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainNavLinks = document.querySelectorAll('.nav-link');
+            const mobileNav = document.getElementById('mobile-nav');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            const fourierNavLinks = document.querySelectorAll('#fourier-nav .sub-nav-link');
+            const fourierContentSections = document.querySelectorAll('.fourier-content');
+            
+            const laplaceNavLinks = document.querySelectorAll('#laplace-nav .sub-nav-link');
+            const laplaceContentSections = document.querySelectorAll('.laplace-content');
+
+            function switchMainTab(targetId) {
+                mainNavLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.target === targetId);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+                 if (mobileNav.value !== targetId) {
+                    mobileNav.value = targetId;
+                }
+            }
+            
+            mainNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.dataset.target;
+                    switchMainTab(targetId);
+                });
+            });
+
+            mobileNav.addEventListener('change', (e) => {
+                switchMainTab(e.target.value);
+            });
+
+            function setupSubNav(navLinks, contentSections) {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = e.currentTarget.dataset.subtarget;
+
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+
+                        contentSections.forEach(content => {
+                            content.style.display = content.id === targetId ? 'block' : 'none';
+                        });
+                    });
+                });
+                if (contentSections.length > 0) {
+                     contentSections.forEach((content, index) => {
+                        content.style.display = index === 0 ? 'block' : 'none';
+                    });
+                }
+            }
+
+            setupSubNav(fourierNavLinks, fourierContentSections);
+            setupSubNav(laplaceNavLinks, laplaceContentSections);
+
+            let timeDomainChart, frequencyDomainChart;
+
+            const slider = document.getElementById('frequency-slider');
+            const freqValueSpan = document.getElementById('freq-value');
+
+            const sampleRate = 100; 
+            const signalLength = 256;
+            const time = Array.from({ length: signalLength }, (_, i) => i / sampleRate);
+
+            function generateSineWave(freq) {
+                return time.map(t => Math.sin(2 * Math.PI * freq * t));
+            }
+
+            function computePowerSpectrum(data) {
+                const N = data.length;
+                const freqs = Array.from({length: N / 2}, (_, i) => i * sampleRate / N);
+                const fftReal = new Array(N).fill(0);
+                const fftImag = new Array(N).fill(0);
+
+                for (let k = 0; k < N; k++) {
+                    for (let n = 0; n < N; n++) {
+                        const angle = 2 * Math.PI * k * n / N;
+                        fftReal[k] += data[n] * Math.cos(angle);
+                        fftImag[k] += -data[n] * Math.sin(angle);
+                    }
+                }
+                
+                const power = fftReal.slice(0, N / 2).map((real, i) => {
+                    const imag = fftImag[i];
+                    return (Math.sqrt(real * real + imag * imag) / N) * 2;
+                });
+
+                return { freqs, power };
+            }
+
+            function createCharts(initialFreq) {
+                const sineWave = generateSineWave(initialFreq);
+                const { freqs, power } = computePowerSpectrum(sineWave);
+
+                const timeCtx = document.getElementById('timeDomainChart').getContext('2d');
+                timeDomainChart = new Chart(timeCtx, {
+                    type: 'line',
+                    data: {
+                        labels: time,
+                        datasets: [{
+                            label: 'Signal Amplitude',
+                            data: sineWave,
+                            borderColor: '#3b82f6',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { min: -1.5, max: 1.5, title: { display: true, text: 'Amplitude' }},
+                            x: { title: { display: true, text: 'Time (s)' }}
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                const freqCtx = document.getElementById('frequencyDomainChart').getContext('2d');
+                frequencyDomainChart = new Chart(freqCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: freqs.map(f => f.toFixed(1)),
+                        datasets: [{
+                            label: 'Power',
+                            data: power,
+                            backgroundColor: '#1d4ed8'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { title: { display: true, text: 'Power' } },
+                            x: { title: { display: true, text: 'Frequency (Hz)' } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            function updateCharts(freq) {
+                const sineWave = generateSineWave(freq);
+                const { power } = computePowerSpectrum(sineWave);
+
+                timeDomainChart.data.datasets[0].data = sineWave;
+                timeDomainChart.update('none');
+
+                frequencyDomainChart.data.datasets[0].data = power;
+                frequencyDomainChart.update('none');
+            }
+            
+            slider.addEventListener('input', (e) => {
+                const freq = parseInt(e.target.value);
+                freqValueSpan.textContent = freq;
+                updateCharts(freq);
+            });
+
+            createCharts(parseInt(slider.value));
+
+        });
+    </script>
+
+    <footer class="mt-16 py-8 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-600">
+                For a comprehensive review of frequency domain analysis in biology, see: 
+                <a href="../research/Biology Frequency Domain Analysis Review.md" class="text-blue-600 hover:text-blue-800 underline font-medium">
+                    Biology Frequency Domain Analysis Review
+                </a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
