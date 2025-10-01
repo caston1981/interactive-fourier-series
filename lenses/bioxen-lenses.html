@@ -9,31 +9,101 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        #main-content.sidebar-open {
+            margin-left: 16rem; /* 256px = w-64 */
+        }
+        @media (min-width: 1024px) {
+            #main-content.sidebar-open {
+                margin-left: 0;
+            }
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The BioXen Fourier VM Library specification document provides the mathematical foundations for biological system virtualization. This document establishes how Fourier, Laplace, and Z-transforms provide the computational substrate for virtualizing biological systems with temporal dynamics, feedback control, and discrete-time monitoring. -->
+    <!-- Visualization & Content Choices: 
+        - Mathematical Foundations: (Goal: Educate) Interactive code examples and mathematical derivations. Interaction: Copy-to-clipboard functionality. Justification: Makes complex concepts accessible through practical examples.
+        - Transform Implementations: (Goal: Demonstrate) Side-by-side code and mathematical representations. Interaction: Toggle between different implementation views. Justification: Shows the connection between theory and practice.
+        - Performance Analysis: (Goal: Compare) Charts showing computational complexity and accuracy trade-offs. Interaction: Interactive sliders for parameter adjustment. Justification: Helps users understand the practical implications of transform selection.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
 </head>
-<body class="bg-stone-50 text-stone-800">
+<body class="antialiased flex flex-col min-h-screen">
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <h1 class="text-xl font-bold text-orange-700">BioXen VM Spec</h1>
+          </div>
+          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bio-signal.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >Biological Signal Analysis</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >BioXen VM Spec</a
+            >
+            <a
+              href="bio-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >Biology Lenses →</a
+            >
+          </div>
+        </div>
+      </nav>
 
-        <header class="text-center mb-8">
-            <div class="inline-block bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-semibold mb-3">
-                Technical Specification
-            </div>
-            <h1 class="text-3xl md:text-4xl font-bold text-teal-700">BioXen Fourier VM Library</h1>
-            <p class="mt-2 text-lg text-stone-600">Mathematical Foundations for Biological System Virtualization</p>
-            <p class="mt-1 text-sm text-stone-500">Execution Model Design Document v1.0</p>
-        </header>
+      <!-- Mobile Navigation Menu -->
+      <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+        <div class="flex flex-col space-y-2 mt-4">
+          <a href="freq-domain.html" class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors">Frequency Domain Biology</a>
+          <a href="bio-signal.html" class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors">Biological Signal Analysis</a>
+          <a href="bioxen-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">BioXen VM Spec</a>
+          <a href="bio-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors">Biology Lenses →</a>
+        </div>
+      </div>
+    </header>
 
-        <nav class="flex flex-wrap justify-center border-b border-stone-200 mb-8 space-x-2 sm:space-x-6">
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600 active" data-target="intro">Overview</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="fourier">Fourier Engine</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="laplace">Laplace Controller</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="z-transform">Z-Transform Filter</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="implementation">Implementation</button>
-            <button class="nav-btn py-3 px-2 sm:px-4 text-sm sm:text-base font-medium text-stone-600 hover:text-teal-600" data-target="roadmap">Roadmap</button>
+    <div class="flex flex-1">
+      <!-- Mobile Sidebar Toggle -->
+      <div class="lg:hidden fixed top-20 left-4 z-20">
+        <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+        <nav class="space-y-2">
+          <a href="#intro" data-target="intro" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Overview</a>
+          <a href="#fourier" data-target="fourier" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Fourier Engine</a>
+          <a href="#laplace" data-target="laplace" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Laplace Controller</a>
+          <a href="#z-transform" data-target="z-transform" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Z-Transform Filter</a>
+          <a href="#implementation" data-target="implementation" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Implementation</a>
+          <a href="#roadmap" data-target="roadmap" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Roadmap</a>
         </nav>
+      </aside>
 
-        <main>
+      <!-- Overlay for mobile sidebar -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1 p-4 lg:p-8 flex flex-col">
             <section id="intro" class="content-section active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-blue-50 border-l-4 border-blue-500 p-5 mb-6 rounded-r-lg">
@@ -540,19 +610,21 @@
                 </div>
             </section>
         </main>
+    </div>
 
-        <script>
+    <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Navigation functionality
-                const navButtons = document.querySelectorAll('.nav-btn');
+                const navLinks = document.querySelectorAll('.sidebar-nav-link');
                 const sections = document.querySelectorAll('.content-section');
 
-                navButtons.forEach(button => {
-                    button.addEventListener('click', function() {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
                         const target = this.getAttribute('data-target');
                         
-                        // Update button states
-                        navButtons.forEach(btn => btn.classList.remove('active'));
+                        // Update link states
+                        navLinks.forEach(lnk => lnk.classList.remove('active'));
                         this.classList.add('active');
                         
                         // Update section visibility
@@ -564,6 +636,24 @@
                             }
                         });
                     });
+                });
+
+                // Mobile sidebar toggle functionality
+                const sidebarToggle = document.getElementById('sidebar-toggle');
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('main-content');
+
+                sidebarToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('sidebar-open');
+                    mainContent.classList.toggle('sidebar-open');
+                    document.getElementById('sidebar-overlay').classList.toggle('hidden');
+                });
+
+                // Close sidebar when clicking overlay
+                document.getElementById('sidebar-overlay').addEventListener('click', () => {
+                    sidebar.classList.remove('sidebar-open');
+                    mainContent.classList.remove('sidebar-open');
+                    document.getElementById('sidebar-overlay').classList.add('hidden');
                 });
 
                 // Fourier Analysis Chart
@@ -688,11 +778,11 @@
         </script>
     </div>
 
-    <footer class="mt-16 py-8 border-t border-stone-200">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-stone-600">
+    <footer class="mt-16 py-8 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-600">
                 For comprehensive research on frequency domain analysis in biology, see: 
-                <a href="../research/Biology Frequency Domain Analysis Review.md" class="text-teal-600 hover:text-teal-800 underline font-medium">
+                <a href="../research/Biology Frequency Domain Analysis Review.md" class="text-blue-600 hover:text-blue-800 underline font-medium">
                     Biology Frequency Domain Analysis Review
                 </a>
             </p>
