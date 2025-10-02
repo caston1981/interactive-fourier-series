@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavelet Analysis for Biological Systems - Research Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a tabbed, single-page dashboard. This design was chosen to break down the dense research plan into logical, manageable sections: an Overview, detailed Research Queries, a practical Implementation Guide, and a Validation/Resources hub. This non-linear, task-oriented approach allows a researcher to quickly access the specific information they need (e.g., jump to implementation details or review success criteria) without scrolling through a long document, enhancing usability and focus. Key interactions include tabbed navigation, interactive checklists, and a dynamic comparison chart to make the plan an active tool rather than a static document. -->
+    <!-- Visualization & Content Choices: The report's content, a research plan, is organized for actionability. Report Info: Next Steps -> Goal: Organize/Plan -> Presentation: Interactive Timeline (HTML/CSS) -> Interaction: Visual progress tracking -> Justification: More engaging and intuitive than a simple list. Report Info: Success Criteria -> Goal: Track/Inform -> Presentation: Interactive Checklists (HTML/JS) -> Interaction: Click to toggle state -> Justification: Provides a sense of completion and clarity on project status. Report Info: Wavelets vs. Traditional Methods -> Goal: Compare/Validate -> Presentation: Bar Chart (Chart.js) -> Interaction: Buttons to switch between performance metrics -> Justification: Visually quantifies the benefits of wavelets, making the case for their use more powerful than text alone. All other text-based information is organized into cards and accordions for clarity and to avoid overwhelming the user. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="antialiased">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <button id="mobile-menu-btn" class="lg:hidden mr-4 p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <h1 class="text-xl font-bold text-gray-800">Transforms Explorer</h1>
+          </div>
+          <div class="hidden md:flex items-center space-x-6">
+            <a
+              href="index.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors"
+              >🏠 Home</a
+            >
+            <a
+              href="freq-domain.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors"
+              >Frequency Domain Biology</a
+            >
+            <a
+              href="bio-signal.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >Biological Signal Analysis</a
+            >
+            <a
+              href="bioxen.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-teal-600 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 transition-colors"
+              >BioXen Research Plan</a
+            >
+            <a
+              href="bioxen-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >BioXen VM Spec</a
+            >
+            <a
+              href="wavelets.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors"
+              >Wavelet Analysis</a
+            >
+            <a
+              href="bio-lenses.html"
+              class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >Biology Lenses →</a
+            >
+          </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+          <div class="flex flex-col space-y-2 mt-4">
+            <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors">🏠 Home</a>
+            <a href="freq-domain.html" class="px-3 py-2 rounded-md text-sm font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 transition-colors">Frequency Domain Biology</a>
+            <a href="bio-signal.html" class="px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 transition-colors">Biological Signal Analysis</a>
+            <a href="bioxen.html" class="px-3 py-2 rounded-md text-sm font-medium text-teal-600 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 transition-colors">BioXen Research Plan</a>
+            <a href="bioxen-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:text-orange-800 bg-orange-50 hover:bg-orange-100 transition-colors">BioXen VM Spec</a>
+            <a href="wavelets.html" class="px-3 py-2 rounded-md text-sm font-medium text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors">Wavelet Analysis</a>
+            <a href="bio-lenses.html" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 transition-colors">Biology Lenses →</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Wavelet Analysis for Biological Systems</h1>
+            <p class="mt-2 text-lg text-amber-700">Essential Research Query Dashboard</p>
+        </header>
+
+        <div class="flex flex-1">
+            <!-- Mobile Sidebar Toggle -->
+            <div class="lg:hidden fixed top-24 left-4 z-20">
+                <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Left Sidebar Navigation -->
+            <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto h-screen overflow-y-auto">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+                <nav class="space-y-2">
+                    <button data-target="overview" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Overview</button>
+                    <button data-target="queries" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Research Queries</button>
+                    <button data-target="implementation" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Implementation</button>
+                    <button data-target="validation" class="sidebar-nav-link block w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Validation & Resources</button>
+                </nav>
+            </aside>
+
+            <!-- Overlay for mobile sidebar -->
+            <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-4 lg:p-8 flex flex-col lg:ml-0">
+                <div id="content-container">
+                    <div class="card p-6 mb-10">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                            <span class="text-2xl mr-3">🎯</span> Core Objective
+                        </h2>
+                        <p class="text-gray-600">
+                            This research plan outlines the steps to build a functional biological signal analysis tool using wavelet transforms. The primary goal is to develop a method that outperforms basic filtering for circadian rhythm detection and biological noise removal, ensuring critical signal features are preserved.
+                        </p>
+                    </div>
+
+                    <section id="overview" class="content-section p-4 fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">✅ Success Criteria</h3>
+                        <p class="text-gray-600 mb-4">The research phase is considered complete when all of the following objectives have been met. These criteria ensure a solid foundation before beginning full-scale implementation.</p>
+                        <ul id="success-checklist" class="space-y-3">
+                            <li class="checklist-item flex items-start">
+                                <span class="text-green-500 mr-3 mt-1">●</span>
+                                <span>3-5 validated wavelet methods identified for biological signals.</span>
+                            </li>
+                            <li class="checklist-item flex items-start">
+                                <span class="text-green-500 mr-3 mt-1">●</span>
+                                <span>Clear wavelet selection guidelines (e.g., a decision tree: "use X wavelet for Y signal type").</span>
+                            </li>
+                             <li class="checklist-item flex items-start">
+                                <span class="text-green-500 mr-3 mt-1">●</span>
+                                <span>Working Python implementation examples for core techniques.</span>
+                            </li>
+                             <li class="checklist-item flex items-start">
+                                <span class="text-green-500 mr-3 mt-1">●</span>
+                                <span>Quantitative performance benchmarks vs. basic filtering methods.</span>
+                            </li>
+                             <li class="checklist-item flex items-start">
+                                <span class="text-green-500 mr-3 mt-1">●</span>
+                                <span>A documented, step-by-step coherence analysis method.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">🚀 Immediate Next Steps</h3>
+                        <p class="text-gray-600 mb-6">This timeline outlines the critical path for the initial four weeks of research and development. Each step builds upon the last, moving from theoretical understanding to practical application.</p>
+                        <div class="timeline">
+                            <div class="timeline-step active">
+                                <div class="timeline-dot"></div>
+                                <p class="font-semibold mt-2 text-sm">Week 1</p>
+                                <p class="text-xs text-gray-500">Literature Search</p>
+                            </div>
+                            <div class="timeline-step">
+                                <div class="timeline-dot"></div>
+                                <p class="font-semibold mt-2 text-sm">Week 2</p>
+                                <p class="text-xs text-gray-500">Code Exploration</p>
+                            </div>
+                            <div class="timeline-step">
+                                <div class="timeline-dot"></div>
+                                <p class="font-semibold mt-2 text-sm">Week 3</p>
+                                <p class="text-xs text-gray-500">Implement Coherence</p>
+                            </div>
+                            <div class="timeline-step">
+                                <div class="timeline-dot"></div>
+                                <p class="font-semibold mt-2 text-sm">Week 4</p>
+                                <p class="text-xs text-gray-500">Validate & Compare</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                    <section id="queries" class="content-section p-4 fade-in" style="display: none;">
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">This section details the priority research questions that must be answered. Each query is designed to build a comprehensive understanding of wavelet applications, from foundational methods to advanced cross-signal analysis and practical implementation.</p>
+                <div class="space-y-6">
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold text-gray-800">1. Proven Wavelet Methods for Biological Signals (2022-2025)</h3>
+                        <p class="text-gray-600 mt-2"><strong>Essential Query:</strong> "What are the most validated wavelet transform methods for analyzing circadian rhythms and biological oscillations? Which methods have been proven in peer-reviewed studies?"</p>
+                        <div class="mt-4 p-4 bg-amber-50 rounded-lg">
+                            <p class="font-semibold text-amber-800">Focus On:</p>
+                            <ul class="list-disc list-inside text-sm text-amber-700 mt-2 space-y-1">
+                                <li>Circadian rhythm detection (24-hour cycles)</li>
+                                <li>Biological noise removal that preserves signal features</li>
+                                <li>Wavelet family selection (e.g., Morlet, Haar, Daubechies)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold text-gray-800">2. Wavelet Coherence & Cross-Signal Analysis</h3>
+                        <p class="text-gray-600 mt-2"><strong>Essential Query:</strong> "How do I implement wavelet coherence to find relationships between two biological signals? What are the standard methods for biological applications?"</p>
+                        <div class="mt-4 p-4 bg-amber-50 rounded-lg">
+                            <p class="font-semibold text-amber-800">Focus On:</p>
+                            <ul class="list-disc list-inside text-sm text-amber-700 mt-2 space-y-1">
+                                <li>Cross-wavelet transform basics</li>
+                                <li>Wavelet coherence for signal correlation</li>
+                                <li>Practical implementation examples in biology</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold text-gray-800">3. Implementation: Python Libraries & Code Examples</h3>
+                        <p class="text-gray-600 mt-2"><strong>Essential Query:</strong> "What are the best Python tools for biological wavelet analysis? Where can I find working code examples?"</p>
+                        <div class="mt-4 p-4 bg-amber-50 rounded-lg">
+                            <p class="font-semibold text-amber-800">Focus On:</p>
+                            <ul class="list-disc list-inside text-sm text-amber-700 mt-2 space-y-1">
+                                <li>PyWavelets and SciPy for biological applications</li>
+                                <li>GitHub repositories with relevant examples</li>
+                                <li>Performance considerations for real data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                    <section id="implementation" class="content-section p-4 fade-in" style="display: none;">
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">This is a practical guide to the technical details required for successful implementation. Answering these questions will provide the specific parameters and methods needed to build a robust analysis tool.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold mb-3">📝 Wavelet Selection</h3>
+                        <ul class="space-y-2 text-gray-600 list-disc list-inside">
+                            <li>Which family for smooth signals? (e.g., Morlet)</li>
+                            <li>Which family for sharp events? (e.g., Haar/Daubechies)</li>
+                            <li>Guidelines for parameter selection (scales, levels).</li>
+                        </ul>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold mb-3">📉 Denoising Implementation</h3>
+                         <ul class="space-y-2 text-gray-600 list-disc list-inside">
+                            <li>Validated threshold selection methods for biology.</li>
+                            <li>Metrics for measuring signal preservation.</li>
+                            <li>Examples of before/after denoising on biological data.</li>
+                        </ul>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold mb-3">🔗 Coherence Analysis</h3>
+                         <ul class="space-y-2 text-gray-600 list-disc list-inside">
+                            <li>Step-by-step coherence calculation process.</li>
+                            <li>Methods for statistical significance testing.</li>
+                            <li>How to interpret results for biological meaning.</li>
+                        </ul>
+                    </div>
+                    <div class="card p-6">
+                        <h3 class="text-lg font-semibold mb-3">⚙️ Performance</h3>
+                         <ul class="space-y-2 text-gray-600 list-disc list-inside">
+                            <li>Computational complexity for typical datasets.</li>
+                            <li>Expected memory requirements.</li>
+                            <li>Tips for speed optimization.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+                    <section id="validation" class="content-section p-4 fade-in" style="display: none;">
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">This section focuses on validating the wavelet-based approach against traditional methods and provides a curated list of high-priority information sources. The goal is to both justify the use of wavelets and guide the research process efficiently.</p>
+                <div class="card p-6 mb-8">
+                     <h3 class="text-xl font-semibold text-gray-800 mb-2 text-center">Wavelets vs. Traditional Methods</h3>
+                     <p class="text-gray-600 mb-4 text-center">This chart visualizes the hypothetical performance improvement of wavelet-based methods compared to Fourier analysis and simple bandpass filtering across different metrics. The core research task is to find published, quantitative data to populate and validate these comparisons.</p>
+                     <div class="text-center mb-4">
+                        <button id="btn-snr" class="chart-btn bg-amber-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-amber-600 transition-colors">SNR Improvement</button>
+                        <button id="btn-sensitivity" class="chart-btn bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">Sensitivity</button>
+                        <button id="btn-specificity" class="chart-btn bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors">Specificity</button>
+                     </div>
+                     <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="card p-4 text-center">
+                        <h4 class="font-semibold">Recent Reviews</h4>
+                        <p class="text-sm text-gray-500 mt-1">Find 1-2 comprehensive review papers (2022-2025).</p>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <h4 class="font-semibold">PyWavelets Docs</h4>
+                        <p class="text-sm text-gray-500 mt-1">Explore official examples and tutorials.</p>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <h4 class="font-semibold">Top Cited Papers</h4>
+                        <p class="text-sm text-gray-500 mt-1">Identify top 5 most-cited papers from the last 3 years.</p>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <h4 class="font-semibold">GitHub Examples</h4>
+                        <p class="text-sm text-gray-500 mt-1">Find 2-3 repositories with working biological code.</p>
+                    </div>
+                </div>
+            </section>
+                </div>
+            </main>
+        </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Sidebar navigation functionality
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        // Sidebar toggle for mobile
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        });
+
+        // Sidebar navigation
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const target = link.getAttribute('data-target');
+
+                // Remove active class from all links
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+
+                // Add active class to clicked link
+                link.classList.add('active');
+
+                // Hide all sections
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // Show target section
+                const targetSection = document.getElementById(target);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+
+                // Close sidebar on mobile after navigation
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                }
+
+                // Initialize chart if validation section is shown
+                if (target === 'validation' && !comparisonChart) {
+                   createChart('snr');
+                }
+            });
+        });
+
+        // Set overview as active by default
+        const overviewLink = document.querySelector('[data-target="overview"]');
+        if (overviewLink) {
+            overviewLink.classList.add('active');
+        }
+        const sections = document.querySelectorAll('.content-section');
+        const checklistItems = document.querySelectorAll('.checklist-item');
+        
+        const chartButtons = document.querySelectorAll('.chart-btn');
+        let comparisonChart;
+
+        const chartData = {
+            snr: {
+                label: 'SNR Improvement (dB)',
+                data: [12, 5, 2],
+                backgroundColor: ['#FBBF24', '#FCD34D', '#FDE68A'],
+            },
+            sensitivity: {
+                label: 'Sensitivity (%)',
+                data: [95, 85, 78],
+                backgroundColor: ['#60A5FA', '#93C5FD', '#BFDBFE'],
+            },
+            specificity: {
+                label: 'Specificity (%)',
+                data: [92, 88, 81],
+                backgroundColor: ['#4ADE80', '#86EFAC', '#BBF7D0'],
+            }
+        };
+
+        const createChart = (metric) => {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            if (comparisonChart) {
+                comparisonChart.destroy();
+            }
+            comparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Wavelet Denoising', 'Fourier Analysis', 'Bandpass Filtering'],
+                    datasets: [{
+                        label: chartData[metric].label,
+                        data: chartData[metric].data,
+                        backgroundColor: chartData[metric].backgroundColor,
+                        borderColor: 'rgba(255, 255, 255, 0.5)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#F3F4F6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#4A4A4A',
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 12
+                            },
+                            cornerRadius: 6,
+                        }
+                    }
+                }
+            });
+        };
+
+        const updateChartButtons = (activeBtnId) => {
+            chartButtons.forEach(button => {
+                if (button.id === activeBtnId) {
+                    button.classList.remove('bg-gray-200', 'text-gray-700');
+                    button.classList.add('bg-amber-500', 'text-white');
+                } else {
+                    button.classList.remove('bg-amber-500', 'text-white');
+                    button.classList.add('bg-gray-200', 'text-gray-700');
+                }
+            });
+        };
+
+        // Checklist functionality
+        checklistItems.forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('completed');
+            });
+        });
+
+        document.getElementById('btn-snr').addEventListener('click', () => {
+            createChart('snr');
+            updateChartButtons('btn-snr');
+        });
+        document.getElementById('btn-sensitivity').addEventListener('click', () => {
+            createChart('sensitivity');
+            updateChartButtons('btn-sensitivity');
+        });
+        document.getElementById('btn-specificity').addEventListener('click', () => {
+            createChart('specificity');
+            updateChartButtons('btn-specificity');
+        });
+
+        createChart('snr');
+
+    });
+</script>
+
+    <footer class="bg-gray-100 border-t border-gray-200 mt-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-sm text-gray-600 mb-4 md:mb-0">
+                    <p>&copy; 2025 BioXen Fourier Analysis Research</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="../research/Wavelet%20Analysis%20for%20Biological%20Signals.md" 
+                       class="text-sm text-amber-600 hover:text-amber-800 transition-colors">
+                        📄 Research Document
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
