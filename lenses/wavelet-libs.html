@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavelet Analysis for Biological Signals - Research Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate Gray & Teal -->
+    <!-- Application Structure Plan: The application is designed as a single-page dashboard with a fixed left-hand navigation sidebar. This structure was chosen because the source report is neatly divided into four distinct, non-hierarchical research questions (RQs). This allows the user to immediately see the scope of the research and jump directly to any topic of interest without scrolling or navigating away. The main content area dynamically displays the selected section, presenting a focused view. This approach is highly usable as it mirrors the logical structure of the source document, facilitating easy exploration and comparison of tools and methods across the different research areas. -->
+    <!-- Visualization & Content Choices:
+        - Overview Recommendation Matrix: (Goal: Compare) A horizontal bar chart (Chart.js) is used to provide a high-level, at-a-glance comparison of the top library candidates across key features. This is more intuitive and faster to parse than a table for a summary view. Interaction: Hover tooltips provide details.
+        - RQ1 Library Comparison: (Goal: Organize/Compare) A structured HTML table is used for detailed feature comparison, supplemented by small bar charts (Chart.js) for community adoption metrics. Interaction: Tabs switch between the feature and adoption views, preventing information overload.
+        - RQ3 Significance Methods: (Goal: Compare) Another horizontal bar chart (Chart.js) compares library support for different statistical methods, which is a clear way to visualize coverage.
+        - RQ4 Visualization Demo: (Goal: Inform/Demonstrate) An interactive heatmap (Plotly.js) simulates a wavelet scalogram. This is superior to a static image as it demonstrates the required interactive features like hover tooltips and the rendering of overlays (COI), which is a key goal of this research question.
+        - All choices confirm to the NO SVG/Mermaid rule and support the overall dashboard structure.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #14b8a6;
+            color: white;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-slate-800 text-white p-6 fixed h-full shadow-lg">
+            <h1 class="text-xl font-bold mb-8 text-teal-300">Wavelet Research Plan</h1>
+            <nav>
+                <ul class="space-y-3" id="navigation">
+                    <li><a href="#overview" class="nav-link block p-3 rounded-lg font-medium hover:bg-slate-700">Overview & Recommendations</a></li>
+                    <li><a href="#rq1" class="nav-link block p-3 rounded-lg font-medium hover:bg-slate-700">1. Analysis Libraries</a></li>
+                    <li><a href="#rq2" class="nav-link block p-3 rounded-lg font-medium hover:bg-slate-700">2. Validation Datasets</a></li>
+                    <li><a href="#rq3" class="nav-link block p-3 rounded-lg font-medium hover:bg-slate-700">3. Significance Testing</a></li>
+                    <li><a href="#rq4" class="nav-link block p-3 rounded-lg font-medium hover:bg-slate-700">4. Interactive Visualization</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="ml-64 p-6 md:p-10 flex-1">
+            <section id="overview" class="mb-16 min-h-screen">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b-2 border-teal-400 pb-2">Overview & Recommendations</h2>
+                <p class="mb-8 text-lg text-slate-600">This document outlines the research plan to identify a robust and production-ready toolchain for wavelet analysis of biological signals. The goal is to find libraries for multi-signal analysis, identify suitable validation datasets, confirm methods for statistical significance, and select a framework for interactive visualization. The chart below summarizes the top candidates against key project requirements.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-center">Top Candidate Feature Matrix</h3>
+                    <div class="chart-container">
+                        <canvas id="recommendationChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rq1" class="mb-16 min-h-screen">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b-2 border-teal-400 pb-2">RQ1: Multi-Signal Wavelet Analysis Libraries</h2>
+                <p class="mb-8 text-lg text-slate-600">The primary goal is to identify Python libraries supporting wavelet coherence and cross-wavelet analysis, which are essential for studying interactions between biological time series. The focus is on production-ready libraries with strong support for the Morlet wavelet, good documentation, and active maintenance.</p>
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-2">Library Feature Comparison</h3>
+                    <p class="text-slate-500 mb-4">Comparison of the leading candidates for core wavelet analysis functionalities.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-100">
+                                <tr>
+                                    <th class="p-3 font-semibold">Feature</th>
+                                    <th class="p-3 font-semibold text-center">pycwt</th>
+                                    <th class="p-3 font-semibold text-center">PyWavelets</th>
+                                    <th class="p-3 font-semibold text-center">ssqueezepy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-3">Cross-Wavelet / Coherence</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                    <td class="p-3 text-center text-red-600 font-bold">✘ No</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3">Morlet Wavelet Support</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                </tr>
+                                 <tr class="border-b">
+                                    <td class="p-3">Statistical Significance</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Built-in</td>
+                                    <td class="p-3 text-center text-red-600 font-bold">✘ Manual</td>
+                                    <td class="p-3 text-center text-orange-500 font-bold">Partial</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3">Active Maintenance (2023+)</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                    <td class="p-3 text-center text-green-600 font-bold">✔ Yes</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3">License</td>
+                                    <td class="p-3 text-center">BSD-3-Clause</td>
+                                    <td class="p-3 text-center">MIT</td>
+                                    <td class="p-3 text-center">MIT</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rq2" class="mb-16 min-h-screen">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b-2 border-teal-400 pb-2">RQ2: Validation Datasets</h2>
+                <p class="mb-8 text-lg text-slate-600">To ensure the reliability of the chosen tools, we must validate them against datasets with known, ground-truth periodicities. This research question focuses on identifying publicly available biological time series, such as circadian rhythm or cell cycle data, that are standard benchmarks in the field.</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Public Data Sources</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><b>CircaDB:</b> A comprehensive database for circadian gene expression data.</li>
+                            <li><b>BioClock Database:</b> Curated datasets from biological clock research.</li>
+                            <li><b>Published Papers:</b> Supplementary data from key publications in the field.</li>
+                            <li><b>Tool Repositories:</b> Example and test datasets bundled with existing libraries.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold mb-2">Validation Criteria</h3>
+                         <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><b>Verified Ground Truth:</b> Data must have confirmed periodicities (e.g., 24h for circadian).</li>
+                            <li><b>Clear Protocols:</b> Use validation methods from published studies.</li>
+                            <li><b>Error Margins:</b> Define acceptable error for period detection.</li>
+                            <li><b>Synthetic Data:</b> Use signal generators for controlled testing scenarios.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rq3" class="mb-16 min-h-screen">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b-2 border-teal-400 pb-2">RQ3: Statistical Significance Testing</h2>
+                <p class="mb-8 text-lg text-slate-600">A critical step in wavelet analysis is determining whether observed periodicities are statistically significant or likely due to random chance. This involves testing against a null hypothesis, often a red-noise (AR1) process. We need to identify libraries with built-in or easily adaptable methods for these tests.</p>
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-center">Significance Testing Methods in Libraries</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="significanceChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-slate-500">Comparing built-in support for standard null hypothesis testing methods.</p>
+                </div>
+            </section>
+
+            <section id="rq4" class="min-h-screen">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800 border-b-2 border-teal-400 pb-2">RQ4: Interactive Visualization Libraries</h2>
+                <p class="mb-8 text-lg text-slate-600">The output of a wavelet analysis is often a 2D scalogram (a heatmap of power across time and frequency). For effective exploration, these visualizations must be interactive. This research area focuses on identifying JavaScript or Python libraries capable of producing responsive scalograms with features like tooltips, overlays for significance, and the Cone of Influence (COI).</p>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-semibold mb-4 text-center">Example Interactive Scalogram (Plotly.js)</h3>
+                    <div id="plotlyChart" class="w-full mx-auto" style="max-width:800px; height:450px;"></div>
+                    <p class="text-center mt-4 text-slate-500">This is a demonstration of an interactive heatmap. Hover over cells to see data. The shaded area represents a simulated Cone of Influence (COI), outside of which results are less reliable.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const recommendationCtx = document.getElementById('recommendationChart').getContext('2d');
+    new Chart(recommendationCtx, {
+        type: 'bar',
+        data: {
+            labels: ['pycwt', 'ssqueezepy', 'PyWavelets'],
+            datasets: [{
+                label: 'Multi-Signal Analysis',
+                data: [5, 4, 1],
+                backgroundColor: '#2dd4bf',
+            }, {
+                label: 'Significance Testing',
+                data: [5, 3, 1],
+                backgroundColor: '#0f766e',
+            }, {
+                label: 'Documentation & Examples',
+                data: [4, 4, 5],
+                backgroundColor: '#99f6e4',
+            },{
+                label: 'Maintenance & Community',
+                data: [4, 5, 5],
+                backgroundColor: '#14b8a6',
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    stacked: true,
+                    title: { display: true, text: 'Relative Score (Higher is Better)' }
+                },
+                y: {
+                    stacked: true
+                }
+            },
+            plugins: {
+                title: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.x !== null) {
+                                label += context.parsed.x + ' / 5';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    const significanceCtx = document.getElementById('significanceChart').getContext('2d');
+    new Chart(significanceCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Red Noise (AR1) Model', 'Surrogate Data', 'Permutation Testing'],
+            datasets: [{
+                label: 'pycwt',
+                data: [1, 1, 0],
+                backgroundColor: '#2dd4bf',
+            }, {
+                label: 'ssqueezepy',
+                data: [1, 0, 0],
+                backgroundColor: '#14b8a6',
+            },{
+                label: 'Manual (scipy/statsmodels)',
+                data: [1, 1, 1],
+                backgroundColor: '#99f6e4',
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+             scales: {
+                x: {
+                    ticks: {
+                        callback: (value) => (value === 1 ? 'Supported' : 'Not Supported')
+                    }
+                }
+            },
+            plugins: {
+                title: { display: false },
+                legend: { position: 'bottom' },
+                tooltip: { enabled: false }
+            }
+        }
+    });
+
+    const zData = [];
+    for (let i = 0; i < 20; i++) {
+        const row = [];
+        for (let j = 0; j < 50; j++) {
+            row.push(Math.sin(j / 5) * Math.cos(i / 2) + Math.random() * 0.5);
+        }
+        zData.push(row);
+    }
+    const plotlyData = [{
+        z: zData,
+        type: 'heatmap',
+        colorscale: 'Viridis',
+        colorbar: {
+            title: 'Power'
+        }
+    }];
+    const plotlyLayout = {
+        title: 'Wavelet Power Scalogram',
+        xaxis: { title: 'Time' },
+        yaxis: { title: 'Period / Frequency' },
+        shapes: [
+            {
+                type: 'path',
+                path: 'M 0,19 L 10,0 L 40,0 L 50,19 Z',
+                fillcolor: 'rgba(0, 0, 0, 0.2)',
+                line: {
+                    width: 0
+                },
+                layer: 'above'
+            }
+        ]
+    };
+    Plotly.newPlot('plotlyChart', plotlyData, plotlyLayout, {responsive: true});
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('main section');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                });
+            }
+        });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    sections.forEach(section => observer.observe(section));
+
+    document.getElementById('navigation').addEventListener('click', function(e) {
+        if (e.target.tagName === 'A') {
+            e.preventDefault();
+            const targetId = e.target.getAttribute('href');
+            document.querySelector(targetId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

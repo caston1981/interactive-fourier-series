@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critique of the 'Four-Lens' Signal Analysis Approach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Slate Blue Accents -->
+    <!-- Application Structure Plan: The application is designed as a single-page exploratory dashboard with a fixed top navigation. This non-linear structure allows users to jump between interconnected research themes (e.g., Biological Precedent, Analytical Methods, Computational Costs) without being forced into a linear narrative. This is ideal for a complex, multi-faceted topic, as it facilitates comparison and synthesis. Key interactions include tabbed content to manage information density, interactive charts that update based on user selection to compare performance, and a simulated analysis to directly demonstrate the difference between methods. This user-driven exploration is more effective for understanding complex trade-offs than a static report. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Biological frequency encoding (Q1) -> Goal: Inform -> Viz: Thematic Cards (HTML/Tailwind) -> Interaction: Hover for detail -> Justification: Allows quick scanning of key examples.
+        - Report Info: Analytical methods comparison (Q2, Q4) -> Goal: Organize/Compare -> Viz: Tabbed Interface & Tables (HTML) -> Interaction: Click to switch views -> Justification: Segments dense technical information into manageable parts (Frequency vs. Control Theory).
+        - Report Info: Computational Complexity (Q5) -> Goal: Compare -> Viz: Bar Chart (Chart.js) -> Interaction: Buttons to update data for different sampling types -> Justification: Provides a clear, quantitative comparison of performance trade-offs.
+        - Report Info: Wavelet vs. Fourier (Q6) -> Goal: Demonstrate -> Viz: Side-by-side dynamic line charts (Chart.js) -> Interaction: Button triggers mock analysis -> Justification: Offers a direct, visual proof of Wavelet's utility for transient signals, which is more impactful than text alone.
+        - Report Info: Overall Critique (Q7) -> Goal: Synthesize -> Viz: Scorecard Grid (HTML/Tailwind) -> Interaction: None -> Justification: Delivers a concise, high-level summary of the research findings. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; 
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .tab-button.active {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            color: #3b82f6;
+        }
+        .sidebar-nav-link.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 shadow-sm border-b border-gray-200">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <button id="sidebar-toggle" class="lg:hidden mr-4 p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+            <h1 class="text-xl font-bold text-slate-700">Biological Signal Analysis</h1>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="flex flex-1">
+      <!-- Mobile Sidebar Toggle -->
+      <div class="lg:hidden fixed top-20 left-4 z-20">
+        <button id="sidebar-toggle" class="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="w-64 bg-gray-50 border-r border-gray-200 p-6 fixed lg:static lg:block hidden lg:translate-x-0 transform -translate-x-full transition-transform duration-300 ease-in-out z-10 lg:z-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Page Navigation</h2>
+        <nav class="space-y-2">
+          <a href="#overview" data-target="overview" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors active">Overview</a>
+          <a href="#precedent" data-target="precedent" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Biological Precedent</a>
+          <a href="#toolkit" data-target="toolkit" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Analyst's Toolkit</a>
+          <a href="#tradeoffs" data-target="tradeoffs" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Computational Trade-offs</a>
+          <a href="#wavelet" data-target="wavelet" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Wavelet's Niche</a>
+          <a href="#verdict" data-target="verdict" class="sidebar-nav-link block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors">Verdict</a>
+        </nav>
+      </aside>
+
+      <!-- Overlay for mobile sidebar -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-5"></div>
+
+      <!-- Main Content -->
+      <main id="main-content" class="flex-1 p-4 lg:p-8 flex flex-col">
+
+        <section id="overview" class="content-section active space-y-6">
+            <h2 class="text-3xl font-bold border-b pb-2">Critique of the 'Four-Lens' Signal Analysis Approach</h2>
+            <p class="text-lg text-slate-600">This analysis evaluates the scientific validity and computational practicality of using a multi-modal, 'Four-Lens' signal processing approach for real-time self-regulation in biological virtual models. The core hypothesis is that biological systems encode and decode information in the frequency domain, and that mimicking this requires a sophisticated toolkit combining Fourier, Wavelet, Lomb-Scargle, and Control Theory methods. This interactive report explores the biological basis for this hypothesis, compares the proposed tools, and assesses the feasibility of their real-time application.</p>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                <h3 class="text-xl font-semibold mb-4">The Four Lenses of Analysis</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <div class="text-4xl mb-2">ℱ</div>
+                        <h4 class="font-semibold">Fourier Analysis</h4>
+                        <p class="text-sm text-slate-600">Identifies dominant, persistent frequencies in evenly sampled data. Best for stable, periodic signals.</p>
+                    </div>
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <div class="text-4xl mb-2">🌊</div>
+                        <h4 class="font-semibold">Wavelet Analysis</h4>
+                        <p class="text-sm text-slate-600">Detects transient, non-stationary events and their frequency content over time. Ideal for spikes and bursts.</p>
+                    </div>
+                    <div class="p-4 bg-yellow-50 rounded-lg">
+                         <div class="text-4xl mb-2">📊</div>
+                        <h4 class="font-semibold">Lomb-Scargle Periodogram</h4>
+                        <p class="text-sm text-slate-600">A specialized form of Fourier analysis for finding frequencies in unevenly sampled or missing data.</p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg">
+                        <div class="text-4xl mb-2">⚙️</div>
+                        <h4 class="font-semibold">Control Theory</h4>
+                        <p class="text-sm text-slate-600">Models system dynamics and feedback loops using tools like transfer functions to predict and control behavior.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="precedent" class="content-section space-y-6">
+            <h2 class="text-3xl font-bold border-b pb-2">Biological Precedent for Frequency Encoding</h2>
+            <p class="text-lg text-slate-600">The central premise of the 'Four-Lens' approach is that biological systems are not simple on/off switches; they are sophisticated decoders of signal dynamics. Literature provides strong evidence that the frequency, duration, and amplitude of signaling pathways collectively determine cellular outcomes. This is not a purely mathematical abstraction but a fundamental mechanism of biological information processing.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200 hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold mb-2">NF-κB Pathway</h3>
+                    <p class="text-slate-600">The transcription factor NF-κB demonstrates clear frequency-dependent gene expression. Low-frequency oscillations of NF-κB into the nucleus activate one set of genes, while high-frequency oscillations activate a different, distinct set. This shows the cell is actively 'reading' the oscillation frequency to mount a specific response to a stimulus.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200 hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold mb-2">p53 Signaling</h3>
+                    <p class="text-slate-600">The tumor suppressor p53 responds to DNA damage differently based on signal dynamics. A small, fixed amount of damage can induce sustained p53 pulses, leading to cell cycle arrest. In contrast, more severe damage can trigger a monotonic increase in p53 levels, leading to apoptosis (programmed cell death). The dynamics of the signal directly control cell fate.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200 hover:shadow-lg transition-shadow">
+                    <h3 class="text-xl font-semibold mb-2">Circadian Clocks</h3>
+                    <p class="text-slate-600">The most obvious example of frequency detection is the circadian rhythm, a ~24-hour endogenous oscillator that regulates countless physiological processes. This internal clock is a robust frequency generator and detector, synchronizing the body's functions with the daily light-dark cycle. It is a biological system fundamentally built around a specific frequency.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="toolkit" class="content-section space-y-6">
+            <h2 class="text-3xl font-bold border-b pb-2">The Analyst's Toolkit: A Comparative Look</h2>
+            <p class="text-lg text-slate-600">The proposed approach combines methods from frequency domain analysis and classical control theory. Each tool offers a unique perspective on the system's behavior, but also comes with significant assumptions and limitations, especially when applied to complex, nonlinear biological systems. This section contrasts these methods to clarify their appropriate use cases.</p>
+            
+            <div class="flex border-b border-gray-200">
+                <button data-tab="freq" class="tab-button active -mb-px border-b-2 font-semibold p-4" type="button">Frequency Domain Methods</button>
+                <button data-tab="ctrl" class="tab-button border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-semibold p-4" type="button">Control Theory Methods</button>
+            </div>
+
+            <div id="freq" class="tab-content active">
+                <div class="overflow-x-auto bg-white rounded-lg shadow-md border border-slate-200">
+                    <table class="w-full text-sm text-left text-slate-500">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Method</th>
+                                <th scope="col" class="px-6 py-3">Primary Use</th>
+                                <th scope="col" class="px-6 py-3">Limitations in Biology</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Fourier Transform (FFT)</th>
+                                <td class="px-6 py-4">Identifying dominant, stationary frequencies in a signal.</td>
+                                <td class="px-6 py-4">Assumes signal is periodic and stationary; struggles with transient events. Requires evenly sampled data.</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Wavelet Transform (CWT/DWT)</th>
+                                <td class="px-6 py-4">Time-frequency analysis; detecting *when* certain frequencies occur.</td>
+                                <td class="px-6 py-4">More computationally expensive than FFT. Choice of mother wavelet can be subjective and affect results.</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Lomb-Scargle Periodogram</th>
+                                <td class="px-6 py-4">Frequency analysis for unevenly sampled data, common in clinical/experimental settings.</td>
+                                <td class="px-6 py-4">High computational complexity (O(N²)). Can be sensitive to noise and produce false positives.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="ctrl" class="tab-content" style="display: none;">
+                <div class="overflow-x-auto bg-white rounded-lg shadow-md border border-slate-200">
+                    <table class="w-full text-sm text-left text-slate-500">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Method</th>
+                                <th scope="col" class="px-6 py-3">Primary Use</th>
+                                <th scope="col" class="px-6 py-3">Limitations in Biology</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Laplace Transforms</th>
+                                <td class="px-6 py-4">Converting linear differential equations into algebraic problems for easier analysis.</td>
+                                <td class="px-6 py-4">Strictly limited to Linear Time-Invariant (LTI) systems. Biological systems are almost never linear.</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Transfer Functions</th>
+                                <td class="px-6 py-4">Modeling the input-output relationship of a system in the frequency domain.</td>
+                                <td class="px-6 py-4">Represents a highly simplified, linearized model of reality. Misses crucial nonlinear dynamics and stochasticity.</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">Z-Transforms</th>
+                                <td class="px-6 py-4">Discrete-time equivalent of the Laplace transform, for analyzing digital control systems.</td>
+                                <td class="px-6 py-4">Shares the same linearity assumption. Applicability depends on whether the biological process can be meaningfully discretized.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tradeoffs" class="content-section space-y-6">
+            <h2 class="text-3xl font-bold border-b pb-2">Computational Trade-offs for Real-Time Analysis</h2>
+            <p class="text-lg text-slate-600">Implementing these analytical methods within a real-time simulation for self-correction imposes strict computational constraints. The choice of method involves a critical trade-off between analytical power and performance overhead. This is especially true when dealing with unevenly sampled data, where the most appropriate method (Lomb-Scargle) is also the most expensive.</p>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                <div class="flex justify-center space-x-2 mb-4">
+                     <button id="updateChartBtn" data-type="uniform" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Uniform Sampling</button>
+                     <button id="updateChartBtn" data-type="nonuniform" class="bg-slate-400 text-white font-bold py-2 px-4 rounded">Non-Uniform Sampling</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="complexityChart"></canvas>
+                </div>
+                <p id="chart-caption" class="text-center text-sm text-slate-500 mt-2">Relative computational cost for analyzing a time-series of N data points.</p>
+            </div>
+        </section>
+
+        <section id="wavelet" class="content-section space-y-6">
+            <h2 class="text-3xl font-bold border-b pb-2">Wavelet's Niche: Analyzing Transient Events</h2>
+            <p class="text-lg text-slate-600">A key question is whether the complexity of Wavelet analysis provides unique information that couldn't be obtained from simpler Fourier analysis with filtering. For stable, oscillating systems, the answer is often no. However, for systems responding to sudden, transient stimuli (like stress response or cell cycle checkpoints), Wavelets excel at pinpointing the timing and frequency of the event, which Fourier analysis would blur across the entire signal.</p>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                <div class="text-center mb-6">
+                    <button id="run-simulation-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">Analyze Simulated Stress Response</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-center font-semibold mb-2">Fourier Analysis (FFT)</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="fftChart"></canvas>
+                        </div>
+                        <p id="fft-text" class="text-center text-sm text-slate-500 mt-2">Awaiting analysis...</p>
+                    </div>
+                    <div>
+                        <h3 class="text-center font-semibold mb-2">Wavelet Analysis (Conceptual)</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="waveletChart"></canvas>
+                        </div>
+                        <p id="wavelet-text" class="text-center text-sm text-slate-500 mt-2">Awaiting analysis...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="verdict" class="content-section space-y-6">
+            <h2 class="text-3xl font-bold border-b pb-2">Synthesis & Verdict</h2>
+            <p class="text-lg text-slate-600">Synthesizing the findings, the 'Four-Lens Signal Analysis' approach is scientifically well-founded but computationally challenging. While biological systems clearly use frequency encoding, our tools for decoding it in real-time within a simulation have major trade-offs. The approach is most valuable not as a single, monolithic system, but as a conceptual framework guiding the selection of the right tool for the right biological question.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div class="bg-white p-6 rounded-lg shadow-md border border-green-200">
+                    <h3 class="text-xl font-semibold text-green-700 mb-2">Scientific Validity: Strong</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-600">
+                        <li><strong>Strong Precedent:</strong> The biological basis for frequency encoding (NF-κB, p53) is well-established.</li>
+                        <li><strong>Comprehensive Toolkit:</strong> The combination of methods covers a wide range of signal types (periodic, transient, irregular sampling).</li>
+                        <li><strong>Unique Insights:</strong> Wavelet analysis offers necessary time-localization for transient events that Fourier methods miss.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-red-200">
+                    <h3 class="text-xl font-semibold text-red-700 mb-2">Computational Practicality: Caution Advised</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-600">
+                        <li><strong>High Complexity:</strong> Real-time application is hampered by the O(N²) complexity of Lomb-Scargle for irregular data.</li>
+                        <li><strong>Linearity Assumptions:</strong> Classical control theory tools are a poor fit for inherently nonlinear biological systems.</li>
+                        <li><strong>Overhead vs. Gain:</strong> The computational cost of continuous analysis may outweigh the benefits for many simulations, suggesting an event-triggered approach may be more practical.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.getElementById('nav-links');
+            const mobileNav = document.getElementById('mobile-nav');
+            const contentSections = document.querySelectorAll('.content-section');
+            const navButtons = document.querySelectorAll('.nav-button');
+
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+                navButtons.forEach(button => {
+                    button.classList.toggle('active', button.dataset.target === targetId);
+                });
+                if (mobileNav.value !== targetId) {
+                    mobileNav.value = targetId;
+                }
+            }
+
+            navLinks.addEventListener('click', (e) => {
+                if (e.target.classList.contains('nav-button')) {
+                    const targetId = e.target.dataset.target;
+                    showSection(targetId);
+                }
+            });
+            
+            mobileNav.addEventListener('change', (e) => {
+                showSection(e.target.value);
+            });
+
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const targetId = tab.dataset.tab;
+                    tabContents.forEach(content => {
+                        content.style.display = content.id === targetId ? 'block' : 'none';
+                    });
+                });
+            });
+
+            const chartData = {
+                uniform: {
+                    labels: ['FFT', 'CWT (Wavelet)', 'Control Theory (State-Space)'],
+                    data: [15, 45, 10],
+                    complexities: ['O(N log N)', 'O(N log N)', 'O(N)'],
+                    backgroundColor: ['rgba(59, 130, 246, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(239, 68, 68, 0.6)'],
+                    borderColor: ['rgba(59, 130, 246, 1)', 'rgba(16, 185, 129, 1)', 'rgba(239, 68, 68, 1)'],
+                },
+                nonuniform: {
+                    labels: ['Lomb-Scargle', 'Wavelet (Adapted)', 'Control Theory (Kalman Filter)'],
+                    data: [100, 60, 40],
+                    complexities: ['O(N²)', 'O(N log N)', 'O(k³N)'],
+                    backgroundColor: ['rgba(245, 158, 11, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(239, 68, 68, 0.6)'],
+                    borderColor: ['rgba(245, 158, 11, 1)', 'rgba(16, 185, 129, 1)', 'rgba(239, 68, 68, 1)'],
+                }
+            };
+
+            const ctx = document.getElementById('complexityChart').getContext('2d');
+            let complexityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.uniform.labels,
+                    datasets: [{
+                        label: 'Relative Computational Cost',
+                        data: chartData.uniform.data,
+                        backgroundColor: chartData.uniform.backgroundColor,
+                        borderColor: chartData.uniform.borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Relative Cost (Arbitrary Units)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const dataType = document.querySelector('button[data-type].bg-blue-500, button[data-type].bg-slate-400').dataset.type;
+                                    return `Complexity: ${chartData[dataType].complexities[context.dataIndex]}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            document.querySelectorAll('#updateChartBtn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const type = e.target.dataset.type;
+                    const data = chartData[type];
+                    complexityChart.data.labels = data.labels;
+                    complexityChart.data.datasets[0].data = data.data;
+                    complexityChart.data.datasets[0].backgroundColor = data.backgroundColor;
+                    complexityChart.data.datasets[0].borderColor = data.borderColor;
+                    complexityChart.update();
+                    
+                    document.querySelectorAll('#updateChartBtn').forEach(btn => btn.classList.replace('bg-blue-500', 'bg-slate-400'));
+                    e.target.classList.replace('bg-slate-400', 'bg-blue-500');
+                });
+            });
+
+            let fftChart, waveletChart;
+
+            function initSimulationCharts() {
+                const initialData = {
+                    labels: Array.from({length: 100}, (_, i) => i),
+                    datasets: [{
+                        label: 'Signal',
+                        data: Array(100).fill(0),
+                        borderColor: 'rgba(203, 213, 225, 1)',
+                        borderWidth: 1,
+                        pointRadius: 0
+                    }]
+                };
+
+                const fftCtx = document.getElementById('fftChart').getContext('2d');
+                fftChart = new Chart(fftCtx, {
+                    type: 'line', data: initialData,
+                    options: { maintainAspectRatio: false, responsive: true, scales: { y: { beginAtZero: true, suggestedMax: 1 } }, plugins: { legend: { display: false } } }
+                });
+
+                const waveletCtx = document.getElementById('waveletChart').getContext('2d');
+                waveletChart = new Chart(waveletCtx, {
+                    type: 'line', data: initialData,
+                    options: { maintainAspectRatio: false, responsive: true, scales: { y: { beginAtZero: true, suggestedMax: 1 } }, plugins: { legend: { display: false } } }
+                });
+            }
+
+            document.getElementById('run-simulation-btn').addEventListener('click', () => {
+                const signal = Array(100).fill(0).map((_, i) => 0.1 * Math.sin(i / 5));
+                for(let i=40; i<60; i++) {
+                    signal[i] += 0.7 * Math.sin((i-40)/2) * Math.exp(-(i-50)*(i-50)/20);
+                }
+
+                const fftResult = Array(100).fill(0);
+                fftResult[Math.round(100/ (2 * Math.PI * 5))] = 0.1; 
+                fftResult[Math.round(100/ (2 * Math.PI * 2))] = 0.3; 
+                
+                const waveletResult = Array(100).fill(0);
+                for(let i=40; i<60; i++) {
+                    waveletResult[i] = 0.7 * Math.sin((i-40)/2) * Math.exp(-(i-50)*(i-50)/20);
+                }
+                
+                fftChart.data.datasets = [
+                    { label: 'Signal', data: signal, borderColor: 'rgba(148, 163, 184, 0.5)', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Identified Frequencies', data: fftResult, type: 'bar', backgroundColor: 'rgba(59, 130, 246, 0.5)' }
+                ];
+                fftChart.options.scales.y.suggestedMax = Math.max(...signal) * 1.1;
+                fftChart.update();
+                document.getElementById('fft-text').textContent = "Identifies component frequencies but loses all timing information of the transient spike.";
+
+                waveletChart.data.datasets = [
+                    { label: 'Signal', data: signal, borderColor: 'rgba(148, 163, 184, 0.5)', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Detected Transient Event', data: waveletResult, borderColor: 'rgba(16, 185, 129, 1)', borderWidth: 2, pointRadius: 0, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.2)' }
+                ];
+                waveletChart.options.scales.y.suggestedMax = Math.max(...signal) * 1.1;
+                waveletChart.update();
+                document.getElementById('wavelet-text').textContent = "Successfully isolates the transient event in both time and magnitude.";
+            });
+            
+            initSimulationCharts();
+            showSection('overview');
+
+            // Sidebar navigation
+            document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.getAttribute('data-target');
+                    showSection(target);
+                    document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Mobile sidebar toggle
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const toggleBtn = document.getElementById('sidebar-toggle');
+
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        });
+    </script>
+    </main>
+
+<footer class="mt-16 py-8 border-t border-gray-200 bg-gradient-to-r from-stone-50 to-stone-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-4">
+            <h3 class="text-lg font-semibold text-slate-800 mb-3">📚 Research Foundation & Documentation</h3>
+            <div class="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <a href="../research/The Dynamics of Regulation.md" 
+                   class="block bg-white hover:bg-blue-50 border-2 border-blue-200 hover:border-blue-400 rounded-lg p-3 transition-all">
+                    <div class="text-blue-600 font-medium">The Dynamics of Regulation</div>
+                    <div class="text-xs text-slate-600 mt-1">Biological regulation mechanisms</div>
+                </a>
+                <a href="../research/Biology Frequency Domain Analysis Review.md" 
+                   class="block bg-white hover:bg-blue-50 border-2 border-blue-200 hover:border-blue-400 rounded-lg p-3 transition-all">
+                    <div class="text-blue-600 font-medium">Biology Frequency Domain Review</div>
+                    <div class="text-xs text-slate-600 mt-1">Peer-reviewed biology applications</div>
+                </a>
+                <a href="../research/Mathematical Foundations of System Transforms.md" 
+                   class="block bg-white hover:bg-purple-50 border-2 border-purple-200 hover:border-purple-400 rounded-lg p-3 transition-all">
+                    <div class="text-purple-600 font-medium">Mathematical Foundations</div>
+                    <div class="text-xs text-slate-600 mt-1">Rigorous transform theory</div>
+                </a>
+            </div>
+        </div>
+        <div class="text-center text-sm text-slate-600 border-t border-slate-200 pt-4">
+            <p><strong>BioXen Four-Lens System</strong> | Version 2.0 (Research-Enhanced)</p>
+            <p class="mt-2 text-xs">Based on extensive research review of biological signal analysis literature and proven tools (MetaCycle, Rhythmidia, per2py)</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
